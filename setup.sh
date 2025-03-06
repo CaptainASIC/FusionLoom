@@ -29,6 +29,28 @@ fi
 mkdir -p "${SCRIPT_DIR}/data"
 mkdir -p "${SCRIPT_DIR}/logs"
 
+# Ensure UI directory structure exists
+if [ ! -d "${SCRIPT_DIR}/ui" ]; then
+    echo "UI directory not found. Creating UI directory structure..."
+    mkdir -p "${SCRIPT_DIR}/ui/css"
+    mkdir -p "${SCRIPT_DIR}/ui/js"
+    mkdir -p "${SCRIPT_DIR}/ui/img"
+    
+    # Copy SVG files to PNG for better container compatibility
+    if command -v convert &> /dev/null; then
+        echo "Converting SVG logos to PNG using ImageMagick..."
+        if [ -f "${SCRIPT_DIR}/ui/img/fusion-logo.svg" ]; then
+            convert "${SCRIPT_DIR}/ui/img/fusion-logo.svg" "${SCRIPT_DIR}/ui/img/fusion-logo.png"
+        fi
+        if [ -f "${SCRIPT_DIR}/ui/img/fusion-logo-large.svg" ]; then
+            convert "${SCRIPT_DIR}/ui/img/fusion-logo-large.svg" "${SCRIPT_DIR}/ui/img/fusion-logo-large.png"
+        fi
+    else
+        echo "ImageMagick not found. SVG images may not display correctly in the container."
+        echo "Consider installing ImageMagick or manually converting SVG files to PNG."
+    fi
+fi
+
 # Check for container engine (Docker or Podman)
 CONTAINER_ENGINE=""
 if command -v docker &> /dev/null; then
@@ -68,6 +90,7 @@ CONTAINER_ENGINE=${CONTAINER_ENGINE}
 # Data directories
 DATA_DIR=${SCRIPT_DIR}/data
 LOGS_DIR=${SCRIPT_DIR}/logs
+UI_DIR=${SCRIPT_DIR}/ui
 EOL
 
 # Create the launch script

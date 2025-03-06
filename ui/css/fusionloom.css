@@ -1,0 +1,288 @@
+/* FusionLoom Custom UI Styles */
+
+:root {
+  --fusion-primary: #2c3e50;
+  --fusion-secondary: #34495e;
+  --fusion-accent: #3498db;
+  --fusion-accent-hover: #2980b9;
+  --fusion-text: #ecf0f1;
+  --fusion-text-secondary: #bdc3c7;
+  --fusion-border: #7f8c8d;
+  --fusion-success: #2ecc71;
+  --fusion-warning: #f39c12;
+  --fusion-danger: #e74c3c;
+  --fusion-sidebar-width: 250px;
+}
+
+/* Side Menu Styles */
+.fusion-sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: var(--fusion-sidebar-width);
+  background-color: var(--fusion-primary);
+  color: var(--fusion-text);
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.fusion-sidebar-header {
+  padding: 20px;
+  text-align: center;
+  border-bottom: 1px solid var(--fusion-border);
+}
+
+.fusion-sidebar-header h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--fusion-text);
+}
+
+.fusion-sidebar-header p {
+  margin: 5px 0 0;
+  font-size: 12px;
+  color: var(--fusion-text-secondary);
+}
+
+.fusion-sidebar-menu {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 0;
+}
+
+.fusion-menu-item {
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  border-left: 3px solid transparent;
+}
+
+.fusion-menu-item:hover {
+  background-color: var(--fusion-secondary);
+}
+
+.fusion-menu-item.active {
+  background-color: var(--fusion-secondary);
+  border-left-color: var(--fusion-accent);
+}
+
+.fusion-menu-item i {
+  margin-right: 10px;
+  font-size: 18px;
+  width: 24px;
+  text-align: center;
+}
+
+.fusion-menu-item span {
+  font-size: 16px;
+}
+
+.fusion-sidebar-footer {
+  padding: 15px;
+  text-align: center;
+  border-top: 1px solid var(--fusion-border);
+  font-size: 12px;
+  color: var(--fusion-text-secondary);
+}
+
+.fusion-logo {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 15px;
+  display: block;
+}
+
+.fusion-system-info {
+  font-size: 11px;
+  color: var(--fusion-text-secondary);
+  text-align: left;
+  padding: 0 15px 15px;
+  line-height: 1.4;
+}
+
+/* Main Content Styles */
+.fusion-content {
+  margin-left: var(--fusion-sidebar-width);
+  padding: 20px;
+  transition: margin-left 0.3s ease;
+}
+
+.fusion-home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 40px);
+  text-align: center;
+  padding: 20px;
+}
+
+.fusion-home-logo {
+  width: 300px;
+  height: 300px;
+  margin-bottom: 30px;
+}
+
+.fusion-home h1 {
+  font-size: 36px;
+  margin-bottom: 15px;
+  color: var(--fusion-primary);
+}
+
+.fusion-home p {
+  font-size: 18px;
+  max-width: 800px;
+  margin: 0 auto 30px;
+  color: var(--fusion-secondary);
+  line-height: 1.6;
+}
+
+.fusion-button {
+  display: inline-block;
+  padding: 12px 24px;
+  background-color: var(--fusion-accent);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  text-decoration: none;
+  margin: 5px;
+}
+
+.fusion-button:hover {
+  background-color: var(--fusion-accent-hover);
+}
+
+.fusion-button.secondary {
+  background-color: var(--fusion-secondary);
+}
+
+.fusion-button.secondary:hover {
+  background-color: var(--fusion-primary);
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .fusion-sidebar {
+    transform: translateX(-100%);
+  }
+  
+  .fusion-sidebar.open {
+    transform: translateX(0);
+  }
+  
+  .fusion-content {
+    margin-left: 0;
+  }
+  
+  .fusion-menu-toggle {
+    display: block;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1001;
+    background-color: var(--fusion-primary);
+    color: var(--fusion-text);
+    border: none;
+    border-radius: 4px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+}
+
+/* Performance Gauges */
+.fusion-performance {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 15px;
+}
+
+.fusion-gauge {
+  height: 8px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.fusion-gauge-fill {
+  height: 100%;
+  background-color: var(--fusion-accent);
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.fusion-gauge-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--fusion-text-secondary);
+  margin-bottom: 2px;
+}
+
+/* About Modal */
+.fusion-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+}
+
+.fusion-modal-content {
+  background-color: white;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 90%;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.fusion-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.fusion-modal-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--fusion-primary);
+}
+
+.fusion-modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--fusion-secondary);
+}
+
+.fusion-modal-body {
+  margin-bottom: 20px;
+}
+
+.fusion-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+}

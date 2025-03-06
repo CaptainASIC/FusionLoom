@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FusionLoom - AI Platform</title>
+    <link rel="stylesheet" href="css/fusionloom.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Mobile Menu Toggle -->
+    <button class="fusion-menu-toggle">
+        <i class="fas fa-bars"></i>
+    </button>
+    
+    <!-- Side Menu -->
+    <div class="fusion-sidebar">
+        <div class="fusion-sidebar-header">
+            <img src="img/fusion-logo.png" alt="FusionLoom Logo" class="fusion-logo">
+            <h1>FusionLoom</h1>
+            <p>v0.1</p>
+        </div>
+        
+        <div class="fusion-sidebar-menu">
+            <div class="fusion-menu-item active" data-page="home">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </div>
+            <div class="fusion-menu-item" data-page="llm">
+                <i class="fas fa-robot"></i>
+                <span>LLMs</span>
+            </div>
+            <div class="fusion-menu-item" data-page="generative">
+                <i class="fas fa-image"></i>
+                <span>Generative AI</span>
+            </div>
+            <div class="fusion-menu-item" data-page="tts">
+                <i class="fas fa-volume-up"></i>
+                <span>Text-To-Speech</span>
+            </div>
+            <div class="fusion-menu-item" data-page="sts">
+                <i class="fas fa-microphone"></i>
+                <span>Speech-To-Text</span>
+            </div>
+            <div class="fusion-menu-item" data-page="settings">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </div>
+        </div>
+        
+        <div class="fusion-performance">
+            <div id="gauge-cpu">
+                <div class="fusion-gauge-label">
+                    <span>CPU</span>
+                    <span class="fusion-gauge-value">0%</span>
+                </div>
+                <div class="fusion-gauge">
+                    <div class="fusion-gauge-fill" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <div id="gauge-memory">
+                <div class="fusion-gauge-label">
+                    <span>Memory</span>
+                    <span class="fusion-gauge-value">0%</span>
+                </div>
+                <div class="fusion-gauge">
+                    <div class="fusion-gauge-fill" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <div id="gauge-gpu">
+                <div class="fusion-gauge-label">
+                    <span>GPU</span>
+                    <span class="fusion-gauge-value">0%</span>
+                </div>
+                <div class="fusion-gauge">
+                    <div class="fusion-gauge-fill" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="fusion-system-info">
+            <!-- System info will be populated by JavaScript -->
+        </div>
+        
+        <div class="fusion-sidebar-footer">
+            &copy; 2025 FusionLoom
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="fusion-content">
+        <!-- Home Page -->
+        <div id="page-home" class="fusion-page fusion-home">
+            <img src="img/fusion-logo-large.png" alt="FusionLoom" class="fusion-home-logo">
+            <h1>Welcome to FusionLoom</h1>
+            <p>
+                FusionLoom is a comprehensive platform that weaves together multiple AI technologies and content management systems into a unified, powerful interface. Designed for both AI enthusiasts and professionals, FusionLoom provides seamless access to Language Models, Image Generation, Text-to-Speech, Speech-to-Text, and more from a single intuitive workspace.
+            </p>
+            <div>
+                <a href="#" class="fusion-button" onclick="navigateToPage('llm')">Start with LLMs</a>
+                <a href="#" class="fusion-button secondary" onclick="navigateToPage('settings')">Configure Settings</a>
+            </div>
+        </div>
+        
+        <!-- LLM Page (placeholder) -->
+        <div id="page-llm" class="fusion-page" style="display: none;">
+            <h1>Language Models</h1>
+            <p>This page will contain the LLM interface in future versions.</p>
+        </div>
+        
+        <!-- Generative AI Page (placeholder) -->
+        <div id="page-generative" class="fusion-page" style="display: none;">
+            <h1>Generative AI</h1>
+            <p>This page will contain the Generative AI interface in future versions.</p>
+        </div>
+        
+        <!-- TTS Page (placeholder) -->
+        <div id="page-tts" class="fusion-page" style="display: none;">
+            <h1>Text-To-Speech</h1>
+            <p>This page will contain the Text-To-Speech interface in future versions.</p>
+        </div>
+        
+        <!-- STS Page (placeholder) -->
+        <div id="page-sts" class="fusion-page" style="display: none;">
+            <h1>Speech-To-Text</h1>
+            <p>This page will contain the Speech-To-Text interface in future versions.</p>
+        </div>
+        
+        <!-- Settings Page (placeholder) -->
+        <div id="page-settings" class="fusion-page" style="display: none;">
+            <h1>Settings</h1>
+            <p>This page will contain the Settings interface in future versions.</p>
+        </div>
+    </div>
+    
+    <!-- About Modal -->
+    <div class="fusion-modal">
+        <div class="fusion-modal-content">
+            <div class="fusion-modal-header">
+                <h2 class="fusion-modal-title">About FusionLoom</h2>
+                <button class="fusion-modal-close">&times;</button>
+            </div>
+            <div class="fusion-modal-body">
+                <p>FusionLoom v0.1</p>
+                <p>A comprehensive platform that weaves together multiple AI technologies and content management systems into a unified, powerful interface.</p>
+                <p>This is the initial version focusing on the GUI component.</p>
+                <p>For more information, updates, and to contribute, please visit our GitHub repository:</p>
+                <p><a href="https://github.com/CaptainASIC/FusionLoom" target="_blank">https://github.com/CaptainASIC/FusionLoom</a></p>
+            </div>
+            <div class="fusion-modal-footer">
+                <button class="fusion-button" onclick="hideAboutModal()">Close</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/fusionloom.js"></script>
+</body>
+</html>
