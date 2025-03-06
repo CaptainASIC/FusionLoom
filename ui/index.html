@@ -129,10 +129,139 @@
             <p>This page will contain the Speech-To-Text interface in future versions.</p>
         </div>
         
-        <!-- Settings Page (placeholder) -->
-        <div id="page-settings" class="fusion-page" style="display: none;">
+        <!-- Settings Page -->
+        <div id="page-settings" class="fusion-page fusion-settings" style="display: none;">
             <h1>Settings</h1>
-            <p>This page will contain the Settings interface in future versions.</p>
+            
+            <!-- General Settings -->
+            <div class="fusion-settings-section">
+                <h2><i class="fas fa-sliders-h"></i> General Settings</h2>
+                <div class="fusion-settings-grid">
+                    <div class="fusion-setting-item">
+                        <label for="theme">Theme</label>
+                        <select id="theme" name="theme">
+                            <option value="dark" selected>Dark</option>
+                            <option value="red">Red</option>
+                            <option value="blue">Blue</option>
+                            <option value="green">Green</option>
+                            <option value="purple">Purple</option>
+                            <option value="light">Light</option>
+                            <option value="system">System Default</option>
+                        </select>
+                    </div>
+                    <div class="fusion-setting-item">
+                        <label for="save_sessions">Save Sessions</label>
+                        <div class="fusion-toggle">
+                            <input type="checkbox" id="save_sessions" checked>
+                            <span class="fusion-toggle-slider"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hardware Settings -->
+            <div class="fusion-settings-section">
+                <h2><i class="fas fa-microchip"></i> Hardware Configuration</h2>
+                <div class="fusion-settings-grid">
+                    <div class="fusion-setting-item">
+                        <label for="gpu_vendor">GPU Vendor</label>
+                        <select id="gpu_vendor" name="gpu_vendor">
+                            <option value="auto">Auto-detect</option>
+                            <option value="nvidia">NVIDIA</option>
+                            <option value="amd">AMD</option>
+                            <option value="apple">Apple</option>
+                            <option value="cpu">CPU Only</option>
+                        </select>
+                    </div>
+                    <div class="fusion-setting-item">
+                        <label for="platform">Platform</label>
+                        <select id="platform" name="platform">
+                            <option value="auto">Auto-detect</option>
+                            <option value="dgx_digit">NVIDIA DGX/Digit</option>
+                            <option value="jetson-orin">Jetson Orin</option>
+                            <option value="jetson-agx">Jetson AGX</option>
+                            <option value="apple-silicon">Apple Silicon</option>
+                            <option value="desktop">Desktop</option>
+                        </select>
+                    </div>
+                    <div class="fusion-setting-item">
+                        <label for="gpu_memory">GPU Memory Limit</label>
+                        <select id="gpu_memory" name="gpu_memory">
+                            <option value="4G">4GB</option>
+                            <option value="8G" selected>8GB</option>
+                            <option value="12G">12GB</option>
+                            <option value="16G">16GB</option>
+                            <option value="24G">24GB</option>
+                            <option value="32G">32GB</option>
+                        </select>
+                    </div>
+                    <div class="fusion-setting-item">
+                        <label for="power_mode">Power Mode</label>
+                        <select id="power_mode" name="power_mode">
+                            <option value="performance">Performance</option>
+                            <option value="balanced" selected>Balanced</option>
+                            <option value="efficiency">Efficiency</option>
+                        </select>
+                    </div>
+                    <div class="fusion-setting-item">
+                        <label for="acceleration">Hardware Acceleration</label>
+                        <div class="fusion-toggle">
+                            <input type="checkbox" id="acceleration" checked>
+                            <span class="fusion-toggle-slider"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Container Settings -->
+            <div class="fusion-settings-section">
+                <h2><i class="fas fa-cube"></i> Container Configuration</h2>
+                <div class="fusion-settings-grid">
+                    <div class="fusion-setting-item">
+                        <label for="container_engine">Container Engine</label>
+                        <select id="container_engine" name="container_engine">
+                            <option value="podman" selected>Podman</option>
+                            <option value="docker">Docker</option>
+                        </select>
+                    </div>
+                    <div class="fusion-setting-item">
+                        <label for="auto_start">Auto-start Containers</label>
+                        <div class="fusion-toggle">
+                            <input type="checkbox" id="auto_start" checked>
+                            <span class="fusion-toggle-slider"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Service Endpoints -->
+            <div class="fusion-settings-section">
+                <h2><i class="fas fa-network-wired"></i> Service Endpoints</h2>
+                <div class="fusion-settings-grid">
+                    <div class="fusion-setting-item full-width">
+                        <label for="llm_api">LLM API Endpoint</label>
+                        <input type="text" id="llm_api" value="http://localhost:8000/v1">
+                    </div>
+                    <div class="fusion-setting-item full-width">
+                        <label for="stable_diffusion">Stable Diffusion Endpoint</label>
+                        <input type="text" id="stable_diffusion" value="http://localhost:7860">
+                    </div>
+                    <div class="fusion-setting-item full-width">
+                        <label for="tts_service">Text-to-Speech Endpoint</label>
+                        <input type="text" id="tts_service" value="http://localhost:5500/api/tts">
+                    </div>
+                    <div class="fusion-setting-item full-width">
+                        <label for="sts_service">Speech-to-Text Endpoint</label>
+                        <input type="text" id="sts_service" value="http://localhost:5501/api/sts">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="fusion-settings-actions">
+                <button class="fusion-button" onclick="saveSettings()">Save Settings</button>
+                <button class="fusion-button secondary" onclick="resetSettings()">Reset to Defaults</button>
+            </div>
         </div>
     </div>
     
