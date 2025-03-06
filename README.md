@@ -34,9 +34,21 @@ Fusion Loom is a comprehensive platform that weaves together multiple AI technol
    git clone https://github.com/CaptainASIC/FusionLoom
    ```
 
-2. Run the setup script:  
+2. Run the setup script (platform-specific):  
+   
+   **Linux/NVIDIA:**
    ```bash
    ./setup.sh
+   ```
+   
+   **macOS/Apple Silicon:**
+   ```bash
+   ./setup_macos.sh
+   ```
+   
+   **Jetson Devices:**
+   ```bash
+   ./setup_jetson.sh
    ```
 
 3. Run the application:  
@@ -57,6 +69,7 @@ Fusion Loom is designed to run on multiple platforms with optimization focus on:
 
 - **NVIDIA DGX Platform (Project Digit)** (primary optimization target)
 - **NVIDIA Jetson** devices (Orin Nano Super, AGX Nano)
+- **Apple Silicon** (M1, M2, M3 series)
 - x86_64 Linux systems with NVIDIA GPUs
 - x86_64 Linux systems with AMD GPUs (ROCm support)
 - ARM64 Linux systems
@@ -71,6 +84,8 @@ Fusion Loom supports multiple GPU acceleration frameworks to ensure compatibilit
 - **NVIDIA DGX Platform (Project Digit)** - Optimized for NVIDIA's next-gen AI hardware
 - **NVIDIA Jetson** - Optimized for Jetson Orin and AGX platforms
 - **AMD ROCm** - Full support for AMD GPUs with optimized containers
+- **Apple Neural Engine** - Support for Apple Silicon's built-in ML acceleration
+- **Apple Metal** - GPU acceleration on Apple Silicon systems
 
 The application will automatically detect available GPU hardware and select the appropriate acceleration framework. Configuration options allow for manual override when needed.
 
@@ -88,6 +103,17 @@ When running on NVIDIA DGX/Digit hardware, Fusion Loom enables special optimizat
 - Hardware-accelerated encoding/decoding for media operations
 - Power efficiency modes to maximize battery life on portable operation
 - Support for Digit's multi-modal capabilities (voice, vision, etc.)
+
+### Apple Silicon
+
+For Apple Silicon (M1, M2, M3 series) processors, Fusion Loom provides:
+
+- Native ARM64 macOS support with optimized containers
+- Apple Neural Engine integration for ML acceleration
+- Metal Performance Shaders for GPU computation
+- CoreML model compatibility
+- Native integration with macOS system features
+- Energy-efficient operation to maximize battery life on MacBooks
 
 ### NVIDIA Jetson
 
@@ -130,10 +156,10 @@ auto_start = true
 container_engine = podman
 
 [Hardware]
-gpu_vendor = auto       # Options: auto, nvidia, amd, cpu
+gpu_vendor = auto       # Options: auto, nvidia, amd, apple, cpu
 gpu_memory_limit = 8G   # Memory limit for GPU operations
 acceleration = true     # Enable hardware acceleration
-platform = auto         # Options: auto, dgx_digit, jetson-orin, jetson-agx, desktop
+platform = auto         # Options: auto, dgx_digit, jetson-orin, jetson-agx, apple-silicon, desktop
 power_mode = balanced   # Options: performance, balanced, efficiency (for mobile devices)
 ```
 
@@ -189,6 +215,9 @@ FusionLoom/
 │   │   ├── jetson/      # NVIDIA Jetson optimizations
 │   │   │   ├── orin/    # Orin Nano Super specific code
 │   │   │   └── agx/     # AGX Nano specific code
+│   │   ├── apple/       # Apple Silicon optimizations
+│   │   │   ├── neural_engine/ # Apple Neural Engine integration
+│   │   │   └── metal/   # Metal GPU acceleration
 │   │   ├── nvidia/      # NVIDIA GPU optimizations
 │   │   ├── amd/         # AMD GPU (ROCm) optimizations
 │   │   ├── x86/         # x86 platform support
@@ -201,6 +230,7 @@ FusionLoom/
 │   ├── jetson/          # NVIDIA Jetson containers
 │   │   ├── orin/        # Orin Nano Super containers
 │   │   └── agx/         # AGX Nano containers
+│   ├── apple/           # Apple Silicon containers and builds
 │   ├── nvidia/          # NVIDIA GPU containers
 │   ├── amd/             # AMD GPU (ROCm) containers
 │   ├── x86/             # x86 Linux containers
