@@ -69,7 +69,7 @@ Fusion Loom is designed to run on multiple platforms with optimization focus on:
 
 - **NVIDIA DGX Platform (Project Digit)** (primary optimization target)
 - **NVIDIA Jetson** devices (Orin Nano Super, AGX Nano)
-- **Apple Silicon** (M1, M2, M3 series)
+- **Apple Silicon** (M1, M2, M3, M4 series)
 - x86_64 Linux systems with NVIDIA GPUs
 - x86_64 Linux systems with AMD GPUs (ROCm support)
 - ARM64 Linux systems
