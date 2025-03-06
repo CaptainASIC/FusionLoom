@@ -106,7 +106,7 @@ When running on NVIDIA DGX/Digit hardware, Fusion Loom enables special optimizat
 
 ### Apple Silicon
 
-For Apple Silicon (M1, M2, M3 series) processors, Fusion Loom provides:
+For Apple Silicon (M1, M2, M3, M4 series) processors, Fusion Loom provides:
 
 - Native ARM64 macOS support with optimized containers
 - Apple Neural Engine integration for ML acceleration
