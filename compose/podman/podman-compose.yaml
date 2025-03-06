@@ -6,13 +6,13 @@ services:
     container_name: fusionloom-webui
     volumes:
       - ./data:/app/backend/data
-      - ../../ui:/app/frontend/custom-ui
+      - /Users/spresgraves/Repositories/FusionLoom/ui:/app/build
     ports:
       - "8080:8080"
     environment:
       - WEBUI_VERSION=0.1
       - WEBUI_APP_NAME=FusionLoom
-      - CUSTOM_UI_PATH=/app/frontend/custom-ui
+      - CUSTOM_UI_ENABLED=false
     restart: unless-stopped
     labels:
       - "io.containers.autoupdate=image"
