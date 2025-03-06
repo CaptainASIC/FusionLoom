@@ -55,7 +55,8 @@ Fusion Loom is a comprehensive platform that weaves together multiple AI technol
 
 Fusion Loom is designed to run on multiple platforms with optimization focus on:
 
-- **NVIDIA Digit** (primary optimization target)
+- **NVIDIA DGX Platform (Project Digit)** (primary optimization target)
+- **NVIDIA Jetson** devices (Orin Nano Super, AGX Nano)
 - x86_64 Linux systems with NVIDIA GPUs
 - x86_64 Linux systems with AMD GPUs (ROCm support)
 - ARM64 Linux systems
@@ -66,23 +67,37 @@ Fusion Loom is designed to run on multiple platforms with optimization focus on:
 Fusion Loom supports multiple GPU acceleration frameworks to ensure compatibility across different hardware:
 
 - **NVIDIA CUDA/cuDNN** - Optimized support for NVIDIA GPUs
+- **NVIDIA Tensor RT** - Accelerated inference for NVIDIA hardware
+- **NVIDIA DGX Platform (Project Digit)** - Optimized for NVIDIA's next-gen AI hardware
+- **NVIDIA Jetson** - Optimized for Jetson Orin and AGX platforms
 - **AMD ROCm** - Full support for AMD GPUs with optimized containers
-- **NVIDIA Digit** - Special optimizations for NVIDIA's Digit AI computer
 
 The application will automatically detect available GPU hardware and select the appropriate acceleration framework. Configuration options allow for manual override when needed.
 
 ## Hardware-Specific Optimizations
 
-### NVIDIA Digit
+### NVIDIA DGX Platform (Project Digit)
 
-When running on NVIDIA Digit hardware, Fusion Loom enables special optimizations:
+When running on NVIDIA DGX/Digit hardware, Fusion Loom enables special optimizations:
 
-- Containerized deployments tailored for Digit hardware
+- Containerized deployments tailored for DGX/Digit hardware
 - Optimized TensorRT implementations for inference
+- Multi-GPU scaling across DGX hardware
+- Integration with NVIDIA NGC containers
 - Custom memory management to leverage Digit's unique architecture
 - Hardware-accelerated encoding/decoding for media operations
 - Power efficiency modes to maximize battery life on portable operation
 - Support for Digit's multi-modal capabilities (voice, vision, etc.)
+
+### NVIDIA Jetson
+
+For Jetson platforms (Orin Nano Super, AGX Nano), Fusion Loom offers:
+
+- Edge-optimized containers for resource-constrained environments
+- Jetson-specific TensorRT optimizations
+- Power-efficient inference modes
+- Integration with Jetson multimedia APIs
+- Tailored UI for smaller displays when needed
 
 ### AMD GPUs (ROCm)
 
@@ -118,6 +133,8 @@ container_engine = podman
 gpu_vendor = auto       # Options: auto, nvidia, amd, cpu
 gpu_memory_limit = 8G   # Memory limit for GPU operations
 acceleration = true     # Enable hardware acceleration
+platform = auto         # Options: auto, dgx_digit, jetson-orin, jetson-agx, desktop
+power_mode = balanced   # Options: performance, balanced, efficiency (for mobile devices)
 ```
 
 ## Usage
@@ -168,7 +185,10 @@ FusionLoom/
 │   ├── services/        # Service integrations
 │   ├── containers/      # Container management
 │   ├── hardware/        # Hardware-specific optimizations
-│   │   ├── digit/       # NVIDIA Digit specific code
+│   │   ├── dgx_digit/   # NVIDIA DGX Platform (Project Digit) optimizations
+│   │   ├── jetson/      # NVIDIA Jetson optimizations
+│   │   │   ├── orin/    # Orin Nano Super specific code
+│   │   │   └── agx/     # AGX Nano specific code
 │   │   ├── nvidia/      # NVIDIA GPU optimizations
 │   │   ├── amd/         # AMD GPU (ROCm) optimizations
 │   │   ├── x86/         # x86 platform support
@@ -177,7 +197,10 @@ FusionLoom/
 ├── resources/           # Assets and resources
 ├── docs/                # Documentation
 ├── platforms/           # Platform-specific builds and containers
-│   ├── digit/           # NVIDIA Digit optimized containers
+│   ├── dgx_digit/       # NVIDIA DGX Platform (Project Digit) containers
+│   ├── jetson/          # NVIDIA Jetson containers
+│   │   ├── orin/        # Orin Nano Super containers
+│   │   └── agx/         # AGX Nano containers
 │   ├── nvidia/          # NVIDIA GPU containers
 │   ├── amd/             # AMD GPU (ROCm) containers
 │   ├── x86/             # x86 Linux containers
