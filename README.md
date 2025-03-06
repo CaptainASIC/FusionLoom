@@ -51,6 +51,50 @@ Fusion Loom is a comprehensive platform that weaves together multiple AI technol
 - At least 8GB RAM for basic functionality
 - GPU recommended for Stable Diffusion and larger LLMs
 
+### Supported Platforms
+
+Fusion Loom is designed to run on multiple platforms with optimization focus on:
+
+- **NVIDIA Digit** (primary optimization target)
+- x86_64 Linux systems with NVIDIA GPUs
+- x86_64 Linux systems with AMD GPUs (ROCm support)
+- ARM64 Linux systems
+- Other Linux distributions with container support
+
+## GPU Acceleration
+
+Fusion Loom supports multiple GPU acceleration frameworks to ensure compatibility across different hardware:
+
+- **NVIDIA CUDA/cuDNN** - Optimized support for NVIDIA GPUs
+- **AMD ROCm** - Full support for AMD GPUs with optimized containers
+- **NVIDIA Digit** - Special optimizations for NVIDIA's Digit AI computer
+
+The application will automatically detect available GPU hardware and select the appropriate acceleration framework. Configuration options allow for manual override when needed.
+
+## Hardware-Specific Optimizations
+
+### NVIDIA Digit
+
+When running on NVIDIA Digit hardware, Fusion Loom enables special optimizations:
+
+- Containerized deployments tailored for Digit hardware
+- Optimized TensorRT implementations for inference
+- Custom memory management to leverage Digit's unique architecture
+- Hardware-accelerated encoding/decoding for media operations
+- Power efficiency modes to maximize battery life on portable operation
+- Support for Digit's multi-modal capabilities (voice, vision, etc.)
+
+### AMD GPUs (ROCm)
+
+For AMD GPU hardware, Fusion Loom provides:
+
+- ROCm-optimized containers for all AI services
+- HIP-accelerated inference for supported models
+- AMD-specific memory management optimizations
+- Performance tuning for different AMD GPU architectures
+
+The application automatically detects hardware capabilities and enables appropriate optimizations accordingly.
+
 ## Configuration
 
 The application uses a configuration file located at `cfg/config.ini`. You can modify this file to add or change AI service endpoints, container configurations, and other settings. A sample is provided as `config.sample`.
@@ -69,6 +113,11 @@ sts_service = http://localhost:5501/api/sts
 [Containers]
 auto_start = true
 container_engine = podman
+
+[Hardware]
+gpu_vendor = auto       # Options: auto, nvidia, amd, cpu
+gpu_memory_limit = 8G   # Memory limit for GPU operations
+acceleration = true     # Enable hardware acceleration
 ```
 
 ## Usage
@@ -118,9 +167,21 @@ FusionLoom/
 │   ├── ui/              # UI components
 │   ├── services/        # Service integrations
 │   ├── containers/      # Container management
+│   ├── hardware/        # Hardware-specific optimizations
+│   │   ├── digit/       # NVIDIA Digit specific code
+│   │   ├── nvidia/      # NVIDIA GPU optimizations
+│   │   ├── amd/         # AMD GPU (ROCm) optimizations
+│   │   ├── x86/         # x86 platform support
+│   │   └── arm/         # ARM platform support
 │   └── utils/           # Utility functions
 ├── resources/           # Assets and resources
 ├── docs/                # Documentation
+├── platforms/           # Platform-specific builds and containers
+│   ├── digit/           # NVIDIA Digit optimized containers
+│   ├── nvidia/          # NVIDIA GPU containers
+│   ├── amd/             # AMD GPU (ROCm) containers
+│   ├── x86/             # x86 Linux containers
+│   └── arm/             # ARM Linux containers
 └── tests/               # Test suite
 ```
 
@@ -158,8 +219,9 @@ This project is licensed under the GNU General Public License v3.0 (GPL-3.0). Se
 ## Roadmap
 
 - **v1.1**: UI improvements and bug fixes
-- **v1.2**: RAG capabilities integration
-- **v1.3**: AI Agent support
+- **v1.2**: NVIDIA Digit optimization and specialized container builds
+- **v1.3**: RAG capabilities integration
+- **v1.4**: AI Agent support
 - **v1.5**: Content management systems (images, documents)
 - **v2.0**: Note integration and full ecosystem connectivity
 
