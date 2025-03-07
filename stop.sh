@@ -14,6 +14,11 @@ source "${SCRIPT_DIR}/.env"
 
 echo "Stopping FusionLoom v${FUSION_LOOM_VERSION}..."
 
+# Stop the Ollama container
+echo "Stopping Ollama container..."
+"${SCRIPT_DIR}/stop-ollama.sh"
+
+# Stop the web UI container
 if [ "${CONTAINER_ENGINE}" = "docker" ]; then
     cd "${SCRIPT_DIR}/compose/docker"
     docker-compose down

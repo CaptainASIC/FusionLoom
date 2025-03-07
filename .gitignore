@@ -1,0 +1,94 @@
+# FusionLoom .gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+venv/
+env/
+ENV/
+.env
+
+# Container data
+data/
+logs/
+*.log
+compose/*/data/
+compose/*/logs/
+
+# Database
+*.db
+*.sqlite3
+*.sqlite
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Model files
+*.gguf
+*.bin
+*.pt
+*.pth
+*.onnx
+*.safetensors
+
+# Cache
+.cache/
+cache/
+*/cache/
+**/cache/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Secrets
+.env
+.env.*
+*.key
+secrets/
+
+# OS specific
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Specific to FusionLoom
+ui/node_modules/
+ui/dist/
+ui/build/
+webui.db
+audit.log
+vector_db/
+uploads/

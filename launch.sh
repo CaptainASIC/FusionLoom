@@ -19,6 +19,20 @@ mkdir -p "${DATA_DIR}"
 echo "Starting FusionLoom v${FUSION_LOOM_VERSION}..."
 echo "The web UI will be available at http://localhost:8080 once startup is complete."
 
+# Create the fusionloom_net network if it doesn't exist
+if [ "${CONTAINER_ENGINE}" = "docker" ]; then
+    if ! docker network ls | grep -q "fusionloom_net"; then
+        echo "Creating fusionloom_net network..."
+        docker network create fusionloom_net
+    fi
+elif [ "${CONTAINER_ENGINE}" = "podman" ]; then
+    if ! podman network ls | grep -q "fusionloom_net"; then
+        echo "Creating fusionloom_net network..."
+        podman network create fusionloom_net
+    fi
+fi
+
+# Start the web UI container
 if [ "${CONTAINER_ENGINE}" = "docker" ]; then
     cd "${SCRIPT_DIR}/compose/docker"
     docker-compose up -d
@@ -30,5 +44,10 @@ else
     exit 1
 fi
 
+# Start the Ollama container with platform detection
+echo "Starting Ollama container with platform-specific optimizations..."
+"${SCRIPT_DIR}/launch-ollama.sh"
+
 echo "FusionLoom v${FUSION_LOOM_VERSION} started successfully!"
 echo "Access the web interface at: http://localhost:8080"
+echo "Ollama API available at: http://localhost:11434"

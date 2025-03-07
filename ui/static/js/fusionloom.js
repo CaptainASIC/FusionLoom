@@ -234,12 +234,16 @@ function getDefaultSettings() {
         auto_start: true,
         
         // LLM services
-        openai_api: 'https://api.openai.com/v1',
-        openai_key: '',
-        local_llm_api: 'http://localhost:8000/v1',
-        local_llm_key: '',
+        ollama_api: 'http://localhost:11434/api',
+        ollama_key: '',
         anthropic_api: 'https://api.anthropic.com/v1',
         anthropic_key: '',
+        openai_api: 'https://api.openai.com/v1',
+        openai_key: '',
+        gemini_api: 'https://generativelanguage.googleapis.com/v1',
+        gemini_key: '',
+        grok_api: 'https://api.grok.x/v1',
+        grok_key: '',
         default_llm: 'llama3',
         
         // Image generation services
@@ -315,6 +319,7 @@ function updateConnectionStatus() {
     const statusIndicators = document.querySelectorAll('.status-indicator');
     
     // For demonstration, we'll set local endpoints as online and external ones as offline
+    // But for LLM services, we'll keep them disabled by default as requested
     statusIndicators.forEach(indicator => {
         const row = indicator.closest('tr');
         if (!row) return;
@@ -323,17 +328,33 @@ function updateConnectionStatus() {
         if (!endpointInput) return;
         
         const endpoint = endpointInput.value;
+        const nameInput = row.querySelector('.name-input');
+        const serviceName = nameInput ? nameInput.value : '';
         
-        // Check if endpoint is local or external
-        const isLocal = endpoint.includes('localhost') || endpoint.includes('127.0.0.1');
+        // Check if this is an LLM service
+        const isLLMService = serviceName.includes('LLM') || 
+                            serviceName.includes('API') || 
+                            serviceName.includes('Anthropic') || 
+                            serviceName.includes('OpenAI') ||
+                            serviceName.includes('Gemini') ||
+                            serviceName.includes('Grok');
         
-        // Set status based on whether endpoint is local or external
-        if (isLocal) {
-            indicator.classList.remove('offline');
-            indicator.classList.add('online');
+        // If it's an LLM service, keep it disabled by default
+        if (isLLMService) {
+            indicator.classList.remove('online', 'offline');
+            indicator.classList.add('disabled');
         } else {
-            indicator.classList.remove('online');
-            indicator.classList.add('offline');
+            // For other services, use the local/external logic
+            const isLocal = endpoint.includes('localhost') || endpoint.includes('127.0.0.1');
+            
+            // Set status based on whether endpoint is local or external
+            if (isLocal) {
+                indicator.classList.remove('offline', 'disabled');
+                indicator.classList.add('online');
+            } else {
+                indicator.classList.remove('online', 'disabled');
+                indicator.classList.add('offline');
+            }
         }
     });
 }
@@ -345,7 +366,7 @@ function testConnections() {
     // Get all status indicators and set them to a "testing" state
     const statusIndicators = document.querySelectorAll('.status-indicator');
     statusIndicators.forEach(indicator => {
-        indicator.classList.remove('online', 'offline');
+        indicator.classList.remove('online', 'offline', 'disabled');
         indicator.classList.add('testing');
     });
     
@@ -359,39 +380,355 @@ function testConnections() {
     }, 1500);
 }
 
+// Add Endpoint Modal
+function showAddEndpointModal() {
+    // Create modal if it doesn't exist
+    let modal = document.getElementById('add-endpoint-modal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'add-endpoint-modal';
+        modal.className = 'fusion-modal';
+        
+        modal.innerHTML = `
+            <div class="fusion-modal-content">
+                <div class="fusion-modal-header">
+                    <h2 class="fusion-modal-title">Add New Endpoint</h2>
+                    <button class="fusion-modal-close" onclick="hideAddEndpointModal()">&times;</button>
+                </div>
+                <div class="fusion-modal-body">
+                    <div class="fusion-setting-item">
+                        <label for="endpoint-type">Endpoint Type</label>
+                        <select id="endpoint-type" name="endpoint-type">
+                            <option value="llm">LLM Service</option>
+                            <option value="image">Image Generation</option>
+                            <option value="speech">Speech Service</option>
+                        </select>
+                    </div>
+                    <div class="fusion-setting-item">
+                        <label for="endpoint-name">Service Name</label>
+                        <input type="text" id="endpoint-name" placeholder="Enter service name" value="Custom Service">
+                    </div>
+                    <div class="fusion-setting-item">
+                        <label for="endpoint-url">Endpoint URL</label>
+                        <input type="text" id="endpoint-url" placeholder="Enter endpoint URL" value="http://localhost:8000/v1">
+                    </div>
+                    <div class="fusion-setting-item">
+                        <label for="endpoint-key">API Key (Optional)</label>
+                        <input type="password" id="endpoint-key" placeholder="Enter API key if required">
+                    </div>
+                </div>
+                <div class="fusion-modal-footer">
+                    <button class="fusion-button" onclick="addEndpoint()">Add Endpoint</button>
+                    <button class="fusion-button secondary" onclick="hideAddEndpointModal()">Cancel</button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+    }
+    
+    // Show the modal
+    modal.style.display = 'flex';
+}
+
+function hideAddEndpointModal() {
+    const modal = document.getElementById('add-endpoint-modal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
 function addEndpoint() {
-    // This function would add a new endpoint row to the appropriate section
-    // For demonstration, we'll add a new LLM service
+    // Get values from the modal
+    const type = document.getElementById('endpoint-type').value;
+    const name = document.getElementById('endpoint-name').value;
+    const url = document.getElementById('endpoint-url').value;
+    const key = document.getElementById('endpoint-key').value;
     
-    const llmSection = document.querySelector('.section-header td[colspan="4"]:first-child');
-    if (!llmSection) {
-        showNotification('Could not find LLM section', 'error');
+    // Validate inputs
+    if (!name || !url) {
+        showNotification('Service name and URL are required', 'error');
         return;
     }
     
-    const llmRow = llmSection.closest('tr');
-    if (!llmRow) {
-        showNotification('Could not find LLM section row', 'error');
+    // Find the appropriate section based on type
+    let sectionIcon, sectionName;
+    
+    switch (type) {
+        case 'llm':
+            sectionIcon = 'fa-robot';
+            sectionName = 'LLM Services';
+            break;
+        case 'image':
+            sectionIcon = 'fa-image';
+            sectionName = 'Image Generation';
+            break;
+        case 'speech':
+            sectionIcon = 'fa-headphones';
+            sectionName = 'Speech Services';
+            break;
+        default:
+            showNotification('Invalid endpoint type', 'error');
+            return;
+    }
+    
+    // Find the section header
+    const sectionHeader = Array.from(document.querySelectorAll('.section-header')).find(
+        header => header.textContent.includes(sectionName)
+    );
+    
+    if (!sectionHeader) {
+        showNotification(`Could not find ${sectionName} section`, 'error');
         return;
     }
+    
+    const sectionRow = sectionHeader.closest('tr');
+    if (!sectionRow) {
+        showNotification(`Could not find ${sectionName} section row`, 'error');
+        return;
+    }
+    
+    // Generate a unique ID for the endpoint
+    const timestamp = Date.now();
+    const endpointId = `${type}_${timestamp}`;
     
     // Create a new row
     const newRow = document.createElement('tr');
     newRow.innerHTML = `
-        <td>Custom LLM</td>
-        <td><input type="text" id="custom_llm_api" value="http://localhost:8002/v1" class="endpoint-input"></td>
-        <td><input type="password" id="custom_llm_key" value="" placeholder="Optional" class="key-input"></td>
-        <td><span class="status-indicator offline"></span></td>
+        <td><input type="text" value="${name}" class="name-input" readonly></td>
+        <td><input type="text" id="${endpointId}_api" value="${url}" class="endpoint-input" readonly></td>
+        <td><input type="password" id="${endpointId}_key" value="${key}" placeholder="Optional" class="key-input" readonly></td>
+        <td><span class="status-indicator offline" onclick="toggleEndpointStatus(this)"></span></td>
+        <td class="endpoint-actions">
+            <button class="endpoint-action-btn edit" title="Edit" onclick="toggleEditMode(this)">
+                <i class="fas fa-edit"></i>
+            </button>
+            <button class="endpoint-action-btn save" title="Save" onclick="saveEndpointChanges(this)">
+                <i class="fas fa-save"></i>
+            </button>
+            <button class="endpoint-action-btn cancel" title="Cancel" onclick="cancelEndpointEdit(this)">
+                <i class="fas fa-times"></i>
+            </button>
+            <button class="endpoint-action-btn delete" title="Delete" onclick="confirmDeleteEndpoint(this, '${name}')">
+                <i class="fas fa-trash-alt"></i>
+            </button>
+        </td>
     `;
     
-    // Insert after the LLM section header
-    llmRow.parentNode.insertBefore(newRow, llmRow.nextSibling);
+    // Insert after the section header
+    sectionRow.parentNode.insertBefore(newRow, sectionRow.nextSibling);
     
     // Update connection status
     updateConnectionStatus();
     
+    // Hide the modal
+    hideAddEndpointModal();
+    
     // Show success message
-    showNotification('New endpoint added', 'success');
+    showNotification(`New ${sectionName.slice(0, -1)} endpoint added`, 'success');
+}
+
+function confirmDeleteEndpoint(button, serviceName) {
+    // Ask for confirmation before deleting
+    if (confirm(`Are you sure you want to delete the entry '${serviceName}'?`)) {
+        // Get the row and remove it
+        const row = button.closest('tr');
+        if (row) {
+            row.remove();
+            showNotification(`Endpoint '${serviceName}' deleted`, 'success');
+        }
+    }
+}
+
+// Toggle endpoint status (enable/disable)
+function toggleEndpointStatus(statusIndicator) {
+    // Get the service name
+    const row = statusIndicator.closest('tr');
+    const nameInput = row.querySelector('.name-input');
+    const serviceName = nameInput ? nameInput.value : 'this service';
+    
+    // Create status toggle modal if it doesn't exist
+    let modal = document.getElementById('status-toggle-modal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'status-toggle-modal';
+        modal.className = 'fusion-modal';
+        
+        modal.innerHTML = `
+            <div class="fusion-modal-content">
+                <div class="fusion-modal-header">
+                    <h2 class="fusion-modal-title">Endpoint Status</h2>
+                    <button class="fusion-modal-close" onclick="hideStatusToggleModal()">&times;</button>
+                </div>
+                <div class="fusion-modal-body">
+                    <p id="status-toggle-message">Do you want to enable or disable this endpoint?</p>
+                    <div class="fusion-button-group">
+                        <button class="fusion-button" id="enable-endpoint-btn">Enable</button>
+                        <button class="fusion-button secondary" id="disable-endpoint-btn">Disable</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+    }
+    
+    // Update the message
+    const message = document.getElementById('status-toggle-message');
+    if (message) {
+        message.textContent = `Do you want to enable or disable '${serviceName}'?`;
+    }
+    
+    // Set up event listeners for the buttons
+    const enableBtn = document.getElementById('enable-endpoint-btn');
+    const disableBtn = document.getElementById('disable-endpoint-btn');
+    
+    if (enableBtn) {
+        enableBtn.onclick = function() {
+            // Enable the endpoint
+            statusIndicator.classList.remove('offline', 'disabled');
+            statusIndicator.classList.add('online');
+            hideStatusToggleModal();
+            showNotification(`'${serviceName}' has been enabled`, 'success');
+        };
+    }
+    
+    if (disableBtn) {
+        disableBtn.onclick = function() {
+            // Disable the endpoint
+            statusIndicator.classList.remove('online', 'offline');
+            statusIndicator.classList.add('disabled');
+            hideStatusToggleModal();
+            showNotification(`'${serviceName}' has been disabled`, 'info');
+        };
+    }
+    
+    // Show the modal
+    modal.style.display = 'flex';
+}
+
+function hideStatusToggleModal() {
+    const modal = document.getElementById('status-toggle-modal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// Edit mode for endpoint fields
+function toggleEditMode(button) {
+    const row = button.closest('tr');
+    if (!row) return;
+    
+    const nameInput = row.querySelector('.name-input');
+    const endpointInput = row.querySelector('.endpoint-input');
+    const keyInput = row.querySelector('.key-input');
+    const editButton = row.querySelector('.endpoint-action-btn.edit');
+    const saveButton = row.querySelector('.endpoint-action-btn.save');
+    const cancelButton = row.querySelector('.endpoint-action-btn.cancel');
+    const deleteButton = row.querySelector('.endpoint-action-btn.delete');
+    
+    // Check if we're entering or exiting edit mode
+    const isEnteringEditMode = !nameInput.classList.contains('editing');
+    
+    if (isEnteringEditMode) {
+        // Enter edit mode
+        
+        // Store original values for potential cancellation
+        nameInput.dataset.originalValue = nameInput.value;
+        endpointInput.dataset.originalValue = endpointInput.value;
+        keyInput.dataset.originalValue = keyInput.value;
+        
+        // Make fields editable
+        nameInput.classList.add('editing');
+        nameInput.removeAttribute('readonly');
+        
+        endpointInput.classList.add('editing');
+        endpointInput.removeAttribute('readonly');
+        
+        keyInput.classList.add('editing');
+        keyInput.removeAttribute('readonly');
+        
+        // Show save/cancel buttons, hide edit/delete buttons
+        editButton.style.display = 'none';
+        deleteButton.style.display = 'none';
+        saveButton.style.display = 'inline-block';
+        cancelButton.style.display = 'inline-block';
+        
+        // Focus on the name input
+        nameInput.focus();
+    }
+}
+
+function saveEndpointChanges(button) {
+    const row = button.closest('tr');
+    if (!row) return;
+    
+    const nameInput = row.querySelector('.name-input');
+    const endpointInput = row.querySelector('.endpoint-input');
+    const keyInput = row.querySelector('.key-input');
+    const editButton = row.querySelector('.endpoint-action-btn.edit');
+    const saveButton = row.querySelector('.endpoint-action-btn.save');
+    const cancelButton = row.querySelector('.endpoint-action-btn.cancel');
+    const deleteButton = row.querySelector('.endpoint-action-btn.delete');
+    
+    // Exit edit mode
+    nameInput.classList.remove('editing');
+    nameInput.setAttribute('readonly', true);
+    
+    endpointInput.classList.remove('editing');
+    endpointInput.setAttribute('readonly', true);
+    
+    keyInput.classList.remove('editing');
+    keyInput.setAttribute('readonly', true);
+    
+    // Show edit/delete buttons, hide save/cancel buttons
+    editButton.style.display = 'inline-block';
+    deleteButton.style.display = 'inline-block';
+    saveButton.style.display = 'none';
+    cancelButton.style.display = 'none';
+    
+    // Update delete button onclick to use the new name
+    deleteButton.setAttribute('onclick', `confirmDeleteEndpoint(this, '${nameInput.value}')`);
+    
+    // Show success message
+    showNotification(`Endpoint '${nameInput.value}' updated`, 'success');
+}
+
+function cancelEndpointEdit(button) {
+    const row = button.closest('tr');
+    if (!row) return;
+    
+    const nameInput = row.querySelector('.name-input');
+    const endpointInput = row.querySelector('.endpoint-input');
+    const keyInput = row.querySelector('.key-input');
+    const editButton = row.querySelector('.endpoint-action-btn.edit');
+    const saveButton = row.querySelector('.endpoint-action-btn.save');
+    const cancelButton = row.querySelector('.endpoint-action-btn.cancel');
+    const deleteButton = row.querySelector('.endpoint-action-btn.delete');
+    
+    // Restore original values
+    nameInput.value = nameInput.dataset.originalValue || nameInput.value;
+    endpointInput.value = endpointInput.dataset.originalValue || endpointInput.value;
+    keyInput.value = keyInput.dataset.originalValue || keyInput.value;
+    
+    // Exit edit mode
+    nameInput.classList.remove('editing');
+    nameInput.setAttribute('readonly', true);
+    
+    endpointInput.classList.remove('editing');
+    endpointInput.setAttribute('readonly', true);
+    
+    keyInput.classList.remove('editing');
+    keyInput.setAttribute('readonly', true);
+    
+    // Show edit/delete buttons, hide save/cancel buttons
+    editButton.style.display = 'inline-block';
+    deleteButton.style.display = 'inline-block';
+    saveButton.style.display = 'none';
+    cancelButton.style.display = 'none';
+    
+    // Show info message
+    showNotification('Edit cancelled', 'info');
 }
 
 function applyTheme(theme) {

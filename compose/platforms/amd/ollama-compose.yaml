@@ -1,0 +1,27 @@
+version: "3"
+
+services:
+  ollama:
+    image: ollama/ollama:rocm
+    container_name: fusionloom-ollama
+    devices:
+      - /dev/kfd:/dev/kfd
+      - /dev/dri:/dev/dri
+    group_add:
+      - video
+    volumes:
+      - ./data/ollama:/root/.ollama
+    ports:
+      - "11434:11434"
+    environment:
+      - HSA_OVERRIDE_GFX_VERSION=10.3.0
+      - ROCR_VISIBLE_DEVICES=all
+    restart: unless-stopped
+    labels:
+      - "io.containers.autoupdate=image"
+    networks:
+      - fusionloom_net
+
+networks:
+  fusionloom_net:
+    external: true

@@ -392,7 +392,7 @@ body {
   font-weight: 600;
   color: var(--fusion-accent);
   padding: 16px 15px;
-  border-top: 20px solid var(--fusion-bg-secondary); /* Add space above sections except first */
+  border-top: 30px solid var(--fusion-bg-secondary); /* Increased space above sections */
 }
 
 .fusion-table tr:first-child .section-header td {
@@ -405,7 +405,7 @@ body {
 
 .fusion-table input.endpoint-input {
   width: 100%;
-  min-width: 300px;
+  min-width: 350px; /* Increased width */
   padding: 8px 12px;
   border: 1px solid var(--fusion-input-border);
   border-radius: 4px;
@@ -415,7 +415,7 @@ body {
 
 .fusion-table input.key-input {
   width: 100%;
-  min-width: 180px;
+  min-width: 220px; /* Increased width */
   padding: 8px 12px;
   border: 1px solid var(--fusion-input-border);
   border-radius: 4px;
@@ -423,11 +423,72 @@ body {
   color: var(--fusion-primary);
 }
 
+.fusion-table input.name-input {
+  width: 100%;
+  min-width: 150px;
+  padding: 8px 12px;
+  border: 1px solid var(--fusion-input-border);
+  border-radius: 4px;
+  background: var(--fusion-input-bg);
+  color: var(--fusion-primary);
+}
+
+/* Input fields in non-edit mode */
+.fusion-table input:not(.editing) {
+  pointer-events: none;
+  background-color: transparent;
+  border-color: transparent;
+  color: var(--fusion-text);
+}
+
+.endpoint-actions {
+  display: flex;
+  gap: 5px;
+}
+
+.endpoint-action-btn {
+  background: none;
+  border: none;
+  color: var(--fusion-text-secondary);
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px;
+  transition: color 0.2s ease;
+}
+
+.endpoint-action-btn:hover {
+  color: var(--fusion-accent);
+}
+
+.endpoint-action-btn.delete:hover {
+  color: var(--fusion-danger);
+}
+
+.endpoint-action-btn.edit:hover {
+  color: var(--fusion-success);
+}
+
+.endpoint-action-btn.save {
+  color: var(--fusion-success);
+  display: none;
+}
+
+.endpoint-action-btn.cancel {
+  color: var(--fusion-warning);
+  display: none;
+}
+
 .status-indicator {
   display: inline-block;
   width: 12px;
   height: 12px;
   border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.status-indicator:hover {
+  transform: scale(1.2);
 }
 
 .status-indicator.online {
@@ -438,6 +499,11 @@ body {
 .status-indicator.offline {
   background-color: #F44336;
   box-shadow: 0 0 5px #F44336;
+}
+
+.status-indicator.disabled {
+  background-color: #9E9E9E;
+  box-shadow: 0 0 5px #9E9E9E;
 }
 
 .status-indicator.testing {
@@ -770,7 +836,7 @@ body {
   margin-bottom: 2px;
 }
 
-/* About Modal */
+/* Modals (About and Add Endpoint) */
 .fusion-modal {
   display: none;
   position: fixed;
@@ -782,6 +848,25 @@ body {
   z-index: 2000;
   align-items: center;
   justify-content: center;
+}
+
+#add-endpoint-modal .fusion-setting-item {
+  margin-bottom: 15px;
+}
+
+#add-endpoint-modal .fusion-setting-item label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+#add-endpoint-modal .fusion-setting-item input,
+#add-endpoint-modal .fusion-setting-item select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--fusion-input-border);
+  border-radius: 4px;
+  background: var(--fusion-input-bg);
+  color: var(--fusion-primary);
 }
 
 .fusion-modal-content {
@@ -857,4 +942,16 @@ body {
   border-top: 1px solid var(--fusion-border);
   padding-top: 15px;
   margin-top: 10px;
+}
+
+/* Status Toggle Modal */
+#status-toggle-modal .fusion-modal-body {
+  text-align: center;
+}
+
+#status-toggle-modal .fusion-button-group {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
 }

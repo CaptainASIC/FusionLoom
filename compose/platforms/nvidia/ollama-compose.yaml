@@ -1,0 +1,33 @@
+version: "3"
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: fusionloom-ollama
+    devices:
+      - /dev/nvidia0:/dev/nvidia0
+      - /dev/nvidia-uvm:/dev/nvidia-uvm
+      - /dev/nvidiactl:/dev/nvidiactl
+    volumes:
+      - ./data/ollama:/root/.ollama
+    ports:
+      - "11434:11434"
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    restart: unless-stopped
+    labels:
+      - "io.containers.autoupdate=image"
+    networks:
+      - fusionloom_net
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+networks:
+  fusionloom_net:
+    external: true

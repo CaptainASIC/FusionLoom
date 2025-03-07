@@ -29,6 +29,32 @@ Fusion Loom is a comprehensive platform that weaves together multiple AI technol
 
 ## Installation
 
+### Graphical Installer (Recommended)
+
+FusionLoom now includes a graphical installer that automatically detects your hardware and configures the application accordingly:
+
+1. Clone the repository:  
+   ```bash
+   git clone https://github.com/CaptainASIC/FusionLoom
+   ```
+
+2. Run the setup script:  
+   ```bash
+   cd FusionLoom
+   ./setup.sh
+   ```
+
+3. Follow the graphical installer prompts to configure FusionLoom for your system.
+
+4. After installation completes, launch FusionLoom:  
+   ```bash
+   ./launch.sh
+   ```
+
+### Manual Installation
+
+If you prefer manual installation:
+
 1. Clone the repository:  
    ```bash
    git clone https://github.com/CaptainASIC/FusionLoom
@@ -43,12 +69,12 @@ Fusion Loom is a comprehensive platform that weaves together multiple AI technol
    
    **macOS/Apple Silicon:**
    ```bash
-   ./setup_macos.sh
+   ./setup.sh
    ```
    
    **Jetson Devices:**
    ```bash
-   ./setup_jetson.sh
+   ./setup.sh
    ```
 
 3. Run the application:  
@@ -136,6 +162,28 @@ For AMD GPU hardware, Fusion Loom provides:
 
 The application automatically detects hardware capabilities and enables appropriate optimizations accordingly.
 
+## Graphical Installer
+
+The new graphical installer provides a user-friendly way to configure FusionLoom:
+
+- **Hardware Detection**: Automatically detects your hardware platform, GPU, and container engine
+- **Customizable Configuration**: Configure FusionLoom to match your hardware and preferences
+- **Service Selection**: Choose which AI services to install and use
+- **Visual Feedback**: See installation progress and status
+- **Cross-Platform**: Works on Linux, macOS, and Windows
+
+To run the installer separately:
+
+```bash
+# On Linux/macOS
+cd FusionLoom/installer
+./run_installer.sh
+
+# On Windows
+cd FusionLoom\installer
+run_installer.bat
+```
+
 ## Configuration
 
 The application uses a configuration file located at `cfg/config.ini`. You can modify this file to add or change AI service endpoints, container configurations, and other settings. A sample is provided as `config.sample`.
@@ -206,36 +254,29 @@ Transcribe audio files or record directly:
 ```
 FusionLoom/
 ├── cfg/                 # Configuration files
-├── src/                 # Source code
-│   ├── ui/              # UI components
-│   ├── services/        # Service integrations
-│   ├── containers/      # Container management
-│   ├── hardware/        # Hardware-specific optimizations
-│   │   ├── dgx_digit/   # NVIDIA DGX Platform (Project Digit) optimizations
-│   │   ├── jetson/      # NVIDIA Jetson optimizations
-│   │   │   ├── orin/    # Orin Nano Super specific code
-│   │   │   └── agx/     # AGX Nano specific code
-│   │   ├── apple/       # Apple Silicon optimizations
-│   │   │   ├── neural_engine/ # Apple Neural Engine integration
-│   │   │   └── metal/   # Metal GPU acceleration
-│   │   ├── nvidia/      # NVIDIA GPU optimizations
-│   │   ├── amd/         # AMD GPU (ROCm) optimizations
-│   │   ├── x86/         # x86 platform support
-│   │   └── arm/         # ARM platform support
-│   └── utils/           # Utility functions
-├── resources/           # Assets and resources
-├── docs/                # Documentation
-├── platforms/           # Platform-specific builds and containers
-│   ├── dgx_digit/       # NVIDIA DGX Platform (Project Digit) containers
-│   ├── jetson/          # NVIDIA Jetson containers
-│   │   ├── orin/        # Orin Nano Super containers
-│   │   └── agx/         # AGX Nano containers
-│   ├── apple/           # Apple Silicon containers and builds
-│   ├── nvidia/          # NVIDIA GPU containers
-│   ├── amd/             # AMD GPU (ROCm) containers
-│   ├── x86/             # x86 Linux containers
-│   └── arm/             # ARM Linux containers
-└── tests/               # Test suite
+├── compose/             # Container compose files
+│   ├── docker/          # Docker compose files
+│   ├── podman/          # Podman compose files
+│   └── platforms/       # Platform-specific compose files
+│       ├── dgx_digit/   # NVIDIA DGX/Digit optimized containers
+│       ├── jetson/      # NVIDIA Jetson containers
+│       │   ├── orin/    # Orin Nano Super specific containers
+│       │   └── agx/     # AGX Nano specific containers
+│       ├── apple/       # Apple Silicon optimized containers
+│       ├── nvidia/      # NVIDIA GPU optimized containers
+│       ├── amd/         # AMD GPU (ROCm) optimized containers
+│       ├── x86/         # x86 CPU-only containers
+│       └── arm/         # ARM CPU-only containers
+├── data/                # Data storage
+├── installer/           # Graphical installer
+├── logs/                # Log files
+├── ui/                  # User interface files
+│   ├── static/          # Static assets
+│   │   ├── css/         # CSS stylesheets
+│   │   ├── js/          # JavaScript files
+│   │   └── img/         # Images and icons
+│   └── index.html       # Main HTML file
+└── scripts/             # Utility scripts
 ```
 
 ### Building from Source
@@ -280,6 +321,7 @@ This project is licensed under the GNU General Public License v3.0 (GPL-3.0). Se
 
 ## Acknowledgements
 
+- Streamlit for the graphical installer
 - PyQt6 for the GUI framework
 - Podman/Docker for containerization support
 - Various AI service providers integrated into the application

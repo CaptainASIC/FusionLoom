@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: fusionloom-ollama
+    volumes:
+      - ./data/ollama:/root/.ollama
+    ports:
+      - "11434:11434"
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+      # CPU-only optimizations for ARM
+      - OLLAMA_CPU_ONLY=1
+      # Conservative settings for ARM devices
+      - OLLAMA_NUM_THREADS=4
+      - OLLAMA_MAX_MEMORY=4G
+    restart: unless-stopped
+    labels:
+      - "io.containers.autoupdate=image"
+    networks:
+      - fusionloom_net
+    # Resource limits for ARM CPU operation
+    deploy:
+      resources:
+        limits:
+          cpus: '0.7' # Use up to 70% of available CPU
+          memory: 6G
+
+networks:
+  fusionloom_net:
+    external: true

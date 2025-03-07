@@ -245,76 +245,243 @@
                                 <th>Endpoint URL</th>
                                 <th>API Key</th>
                                 <th>Status</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             <!-- LLM Services -->
                             <tr class="section-header">
-                                <td colspan="4"><i class="fas fa-robot"></i> LLM Services</td>
+                                <td colspan="5"><i class="fas fa-robot"></i> LLM Services</td>
                             </tr>
                             <tr>
-                                <td>OpenAI API</td>
-                                <td><input type="text" id="openai_api" value="https://api.openai.com/v1" class="endpoint-input"></td>
-                                <td><input type="password" id="openai_key" value="" placeholder="API Key" class="key-input"></td>
-                                <td><span class="status-indicator offline"></span></td>
+                                <td><input type="text" value="Ollama LLM" class="name-input" readonly></td>
+                                <td><input type="text" id="ollama_api" value="http://localhost:11434/api" class="endpoint-input"></td>
+                                <td><input type="password" id="ollama_key" value="" placeholder="Optional" class="key-input"></td>
+                                <td><span class="status-indicator disabled" onclick="toggleEndpointStatus(this)"></span></td>
+                                <td class="endpoint-actions">
+                                    <button class="endpoint-action-btn edit" title="Edit" onclick="toggleEditMode(this)">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn save" title="Save" onclick="saveEndpointChanges(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn cancel" title="Cancel" onclick="cancelEndpointEdit(this)" style="display: none;">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn delete" title="Delete" onclick="confirmDeleteEndpoint(this, 'Ollama LLM')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
                             </tr>
                             <tr>
-                                <td>Local LLM</td>
-                                <td><input type="text" id="local_llm_api" value="http://localhost:8000/v1" class="endpoint-input"></td>
-                                <td><input type="password" id="local_llm_key" value="" placeholder="Optional" class="key-input"></td>
-                                <td><span class="status-indicator online"></span></td>
-                            </tr>
-                            <tr>
-                                <td>Anthropic API</td>
+                                <td><input type="text" value="Anthropic API" class="name-input" readonly></td>
                                 <td><input type="text" id="anthropic_api" value="https://api.anthropic.com/v1" class="endpoint-input"></td>
                                 <td><input type="password" id="anthropic_key" value="" placeholder="API Key" class="key-input"></td>
-                                <td><span class="status-indicator offline"></span></td>
+                                <td><span class="status-indicator disabled" onclick="toggleEndpointStatus(this)"></span></td>
+                                <td class="endpoint-actions">
+                                    <button class="endpoint-action-btn edit" title="Edit" onclick="toggleEditMode(this)">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn save" title="Save" onclick="saveEndpointChanges(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn cancel" title="Cancel" onclick="cancelEndpointEdit(this)" style="display: none;">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn delete" title="Delete" onclick="confirmDeleteEndpoint(this, 'Anthropic API')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" value="OpenAI API" class="name-input" readonly></td>
+                                <td><input type="text" id="openai_api" value="https://api.openai.com/v1" class="endpoint-input"></td>
+                                <td><input type="password" id="openai_key" value="" placeholder="API Key" class="key-input"></td>
+                                <td><span class="status-indicator disabled" onclick="toggleEndpointStatus(this)"></span></td>
+                                <td class="endpoint-actions">
+                                    <button class="endpoint-action-btn edit" title="Edit" onclick="toggleEditMode(this)">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn save" title="Save" onclick="saveEndpointChanges(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn cancel" title="Cancel" onclick="cancelEndpointEdit(this)" style="display: none;">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn delete" title="Delete" onclick="confirmDeleteEndpoint(this, 'OpenAI API')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" value="Gemini API" class="name-input" readonly></td>
+                                <td><input type="text" id="gemini_api" value="https://generativelanguage.googleapis.com/v1" class="endpoint-input"></td>
+                                <td><input type="password" id="gemini_key" value="" placeholder="API Key" class="key-input"></td>
+                                <td><span class="status-indicator disabled" onclick="toggleEndpointStatus(this)"></span></td>
+                                <td class="endpoint-actions">
+                                    <button class="endpoint-action-btn edit" title="Edit" onclick="toggleEditMode(this)">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn save" title="Save" onclick="saveEndpointChanges(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn cancel" title="Cancel" onclick="cancelEndpointEdit(this)" style="display: none;">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn delete" title="Delete" onclick="confirmDeleteEndpoint(this, 'Gemini API')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" value="Grok API" class="name-input" readonly></td>
+                                <td><input type="text" id="grok_api" value="https://api.grok.x/v1" class="endpoint-input"></td>
+                                <td><input type="password" id="grok_key" value="" placeholder="API Key" class="key-input"></td>
+                                <td><span class="status-indicator disabled" onclick="toggleEndpointStatus(this)"></span></td>
+                                <td class="endpoint-actions">
+                                    <button class="endpoint-action-btn edit" title="Edit" onclick="toggleEditMode(this)">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn save" title="Save" onclick="saveEndpointChanges(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn cancel" title="Cancel" onclick="cancelEndpointEdit(this)" style="display: none;">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn delete" title="Delete" onclick="confirmDeleteEndpoint(this, 'Grok API')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
                             </tr>
                             
                             <!-- Image Generation Services -->
                             <tr class="section-header">
-                                <td colspan="4"><i class="fas fa-image"></i> Image Generation</td>
+                                <td colspan="5"><i class="fas fa-image"></i> Image Generation</td>
                             </tr>
                             <tr>
-                                <td>Stable Diffusion</td>
+                                <td><input type="text" value="Stable Diffusion" class="name-input" readonly></td>
                                 <td><input type="text" id="sd_api" value="http://localhost:7860" class="endpoint-input"></td>
                                 <td><input type="password" id="sd_key" value="" placeholder="Optional" class="key-input"></td>
-                                <td><span class="status-indicator online"></span></td>
+                                <td><span class="status-indicator online" onclick="toggleEndpointStatus(this)"></span></td>
+                                <td class="endpoint-actions">
+                                    <button class="endpoint-action-btn edit" title="Edit" onclick="toggleEditMode(this)">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn save" title="Save" onclick="saveEndpointChanges(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn cancel" title="Cancel" onclick="cancelEndpointEdit(this)" style="display: none;">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn delete" title="Delete" onclick="confirmDeleteEndpoint(this, 'Stable Diffusion')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
                             </tr>
                             <tr>
-                                <td>DALL-E API</td>
+                                <td><input type="text" value="DALL-E API" class="name-input" readonly></td>
                                 <td><input type="text" id="dalle_api" value="https://api.openai.com/v1/images" class="endpoint-input"></td>
                                 <td><input type="password" id="dalle_key" value="" placeholder="API Key" class="key-input"></td>
-                                <td><span class="status-indicator offline"></span></td>
+                                <td><span class="status-indicator offline" onclick="toggleEndpointStatus(this)"></span></td>
+                                <td class="endpoint-actions">
+                                    <button class="endpoint-action-btn edit" title="Edit" onclick="toggleEditMode(this)">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn save" title="Save" onclick="saveEndpointChanges(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn cancel" title="Cancel" onclick="cancelEndpointEdit(this)" style="display: none;">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn delete" title="Delete" onclick="confirmDeleteEndpoint(this, 'DALL-E API')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
                             </tr>
                             <tr>
-                                <td>Midjourney API</td>
+                                <td><input type="text" value="Midjourney API" class="name-input" readonly></td>
                                 <td><input type="text" id="midjourney_api" value="http://localhost:7861" class="endpoint-input"></td>
                                 <td><input type="password" id="midjourney_key" value="" placeholder="API Key" class="key-input"></td>
-                                <td><span class="status-indicator offline"></span></td>
+                                <td><span class="status-indicator offline" onclick="toggleEndpointStatus(this)"></span></td>
+                                <td class="endpoint-actions">
+                                    <button class="endpoint-action-btn edit" title="Edit" onclick="toggleEditMode(this)">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn save" title="Save" onclick="saveEndpointChanges(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn cancel" title="Cancel" onclick="cancelEndpointEdit(this)" style="display: none;">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn delete" title="Delete" onclick="confirmDeleteEndpoint(this, 'Midjourney API')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
                             </tr>
                             
                             <!-- Speech Services -->
                             <tr class="section-header">
-                                <td colspan="4"><i class="fas fa-headphones"></i> Speech Services</td>
+                                <td colspan="5"><i class="fas fa-headphones"></i> Speech Services</td>
                             </tr>
                             <tr>
-                                <td>Text-to-Speech</td>
+                                <td><input type="text" value="Text-to-Speech" class="name-input" readonly></td>
                                 <td><input type="text" id="tts_api" value="http://localhost:5500/api/tts" class="endpoint-input"></td>
                                 <td><input type="password" id="tts_key" value="" placeholder="Optional" class="key-input"></td>
-                                <td><span class="status-indicator online"></span></td>
+                                <td><span class="status-indicator online" onclick="toggleEndpointStatus(this)"></span></td>
+                                <td class="endpoint-actions">
+                                    <button class="endpoint-action-btn edit" title="Edit" onclick="toggleEditMode(this)">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn save" title="Save" onclick="saveEndpointChanges(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn cancel" title="Cancel" onclick="cancelEndpointEdit(this)" style="display: none;">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn delete" title="Delete" onclick="confirmDeleteEndpoint(this, 'Text-to-Speech')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
                             </tr>
                             <tr>
-                                <td>Speech-to-Text</td>
+                                <td><input type="text" value="Speech-to-Text" class="name-input" readonly></td>
                                 <td><input type="text" id="stt_api" value="http://localhost:5501/api/stt" class="endpoint-input"></td>
                                 <td><input type="password" id="stt_key" value="" placeholder="Optional" class="key-input"></td>
-                                <td><span class="status-indicator online"></span></td>
+                                <td><span class="status-indicator online" onclick="toggleEndpointStatus(this)"></span></td>
+                                <td class="endpoint-actions">
+                                    <button class="endpoint-action-btn edit" title="Edit" onclick="toggleEditMode(this)">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn save" title="Save" onclick="saveEndpointChanges(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn cancel" title="Cancel" onclick="cancelEndpointEdit(this)" style="display: none;">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn delete" title="Delete" onclick="confirmDeleteEndpoint(this, 'Speech-to-Text')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
                             </tr>
                             <tr>
-                                <td>OpenAI Audio API</td>
+                                <td><input type="text" value="OpenAI Audio API" class="name-input" readonly></td>
                                 <td><input type="text" id="openai_audio_api" value="https://api.openai.com/v1/audio" class="endpoint-input"></td>
                                 <td><input type="password" id="openai_audio_key" value="" placeholder="API Key" class="key-input"></td>
-                                <td><span class="status-indicator offline"></span></td>
+                                <td><span class="status-indicator offline" onclick="toggleEndpointStatus(this)"></span></td>
+                                <td class="endpoint-actions">
+                                    <button class="endpoint-action-btn edit" title="Edit" onclick="toggleEditMode(this)">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn save" title="Save" onclick="saveEndpointChanges(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn cancel" title="Cancel" onclick="cancelEndpointEdit(this)" style="display: none;">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn delete" title="Delete" onclick="confirmDeleteEndpoint(this, 'OpenAI Audio API')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -322,7 +489,7 @@
                 
                 <div class="fusion-settings-actions table-actions">
                     <button class="fusion-button small" onclick="testConnections()">Test Connections</button>
-                    <button class="fusion-button small secondary" onclick="addEndpoint()">Add Endpoint</button>
+                    <button class="fusion-button small secondary" onclick="showAddEndpointModal()">Add Endpoint</button>
                 </div>
             </div>
             
@@ -333,9 +500,11 @@
                     <div class="fusion-setting-item">
                         <label for="default_llm">Default LLM</label>
                         <select id="default_llm" name="default_llm">
-                            <option value="gpt-4o">GPT-4o</option>
-                            <option value="claude-3">Claude 3 Opus</option>
                             <option value="llama3" selected>Llama 3 70B</option>
+                            <option value="claude-3">Claude 3 Opus</option>
+                            <option value="gpt-4o">GPT-4o</option>
+                            <option value="gemini-pro">Gemini Pro</option>
+                            <option value="grok-1">Grok-1</option>
                             <option value="mixtral">Mixtral 8x7B</option>
                         </select>
                     </div>
