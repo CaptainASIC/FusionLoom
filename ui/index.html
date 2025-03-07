@@ -237,22 +237,133 @@
             <!-- Service Endpoints -->
             <div class="fusion-settings-section">
                 <h2><i class="fas fa-network-wired"></i> Service Endpoints</h2>
+                <div class="fusion-settings-table">
+                    <table class="fusion-table">
+                        <thead>
+                            <tr>
+                                <th>Service</th>
+                                <th>Endpoint URL</th>
+                                <th>API Key</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- LLM Services -->
+                            <tr class="section-header">
+                                <td colspan="4"><i class="fas fa-robot"></i> LLM Services</td>
+                            </tr>
+                            <tr>
+                                <td>OpenAI API</td>
+                                <td><input type="text" id="openai_api" value="https://api.openai.com/v1" class="endpoint-input"></td>
+                                <td><input type="password" id="openai_key" value="" placeholder="API Key" class="key-input"></td>
+                                <td><span class="status-indicator offline"></span></td>
+                            </tr>
+                            <tr>
+                                <td>Local LLM</td>
+                                <td><input type="text" id="local_llm_api" value="http://localhost:8000/v1" class="endpoint-input"></td>
+                                <td><input type="password" id="local_llm_key" value="" placeholder="Optional" class="key-input"></td>
+                                <td><span class="status-indicator online"></span></td>
+                            </tr>
+                            <tr>
+                                <td>Anthropic API</td>
+                                <td><input type="text" id="anthropic_api" value="https://api.anthropic.com/v1" class="endpoint-input"></td>
+                                <td><input type="password" id="anthropic_key" value="" placeholder="API Key" class="key-input"></td>
+                                <td><span class="status-indicator offline"></span></td>
+                            </tr>
+                            
+                            <!-- Image Generation Services -->
+                            <tr class="section-header">
+                                <td colspan="4"><i class="fas fa-image"></i> Image Generation</td>
+                            </tr>
+                            <tr>
+                                <td>Stable Diffusion</td>
+                                <td><input type="text" id="sd_api" value="http://localhost:7860" class="endpoint-input"></td>
+                                <td><input type="password" id="sd_key" value="" placeholder="Optional" class="key-input"></td>
+                                <td><span class="status-indicator online"></span></td>
+                            </tr>
+                            <tr>
+                                <td>DALL-E API</td>
+                                <td><input type="text" id="dalle_api" value="https://api.openai.com/v1/images" class="endpoint-input"></td>
+                                <td><input type="password" id="dalle_key" value="" placeholder="API Key" class="key-input"></td>
+                                <td><span class="status-indicator offline"></span></td>
+                            </tr>
+                            <tr>
+                                <td>Midjourney API</td>
+                                <td><input type="text" id="midjourney_api" value="http://localhost:7861" class="endpoint-input"></td>
+                                <td><input type="password" id="midjourney_key" value="" placeholder="API Key" class="key-input"></td>
+                                <td><span class="status-indicator offline"></span></td>
+                            </tr>
+                            
+                            <!-- Speech Services -->
+                            <tr class="section-header">
+                                <td colspan="4"><i class="fas fa-headphones"></i> Speech Services</td>
+                            </tr>
+                            <tr>
+                                <td>Text-to-Speech</td>
+                                <td><input type="text" id="tts_api" value="http://localhost:5500/api/tts" class="endpoint-input"></td>
+                                <td><input type="password" id="tts_key" value="" placeholder="Optional" class="key-input"></td>
+                                <td><span class="status-indicator online"></span></td>
+                            </tr>
+                            <tr>
+                                <td>Speech-to-Text</td>
+                                <td><input type="text" id="stt_api" value="http://localhost:5501/api/stt" class="endpoint-input"></td>
+                                <td><input type="password" id="stt_key" value="" placeholder="Optional" class="key-input"></td>
+                                <td><span class="status-indicator online"></span></td>
+                            </tr>
+                            <tr>
+                                <td>OpenAI Audio API</td>
+                                <td><input type="text" id="openai_audio_api" value="https://api.openai.com/v1/audio" class="endpoint-input"></td>
+                                <td><input type="password" id="openai_audio_key" value="" placeholder="API Key" class="key-input"></td>
+                                <td><span class="status-indicator offline"></span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="fusion-settings-actions table-actions">
+                    <button class="fusion-button small" onclick="testConnections()">Test Connections</button>
+                    <button class="fusion-button small secondary" onclick="addEndpoint()">Add Endpoint</button>
+                </div>
+            </div>
+            
+            <!-- Model Configuration -->
+            <div class="fusion-settings-section">
+                <h2><i class="fas fa-sliders-h"></i> Model Configuration</h2>
                 <div class="fusion-settings-grid">
-                    <div class="fusion-setting-item full-width">
-                        <label for="llm_api">LLM API Endpoint</label>
-                        <input type="text" id="llm_api" value="http://localhost:8000/v1">
+                    <div class="fusion-setting-item">
+                        <label for="default_llm">Default LLM</label>
+                        <select id="default_llm" name="default_llm">
+                            <option value="gpt-4o">GPT-4o</option>
+                            <option value="claude-3">Claude 3 Opus</option>
+                            <option value="llama3" selected>Llama 3 70B</option>
+                            <option value="mixtral">Mixtral 8x7B</option>
+                        </select>
                     </div>
-                    <div class="fusion-setting-item full-width">
-                        <label for="stable_diffusion">Stable Diffusion Endpoint</label>
-                        <input type="text" id="stable_diffusion" value="http://localhost:7860">
+                    <div class="fusion-setting-item">
+                        <label for="default_img">Default Image Model</label>
+                        <select id="default_img" name="default_img">
+                            <option value="sdxl" selected>Stable Diffusion XL</option>
+                            <option value="dalle3">DALL-E 3</option>
+                            <option value="midjourney">Midjourney</option>
+                        </select>
                     </div>
-                    <div class="fusion-setting-item full-width">
-                        <label for="tts_service">Text-to-Speech Endpoint</label>
-                        <input type="text" id="tts_service" value="http://localhost:5500/api/tts">
+                    <div class="fusion-setting-item">
+                        <label for="default_tts">Default TTS Model</label>
+                        <select id="default_tts" name="default_tts">
+                            <option value="whisper-large" selected>Whisper Large</option>
+                            <option value="openai-tts">OpenAI TTS</option>
+                        </select>
                     </div>
-                    <div class="fusion-setting-item full-width">
-                        <label for="sts_service">Speech-to-Text Endpoint</label>
-                        <input type="text" id="sts_service" value="http://localhost:5501/api/sts">
+                    <div class="fusion-setting-item">
+                        <label for="default_voice">Default Voice</label>
+                        <select id="default_voice" name="default_voice">
+                            <option value="alloy">Alloy</option>
+                            <option value="echo">Echo</option>
+                            <option value="fable">Fable</option>
+                            <option value="onyx" selected>Onyx</option>
+                            <option value="nova">Nova</option>
+                            <option value="shimmer">Shimmer</option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -273,11 +384,14 @@
                 <button class="fusion-modal-close">&times;</button>
             </div>
             <div class="fusion-modal-body">
-                <p>FusionLoom v0.1</p>
+                <div class="fusion-about-logo">
+                    <img src="/static/img/fusion-logo-large.svg" alt="FusionLoom Logo" width="150" height="150">
+                </div>
+                <p><strong>FusionLoom v0.1</strong></p>
                 <p>A comprehensive platform that weaves together multiple AI technologies and content management systems into a unified, powerful interface.</p>
                 <p>This is the initial version focusing on the GUI component.</p>
                 <p>For more information, updates, and to contribute, please visit our GitHub repository:</p>
-                <p><a href="https://github.com/CaptainASIC/FusionLoom" target="_blank">https://github.com/CaptainASIC/FusionLoom</a></p>
+                <p><a href="https://github.com/CaptainASIC/FusionLoom" target="_blank" class="fusion-link">https://github.com/CaptainASIC/FusionLoom</a></p>
             </div>
             <div class="fusion-modal-footer">
                 <button class="fusion-button" onclick="hideAboutModal()">Close</button>

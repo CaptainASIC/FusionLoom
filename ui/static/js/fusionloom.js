@@ -161,6 +161,11 @@ function updateSystemInfo() {
 function showAboutModal() {
     const modal = document.querySelector('.fusion-modal');
     if (modal) {
+        // Ensure the modal inherits the current theme before displaying
+        const currentTheme = document.documentElement.className.match(/theme-([a-z]+)/);
+        if (currentTheme && currentTheme[1]) {
+            console.log('Modal using theme:', currentTheme[1]);
+        }
         modal.style.display = 'flex';
     }
 }
@@ -211,6 +216,9 @@ function loadSettings() {
     
     // Apply theme immediately
     applyTheme(settings.theme);
+    
+    // Update connection status indicators
+    updateConnectionStatus();
 }
 
 function getDefaultSettings() {
@@ -224,18 +232,42 @@ function getDefaultSettings() {
         acceleration: true,
         container_engine: 'podman',
         auto_start: true,
-        llm_api: 'http://localhost:8000/v1',
-        stable_diffusion: 'http://localhost:7860',
-        tts_service: 'http://localhost:5500/api/tts',
-        sts_service: 'http://localhost:5501/api/sts'
+        
+        // LLM services
+        openai_api: 'https://api.openai.com/v1',
+        openai_key: '',
+        local_llm_api: 'http://localhost:8000/v1',
+        local_llm_key: '',
+        anthropic_api: 'https://api.anthropic.com/v1',
+        anthropic_key: '',
+        default_llm: 'llama3',
+        
+        // Image generation services
+        sd_api: 'http://localhost:7860',
+        sd_key: '',
+        dalle_api: 'https://api.openai.com/v1/images',
+        dalle_key: '',
+        midjourney_api: 'http://localhost:7861',
+        midjourney_key: '',
+        default_img: 'sdxl',
+        
+        // Speech services
+        tts_api: 'http://localhost:5500/api/tts',
+        tts_key: '',
+        stt_api: 'http://localhost:5501/api/stt',
+        stt_key: '',
+        openai_audio_api: 'https://api.openai.com/v1/audio',
+        openai_audio_key: '',
+        default_tts: 'whisper-large',
+        default_voice: 'onyx'
     };
 }
 
 function saveSettings() {
     const settings = {};
     
-    // Collect all settings from form elements
-    document.querySelectorAll('.fusion-setting-item select, .fusion-setting-item input').forEach(element => {
+    // Collect all settings from form elements (both grid and table based)
+    document.querySelectorAll('.fusion-setting-item select, .fusion-setting-item input, .fusion-table input, .fusion-table select').forEach(element => {
         settings[element.id] = element.type === 'checkbox' ? element.checked : element.value;
     });
     
@@ -273,6 +305,93 @@ function resetSettings() {
     
     // Show success message
     showNotification('Settings reset to defaults', 'info');
+}
+
+function updateConnectionStatus() {
+    // This function simulates checking the connection status of each endpoint
+    // In a real implementation, this would make actual API calls to check if services are available
+    
+    // Get all status indicators
+    const statusIndicators = document.querySelectorAll('.status-indicator');
+    
+    // For demonstration, we'll set local endpoints as online and external ones as offline
+    statusIndicators.forEach(indicator => {
+        const row = indicator.closest('tr');
+        if (!row) return;
+        
+        const endpointInput = row.querySelector('input.endpoint-input');
+        if (!endpointInput) return;
+        
+        const endpoint = endpointInput.value;
+        
+        // Check if endpoint is local or external
+        const isLocal = endpoint.includes('localhost') || endpoint.includes('127.0.0.1');
+        
+        // Set status based on whether endpoint is local or external
+        if (isLocal) {
+            indicator.classList.remove('offline');
+            indicator.classList.add('online');
+        } else {
+            indicator.classList.remove('online');
+            indicator.classList.add('offline');
+        }
+    });
+}
+
+function testConnections() {
+    // Simulate testing connections with a loading state
+    showNotification('Testing connections...', 'info');
+    
+    // Get all status indicators and set them to a "testing" state
+    const statusIndicators = document.querySelectorAll('.status-indicator');
+    statusIndicators.forEach(indicator => {
+        indicator.classList.remove('online', 'offline');
+        indicator.classList.add('testing');
+    });
+    
+    // Simulate a delay for testing
+    setTimeout(() => {
+        // Update connection status
+        updateConnectionStatus();
+        
+        // Show completion notification
+        showNotification('Connection test complete', 'success');
+    }, 1500);
+}
+
+function addEndpoint() {
+    // This function would add a new endpoint row to the appropriate section
+    // For demonstration, we'll add a new LLM service
+    
+    const llmSection = document.querySelector('.section-header td[colspan="4"]:first-child');
+    if (!llmSection) {
+        showNotification('Could not find LLM section', 'error');
+        return;
+    }
+    
+    const llmRow = llmSection.closest('tr');
+    if (!llmRow) {
+        showNotification('Could not find LLM section row', 'error');
+        return;
+    }
+    
+    // Create a new row
+    const newRow = document.createElement('tr');
+    newRow.innerHTML = `
+        <td>Custom LLM</td>
+        <td><input type="text" id="custom_llm_api" value="http://localhost:8002/v1" class="endpoint-input"></td>
+        <td><input type="password" id="custom_llm_key" value="" placeholder="Optional" class="key-input"></td>
+        <td><span class="status-indicator offline"></span></td>
+    `;
+    
+    // Insert after the LLM section header
+    llmRow.parentNode.insertBefore(newRow, llmRow.nextSibling);
+    
+    // Update connection status
+    updateConnectionStatus();
+    
+    // Show success message
+    showNotification('New endpoint added', 'success');
 }
 
 function applyTheme(theme) {
@@ -348,6 +467,13 @@ function applyTheme(theme) {
     const themeSelector = document.getElementById('theme');
     if (themeSelector) {
         themeSelector.value = theme;
+    }
+    
+    // Ensure the modal also inherits the theme
+    const modal = document.querySelector('.fusion-modal-content');
+    if (modal) {
+        // The modal will inherit the theme from CSS variables
+        console.log('Applied theme to modal');
     }
 }
 

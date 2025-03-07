@@ -343,7 +343,8 @@ body {
 }
 
 .fusion-setting-item select,
-.fusion-setting-item input[type="text"] {
+.fusion-setting-item input[type="text"],
+.fusion-setting-item input[type="password"] {
   padding: 8px 12px;
   border: 1px solid var(--fusion-input-border);
   border-radius: 4px;
@@ -352,6 +353,116 @@ body {
   font-size: 14px;
   transition: border-color 0.2s ease;
   width: 100%;
+}
+
+/* Table-based settings styles */
+.fusion-settings-table {
+  width: 100%;
+  overflow-x: auto;
+  margin-bottom: 20px;
+}
+
+.fusion-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.fusion-table th {
+  text-align: left;
+  padding: 12px 15px;
+  background-color: var(--fusion-bg);
+  color: var(--fusion-primary);
+  font-weight: 600;
+  border-bottom: 2px solid var(--fusion-border);
+}
+
+.fusion-table td {
+  padding: 10px 15px;
+  border-bottom: 1px solid var(--fusion-border);
+  color: var(--fusion-text);
+}
+
+.fusion-table tr:hover {
+  background-color: var(--fusion-bg);
+}
+
+.fusion-table .section-header td {
+  background-color: var(--fusion-bg);
+  font-weight: 600;
+  color: var(--fusion-accent);
+  padding: 16px 15px;
+  border-top: 20px solid var(--fusion-bg-secondary); /* Add space above sections except first */
+}
+
+.fusion-table tr:first-child .section-header td {
+  border-top: none; /* Remove space for first section */
+}
+
+.fusion-table .section-header i {
+  margin-right: 8px;
+}
+
+.fusion-table input.endpoint-input {
+  width: 100%;
+  min-width: 300px;
+  padding: 8px 12px;
+  border: 1px solid var(--fusion-input-border);
+  border-radius: 4px;
+  background: var(--fusion-input-bg);
+  color: var(--fusion-primary);
+}
+
+.fusion-table input.key-input {
+  width: 100%;
+  min-width: 180px;
+  padding: 8px 12px;
+  border: 1px solid var(--fusion-input-border);
+  border-radius: 4px;
+  background: var(--fusion-input-bg);
+  color: var(--fusion-primary);
+}
+
+.status-indicator {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.status-indicator.online {
+  background-color: #4CAF50;
+  box-shadow: 0 0 5px #4CAF50;
+}
+
+.status-indicator.offline {
+  background-color: #F44336;
+  box-shadow: 0 0 5px #F44336;
+}
+
+.status-indicator.testing {
+  background-color: #FFC107;
+  box-shadow: 0 0 5px #FFC107;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}
+
+.table-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
 }
 
 /* Theme Selector Styles */
@@ -674,12 +785,14 @@ body {
 }
 
 .fusion-modal-content {
-  background-color: white;
+  background-color: var(--fusion-bg);
+  color: var(--fusion-text);
   border-radius: 8px;
   max-width: 500px;
   width: 90%;
   padding: 20px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--fusion-border);
 }
 
 .fusion-modal-header {
@@ -687,6 +800,8 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
+  border-bottom: 1px solid var(--fusion-border);
+  padding-bottom: 10px;
 }
 
 .fusion-modal-title {
@@ -695,10 +810,19 @@ body {
   color: var(--fusion-primary);
 }
 
+.fusion-about-logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
 .fusion-modal-close {
   background: none;
   border: none;
   font-size: 24px;
+  color: var(--fusion-text);
+  cursor: pointer;
+  transition: color 0.2s ease;
   cursor: pointer;
   color: var(--fusion-secondary);
 }
@@ -707,7 +831,30 @@ body {
   margin-bottom: 20px;
 }
 
+.fusion-modal-body p {
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+.fusion-modal-body strong {
+  color: var(--fusion-primary);
+}
+
+.fusion-link {
+  color: var(--fusion-accent);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.fusion-link:hover {
+  text-decoration: underline;
+  color: var(--fusion-primary);
+}
+
 .fusion-modal-footer {
   display: flex;
   justify-content: flex-end;
+  border-top: 1px solid var(--fusion-border);
+  padding-top: 15px;
+  margin-top: 10px;
 }
