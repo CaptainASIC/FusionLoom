@@ -9,6 +9,22 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Update performance gauges periodically
     setInterval(updatePerformanceGauges, 2000);
+    
+    // Update container status periodically
+    setInterval(checkContainerStatus, 5000);
+    
+    // Update status bar indicators
+    updateStatusBarIndicators();
+    
+    // Update system info
+    updateSystemInfo();
+    
+    // Make logo clickable to show about modal
+    const logo = document.querySelector('.fusion-logo');
+    if (logo) {
+        logo.style.cursor = 'pointer';
+        logo.addEventListener('click', showAboutModal);
+    }
 });
 
 function initializeFusionLoom() {
@@ -86,6 +102,185 @@ function navigateToPage(page) {
     // Special handling for home page
     if (page === 'home') {
         document.querySelector('.fusion-home').style.display = 'flex';
+    }
+    
+    // Special handling for settings page - refresh container status
+    if (page === 'settings') {
+        checkContainerStatus();
+    }
+}
+
+// Status Bar Management
+function updateStatusBarIndicators() {
+    // Get status bar indicators
+    const podmanStatus = document.getElementById('podman-status');
+    const ollamaStatus = document.getElementById('ollama-status');
+    const sdStatus = document.getElementById('sd-status');
+    const ttsStatus = document.getElementById('tts-status');
+    const sttStatus = document.getElementById('stt-status');
+    
+    // Set initial status (will be updated by checkContainerStatus)
+    if (podmanStatus) podmanStatus.className = 'status-indicator disabled';
+    if (ollamaStatus) ollamaStatus.className = 'status-indicator disabled';
+    if (sdStatus) sdStatus.className = 'status-indicator disabled';
+    if (ttsStatus) ttsStatus.className = 'status-indicator disabled';
+    if (sttStatus) sttStatus.className = 'status-indicator disabled';
+    
+    // Add click handlers
+    if (podmanStatus) {
+        podmanStatus.addEventListener('click', function() {
+            toggleContainerStatus(this);
+        });
+    }
+    
+    if (ollamaStatus) {
+        ollamaStatus.addEventListener('click', function() {
+            toggleContainerStatus(this);
+        });
+    }
+    
+    if (sdStatus) {
+        sdStatus.addEventListener('click', function() {
+            toggleContainerStatus(this);
+        });
+    }
+    
+    if (ttsStatus) {
+        ttsStatus.addEventListener('click', function() {
+            toggleContainerStatus(this);
+        });
+    }
+    
+    if (sttStatus) {
+        sttStatus.addEventListener('click', function() {
+            toggleContainerStatus(this);
+        });
+    }
+    
+    // Update status periodically
+    setInterval(updateContainerStatusBar, 5000);
+    
+    // Initial update
+    updateContainerStatusBar();
+}
+
+function updateContainerStatusBar() {
+    // This function updates the status bar indicators
+    // In a real implementation, this would make API calls to check container status
+    
+    // For demo purposes, we'll simulate container status
+    const podmanStatus = document.getElementById('podman-status');
+    const ollamaStatus = document.getElementById('ollama-status');
+    const sdStatus = document.getElementById('sd-status');
+    const ttsStatus = document.getElementById('tts-status');
+    const sttStatus = document.getElementById('stt-status');
+    
+    // Simulate Podman status (always running in demo)
+    if (podmanStatus) {
+        podmanStatus.className = 'status-indicator online';
+    }
+    
+    // Simulate container statuses
+    if (ollamaStatus) {
+        // 80% chance of being online
+        ollamaStatus.className = Math.random() < 0.8 ? 
+            'status-indicator online' : 'status-indicator offline';
+    }
+    
+    if (sdStatus) {
+        // 60% chance of being online
+        sdStatus.className = Math.random() < 0.6 ? 
+            'status-indicator online' : 'status-indicator offline';
+    }
+    
+    if (ttsStatus) {
+        // 70% chance of being online
+        ttsStatus.className = Math.random() < 0.7 ? 
+            'status-indicator online' : 'status-indicator offline';
+    }
+    
+    if (sttStatus) {
+        // 70% chance of being online
+        sttStatus.className = Math.random() < 0.7 ? 
+            'status-indicator online' : 'status-indicator offline';
+    }
+}
+
+function toggleContainerStatus(indicator) {
+    // Get the container name from the indicator's ID
+    const containerId = indicator.id;
+    const containerName = containerId.replace('-status', '');
+    
+    // Create a modal for container actions
+    let modal = document.createElement('div');
+    modal.className = 'fusion-modal';
+    
+    // Determine current status
+    const isRunning = indicator.classList.contains('online');
+    
+    modal.innerHTML = `
+        <div class="fusion-modal-content">
+            <div class="fusion-modal-header">
+                <h2 class="fusion-modal-title">Container Actions: ${containerName}</h2>
+                <button class="fusion-modal-close" onclick="this.closest('.fusion-modal').remove()">&times;</button>
+            </div>
+            <div class="fusion-modal-body">
+                <p>Current status: <strong>${isRunning ? 'Running' : 'Stopped'}</strong></p>
+                <div class="fusion-button-group" style="display: flex; gap: 10px; margin-top: 15px;">
+                    ${isRunning ? 
+                        `<button class="fusion-button" id="stop-container-btn">Stop Container</button>
+                         <button class="fusion-button" id="restart-container-btn">Restart Container</button>` : 
+                        `<button class="fusion-button" id="start-container-btn">Start Container</button>`}
+                    <button class="fusion-button secondary" onclick="this.closest('.fusion-modal').remove()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Show the modal
+    modal.style.display = 'flex';
+    
+    // Set up event listeners for the buttons
+    if (isRunning) {
+        const stopBtn = document.getElementById('stop-container-btn');
+        const restartBtn = document.getElementById('restart-container-btn');
+        
+        if (stopBtn) {
+            stopBtn.onclick = function() {
+                // Simulate stopping the container
+                indicator.className = 'status-indicator offline';
+                showNotification(`Container '${containerName}' stopped`, 'info');
+                modal.remove();
+            };
+        }
+        
+        if (restartBtn) {
+            restartBtn.onclick = function() {
+                // Simulate restarting the container
+                indicator.className = 'status-indicator warning';
+                setTimeout(() => {
+                    indicator.className = 'status-indicator online';
+                }, 2000);
+                showNotification(`Container '${containerName}' restarting...`, 'info');
+                modal.remove();
+            };
+        }
+    } else {
+        const startBtn = document.getElementById('start-container-btn');
+        
+        if (startBtn) {
+            startBtn.onclick = function() {
+                // Simulate starting the container
+                indicator.className = 'status-indicator warning';
+                setTimeout(() => {
+                    indicator.className = 'status-indicator online';
+                }, 2000);
+                showNotification(`Container '${containerName}' starting...`, 'info');
+                modal.remove();
+            };
+        }
     }
 }
 
@@ -174,6 +369,131 @@ function hideAboutModal() {
     const modal = document.querySelector('.fusion-modal');
     if (modal) {
         modal.style.display = 'none';
+    }
+}
+
+// Container Status Management
+function checkContainerStatus() {
+    // This function checks the status of containers and updates the UI
+    // In a real implementation, this would make API calls to the container engine
+    
+    // Define known containers and their status indicators in the footer
+    const footerContainerMap = {
+        'podman': document.getElementById('podman-status'),
+        'ollama': document.getElementById('ollama-status'),
+        'sd': document.getElementById('sd-status'),
+        'tts': document.getElementById('tts-status'),
+        'stt': document.getElementById('stt-status')
+    };
+    
+    // Make API call to check container status
+    fetch('/api/container-status')
+        .then(response => response.json())
+        .then(data => {
+            // Filter containers to only show those with 'fusionloom-' in the name
+            const fusionloomContainers = data.containers.filter(c => c.name.includes('fusionloom-'));
+            
+            // Update footer status indicators based on container status
+            Object.entries(footerContainerMap).forEach(([serviceType, indicator]) => {
+                if (!indicator) return; // Skip if no indicator
+                
+                // Look for a container with a name matching the service type
+                const containerInfo = fusionloomContainers.find(c => c.name.includes(`fusionloom-${serviceType}`));
+                if (containerInfo) {
+                    updateContainerStatusIndicator(indicator, containerInfo.status);
+                } else {
+                    // Container not found, mark as offline
+                    updateContainerStatusIndicator(indicator, 'not_found');
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Error checking container status:', error);
+            
+            // Fallback to simulated status for demo
+            simulateContainerStatus(footerContainerMap);
+        });
+}
+
+function simulateContainerStatus(containerMap) {
+    // This is a fallback function that simulates container status
+    // In a real implementation, this would be replaced with actual API calls
+    
+    // For demo purposes, we'll set some containers as running and others as stopped
+    Object.entries(containerMap).forEach(([serviceType, indicator]) => {
+        if (!indicator) return; // Skip if no indicator
+        
+        if (serviceType === 'podman') {
+            // Podman is always running
+            updateContainerStatusIndicator(indicator, 'running');
+        } else if (serviceType === 'ollama') {
+            // Ollama is running
+            updateContainerStatusIndicator(indicator, 'running');
+        } else if (Math.random() > 0.5) {
+            // 50% chance of other services running
+            updateContainerStatusIndicator(indicator, 'running');
+        } else {
+            // Other containers are stopped
+            updateContainerStatusIndicator(indicator, 'exited');
+        }
+    });
+}
+
+// Function to simulate endpoint reachability
+function simulateEndpointReachability(serviceEndpoints) {
+    // In a real implementation, this would make actual HTTP requests to check if endpoints are reachable
+    // For now, we'll simulate the reachability based on the URL
+    
+    Object.entries(serviceEndpoints).forEach(([serviceName, data]) => {
+        const { indicator, urlInput } = data;
+        const url = urlInput.value;
+        
+        // Check if the endpoint is reachable
+        const isLocal = url.includes('localhost') || url.includes('127.0.0.1');
+        
+        // Simulate reachability - local endpoints are more likely to be reachable
+        let isReachable;
+        if (isLocal) {
+            // 80% chance of local endpoints being reachable
+            isReachable = Math.random() < 0.8;
+        } else {
+            // 40% chance of external endpoints being reachable
+            isReachable = Math.random() < 0.4;
+        }
+        
+        // Update the status indicator based on reachability
+        if (isReachable) {
+            indicator.classList.remove('offline', 'testing');
+            indicator.classList.add('online');
+        } else {
+            indicator.classList.remove('online', 'testing');
+            indicator.classList.add('offline');
+        }
+    });
+}
+
+function updateContainerStatusIndicator(indicator, status) {
+    if (!indicator) return;
+    
+    // Remove all status classes
+    indicator.classList.remove('online', 'offline', 'disabled', 'warning');
+    
+    // Set appropriate class based on status
+    switch (status) {
+        case 'running':
+            indicator.classList.add('online');
+            break;
+        case 'exited':
+        case 'not_found':
+            indicator.classList.add('offline');
+            break;
+        case 'restarting':
+        case 'paused':
+            indicator.classList.add('warning');
+            break;
+        default:
+            indicator.classList.add('disabled');
+            break;
     }
 }
 
@@ -312,14 +632,14 @@ function resetSettings() {
 }
 
 function updateConnectionStatus() {
-    // This function simulates checking the connection status of each endpoint
-    // In a real implementation, this would make actual API calls to check if services are available
+    // This function handles the initial setup of service endpoint status indicators
+    // It separates the enabled/disabled state from the reachability (online/offline) state
     
     // Get all status indicators
     const statusIndicators = document.querySelectorAll('.status-indicator');
     
-    // For demonstration, we'll set local endpoints as online and external ones as offline
-    // But for LLM services, we'll keep them disabled by default as requested
+    // For demonstration, we'll set LLM services as disabled by default
+    // Other services will be enabled but their reachability will be checked separately
     statusIndicators.forEach(indicator => {
         const row = indicator.closest('tr');
         if (!row) return;
@@ -327,7 +647,6 @@ function updateConnectionStatus() {
         const endpointInput = row.querySelector('input.endpoint-input');
         if (!endpointInput) return;
         
-        const endpoint = endpointInput.value;
         const nameInput = row.querySelector('.name-input');
         const serviceName = nameInput ? nameInput.value : '';
         
@@ -344,36 +663,83 @@ function updateConnectionStatus() {
             indicator.classList.remove('online', 'offline');
             indicator.classList.add('disabled');
         } else {
-            // For other services, use the local/external logic
-            const isLocal = endpoint.includes('localhost') || endpoint.includes('127.0.0.1');
+            // For other services, set them as enabled but check reachability
+            indicator.classList.remove('disabled');
             
-            // Set status based on whether endpoint is local or external
-            if (isLocal) {
-                indicator.classList.remove('offline', 'disabled');
-                indicator.classList.add('online');
-            } else {
-                indicator.classList.remove('online', 'disabled');
-                indicator.classList.add('offline');
-            }
+            // Default to offline until reachability is checked
+            indicator.classList.remove('online');
+            indicator.classList.add('offline');
         }
     });
+    
+    // Create a mapping of enabled service endpoints for reachability checking
+    const enabledEndpoints = {};
+    
+    document.querySelectorAll('.status-indicator:not(.disabled)').forEach(indicator => {
+        const row = indicator.closest('tr');
+        if (!row) return;
+        
+        const endpointInput = row.querySelector('input.endpoint-input');
+        if (!endpointInput) return;
+        
+        const nameInput = row.querySelector('.name-input');
+        const serviceName = nameInput ? nameInput.value : '';
+        
+        // Store the service endpoint for reachability checking
+        if (serviceName) {
+            enabledEndpoints[serviceName] = {
+                indicator: indicator,
+                urlInput: endpointInput
+            };
+        }
+    });
+    
+    // Check reachability of enabled endpoints
+    simulateEndpointReachability(enabledEndpoints);
+    
+    // After setting service status, check container status in the footer
+    checkContainerStatus();
 }
 
 function testConnections() {
     // Simulate testing connections with a loading state
     showNotification('Testing connections...', 'info');
     
-    // Get all status indicators and set them to a "testing" state
-    const statusIndicators = document.querySelectorAll('.status-indicator');
+    // Get all status indicators that are not disabled
+    const statusIndicators = document.querySelectorAll('.status-indicator:not(.disabled)');
+    
+    // Set them to a "testing" state
     statusIndicators.forEach(indicator => {
-        indicator.classList.remove('online', 'offline', 'disabled');
+        indicator.classList.remove('online', 'offline');
         indicator.classList.add('testing');
+    });
+    
+    // Create a mapping of service endpoints for reachability checking
+    const serviceEndpoints = {};
+    
+    statusIndicators.forEach(indicator => {
+        const row = indicator.closest('tr');
+        if (!row) return;
+        
+        const endpointInput = row.querySelector('input.endpoint-input');
+        if (!endpointInput) return;
+        
+        const nameInput = row.querySelector('.name-input');
+        const serviceName = nameInput ? nameInput.value : '';
+        
+        // Store the service endpoint for reachability checking
+        if (serviceName) {
+            serviceEndpoints[serviceName] = {
+                indicator: indicator,
+                urlInput: endpointInput
+            };
+        }
     });
     
     // Simulate a delay for testing
     setTimeout(() => {
-        // Update connection status
-        updateConnectionStatus();
+        // Check reachability of enabled endpoints
+        simulateEndpointReachability(serviceEndpoints);
         
         // Show completion notification
         showNotification('Connection test complete', 'success');
@@ -398,15 +764,25 @@ function showAddEndpointModal() {
                 <div class="fusion-modal-body">
                     <div class="fusion-setting-item">
                         <label for="endpoint-type">Endpoint Type</label>
-                        <select id="endpoint-type" name="endpoint-type">
+                        <select id="endpoint-type" name="endpoint-type" onchange="updateEndpointForm()">
                             <option value="llm">LLM Service</option>
                             <option value="image">Image Generation</option>
                             <option value="speech">Speech Service</option>
                         </select>
                     </div>
                     <div class="fusion-setting-item">
+                        <label for="endpoint-subtype" id="endpoint-subtype-label">LLM Type</label>
+                        <select id="endpoint-subtype" name="endpoint-subtype">
+                            <option value="custom">Custom LLM</option>
+                            <option value="openai">OpenAI Compatible</option>
+                            <option value="anthropic">Anthropic Compatible</option>
+                            <option value="google">Google AI</option>
+                            <option value="ollama">Ollama</option>
+                        </select>
+                    </div>
+                    <div class="fusion-setting-item">
                         <label for="endpoint-name">Service Name</label>
-                        <input type="text" id="endpoint-name" placeholder="Enter service name" value="Custom Service">
+                        <input type="text" id="endpoint-name" placeholder="Enter service name" value="Custom LLM">
                     </div>
                     <div class="fusion-setting-item">
                         <label for="endpoint-url">Endpoint URL</label>
@@ -429,6 +805,110 @@ function showAddEndpointModal() {
     
     // Show the modal
     modal.style.display = 'flex';
+    
+    // Initialize the form based on the default type
+    updateEndpointForm();
+}
+
+function updateEndpointForm() {
+    const type = document.getElementById('endpoint-type').value;
+    const subtypeLabel = document.getElementById('endpoint-subtype-label');
+    const subtypeSelect = document.getElementById('endpoint-subtype');
+    const nameInput = document.getElementById('endpoint-name');
+    
+    // Clear existing options
+    subtypeSelect.innerHTML = '';
+    
+    // Update subtype options based on type
+    switch (type) {
+        case 'llm':
+            subtypeLabel.textContent = 'LLM Type';
+            
+            // Add LLM-specific options
+            const llmOptions = [
+                { value: 'custom', text: 'Custom LLM' },
+                { value: 'openai', text: 'OpenAI Compatible' },
+                { value: 'anthropic', text: 'Anthropic Compatible' },
+                { value: 'google', text: 'Google AI' },
+                { value: 'ollama', text: 'Ollama' }
+            ];
+            
+            llmOptions.forEach(option => {
+                const optElement = document.createElement('option');
+                optElement.value = option.value;
+                optElement.textContent = option.text;
+                subtypeSelect.appendChild(optElement);
+            });
+            
+            nameInput.value = 'Custom LLM';
+            break;
+            
+        case 'image':
+            subtypeLabel.textContent = 'Image Generation Type';
+            
+            // Add image generation options
+            const imageOptions = [
+                { value: 'custom', text: 'Custom Image Generator' },
+                { value: 'sd', text: 'Stable Diffusion' },
+                { value: 'dalle', text: 'DALL-E Compatible' },
+                { value: 'midjourney', text: 'Midjourney' }
+            ];
+            
+            imageOptions.forEach(option => {
+                const optElement = document.createElement('option');
+                optElement.value = option.value;
+                optElement.textContent = option.text;
+                subtypeSelect.appendChild(optElement);
+            });
+            
+            nameInput.value = 'Custom Image Generator';
+            break;
+            
+        case 'speech':
+            subtypeLabel.textContent = 'Speech Service Type';
+            
+            // Add speech service options
+            const speechOptions = [
+                { value: 'custom', text: 'Custom Speech Service' },
+                { value: 'tts', text: 'Text-to-Speech' },
+                { value: 'stt', text: 'Speech-to-Text' },
+                { value: 'openai', text: 'OpenAI Audio' }
+            ];
+            
+            speechOptions.forEach(option => {
+                const optElement = document.createElement('option');
+                optElement.value = option.value;
+                optElement.textContent = option.text;
+                subtypeSelect.appendChild(optElement);
+            });
+            
+            nameInput.value = 'Custom Speech Service';
+            break;
+    }
+    
+    // Add event listener to update name when subtype changes
+    subtypeSelect.addEventListener('change', function() {
+        const subtype = this.value;
+        if (subtype === 'custom') {
+            switch (type) {
+                case 'llm':
+                    nameInput.value = 'Custom LLM';
+                    break;
+                case 'image':
+                    nameInput.value = 'Custom Image Generator';
+                    break;
+                case 'speech':
+                    nameInput.value = 'Custom Speech Service';
+                    break;
+            }
+        } else {
+            // Find the selected option text
+            const selectedOption = Array.from(this.options).find(opt => opt.value === subtype);
+            if (selectedOption) {
+                nameInput.value = selectedOption.textContent;
+            }
+        }
+    });
 }
 
 function hideAddEndpointModal() {
@@ -441,6 +921,7 @@ function hideAddEndpointModal() {
 function addEndpoint() {
     // Get values from the modal
     const type = document.getElementById('endpoint-type').value;
+    const subtype = document.getElementById('endpoint-subtype').value;
     const name = document.getElementById('endpoint-name').value;
     const url = document.getElementById('endpoint-url').value;
     const key = document.getElementById('endpoint-key').value;
@@ -503,10 +984,10 @@ function addEndpoint() {
             <button class="endpoint-action-btn edit" title="Edit" onclick="toggleEditMode(this)">
                 <i class="fas fa-edit"></i>
             </button>
-            <button class="endpoint-action-btn save" title="Save" onclick="saveEndpointChanges(this)">
+            <button class="endpoint-action-btn save" title="Save" onclick="saveEndpointChanges(this)" style="display: none;">
                 <i class="fas fa-save"></i>
             </button>
-            <button class="endpoint-action-btn cancel" title="Cancel" onclick="cancelEndpointEdit(this)">
+            <button class="endpoint-action-btn cancel" title="Cancel" onclick="cancelEndpointEdit(this)" style="display: none;">
                 <i class="fas fa-times"></i>
             </button>
             <button class="endpoint-action-btn delete" title="Delete" onclick="confirmDeleteEndpoint(this, '${name}')">
@@ -529,14 +1010,45 @@ function addEndpoint() {
 }
 
 function confirmDeleteEndpoint(button, serviceName) {
-    // Ask for confirmation before deleting
-    if (confirm(`Are you sure you want to delete the entry '${serviceName}'?`)) {
-        // Get the row and remove it
-        const row = button.closest('tr');
-        if (row) {
-            row.remove();
-            showNotification(`Endpoint '${serviceName}' deleted`, 'success');
-        }
+    // Create a modal for delete confirmation
+    let modal = document.createElement('div');
+    modal.className = 'fusion-modal';
+    
+    modal.innerHTML = `
+        <div class="fusion-modal-content">
+            <div class="fusion-modal-header">
+                <h2 class="fusion-modal-title">Confirm Deletion</h2>
+                <button class="fusion-modal-close" onclick="this.closest('.fusion-modal').remove()">&times;</button>
+            </div>
+            <div class="fusion-modal-body">
+                <p>Are you sure you want to delete the entry '${serviceName}'?</p>
+            </div>
+            <div class="fusion-modal-footer">
+                <button class="fusion-button" id="confirm-delete-btn">Delete</button>
+                <button class="fusion-button secondary" onclick="this.closest('.fusion-modal').remove()">Cancel</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Show the modal
+    modal.style.display = 'flex';
+    
+    // Set up event listener for the confirm button
+    const confirmBtn = document.getElementById('confirm-delete-btn');
+    if (confirmBtn) {
+        confirmBtn.onclick = function() {
+            // Get the row and remove it
+            const row = button.closest('tr');
+            if (row) {
+                row.remove();
+                showNotification(`Endpoint '${serviceName}' deleted`, 'success');
+            }
+            
+            // Remove the modal
+            modal.remove();
+        };
     }
 }
 
@@ -586,10 +1098,31 @@ function toggleEndpointStatus(statusIndicator) {
     if (enableBtn) {
         enableBtn.onclick = function() {
             // Enable the endpoint
-            statusIndicator.classList.remove('offline', 'disabled');
-            statusIndicator.classList.add('online');
+            statusIndicator.classList.remove('disabled');
+            
+            // Set to offline initially until reachability is checked
+            statusIndicator.classList.remove('online');
+            statusIndicator.classList.add('offline');
+            
+            // Check if the endpoint is reachable
+            const endpointInput = row.querySelector('input.endpoint-input');
+            if (endpointInput) {
+                // Create a single endpoint object for reachability checking
+                const endpoint = {};
+                endpoint[serviceName] = {
+                    indicator: statusIndicator,
+                    urlInput: endpointInput
+                };
+                
+                // Check reachability
+                simulateEndpointReachability(endpoint);
+            }
+            
+            // Hide the modal
             hideStatusToggleModal();
-            showNotification(`'${serviceName}' has been enabled`, 'success');
+            
+            // Show success message
+            showNotification(`Endpoint '${serviceName}' enabled`, 'success');
         };
     }
     
@@ -598,8 +1131,12 @@ function toggleEndpointStatus(statusIndicator) {
             // Disable the endpoint
             statusIndicator.classList.remove('online', 'offline');
             statusIndicator.classList.add('disabled');
+            
+            // Hide the modal
             hideStatusToggleModal();
-            showNotification(`'${serviceName}' has been disabled`, 'info');
+            
+            // Show success message
+            showNotification(`Endpoint '${serviceName}' disabled`, 'info');
         };
     }
     
@@ -614,81 +1151,74 @@ function hideStatusToggleModal() {
     }
 }
 
-// Edit mode for endpoint fields
+// Edit mode for endpoints
 function toggleEditMode(button) {
     const row = button.closest('tr');
     if (!row) return;
     
+    // Get the inputs
     const nameInput = row.querySelector('.name-input');
     const endpointInput = row.querySelector('.endpoint-input');
     const keyInput = row.querySelector('.key-input');
-    const editButton = row.querySelector('.endpoint-action-btn.edit');
-    const saveButton = row.querySelector('.endpoint-action-btn.save');
-    const cancelButton = row.querySelector('.endpoint-action-btn.cancel');
-    const deleteButton = row.querySelector('.endpoint-action-btn.delete');
     
-    // Check if we're entering or exiting edit mode
-    const isEnteringEditMode = !nameInput.classList.contains('editing');
+    // Toggle readonly attribute
+    nameInput.readOnly = !nameInput.readOnly;
+    endpointInput.readOnly = !endpointInput.readOnly;
+    keyInput.readOnly = !keyInput.readOnly;
     
-    if (isEnteringEditMode) {
-        // Enter edit mode
-        
-        // Store original values for potential cancellation
-        nameInput.dataset.originalValue = nameInput.value;
-        endpointInput.dataset.originalValue = endpointInput.value;
-        keyInput.dataset.originalValue = keyInput.value;
-        
-        // Make fields editable
-        nameInput.classList.add('editing');
-        nameInput.removeAttribute('readonly');
-        
-        endpointInput.classList.add('editing');
-        endpointInput.removeAttribute('readonly');
-        
-        keyInput.classList.add('editing');
-        keyInput.removeAttribute('readonly');
-        
-        // Show save/cancel buttons, hide edit/delete buttons
-        editButton.style.display = 'none';
-        deleteButton.style.display = 'none';
-        saveButton.style.display = 'inline-block';
-        cancelButton.style.display = 'inline-block';
-        
-        // Focus on the name input
-        nameInput.focus();
+    // Toggle edit/save/cancel buttons
+    const editBtn = row.querySelector('.edit');
+    const saveBtn = row.querySelector('.save');
+    const cancelBtn = row.querySelector('.cancel');
+    
+    if (editBtn) editBtn.style.display = 'none';
+    if (saveBtn) saveBtn.style.display = 'inline-block';
+    if (cancelBtn) cancelBtn.style.display = 'inline-block';
+    
+    // Store original values for cancel
+    if (!nameInput.dataset.original) {
+        nameInput.dataset.original = nameInput.value;
+        endpointInput.dataset.original = endpointInput.value;
+        keyInput.dataset.original = keyInput.value;
     }
+    
+    // Focus on the name input
+    nameInput.focus();
 }
 
 function saveEndpointChanges(button) {
     const row = button.closest('tr');
     if (!row) return;
     
+    // Get the inputs
     const nameInput = row.querySelector('.name-input');
     const endpointInput = row.querySelector('.endpoint-input');
     const keyInput = row.querySelector('.key-input');
-    const editButton = row.querySelector('.endpoint-action-btn.edit');
-    const saveButton = row.querySelector('.endpoint-action-btn.save');
-    const cancelButton = row.querySelector('.endpoint-action-btn.cancel');
-    const deleteButton = row.querySelector('.endpoint-action-btn.delete');
     
-    // Exit edit mode
-    nameInput.classList.remove('editing');
-    nameInput.setAttribute('readonly', true);
+    // Make inputs readonly again
+    nameInput.readOnly = true;
+    endpointInput.readOnly = true;
+    keyInput.readOnly = true;
     
-    endpointInput.classList.remove('editing');
-    endpointInput.setAttribute('readonly', true);
+    // Toggle edit/save/cancel buttons
+    const editBtn = row.querySelector('.edit');
+    const saveBtn = row.querySelector('.save');
+    const cancelBtn = row.querySelector('.cancel');
     
-    keyInput.classList.remove('editing');
-    keyInput.setAttribute('readonly', true);
+    if (editBtn) editBtn.style.display = 'inline-block';
+    if (saveBtn) saveBtn.style.display = 'none';
+    if (cancelBtn) cancelBtn.style.display = 'none';
     
-    // Show edit/delete buttons, hide save/cancel buttons
-    editButton.style.display = 'inline-block';
-    deleteButton.style.display = 'inline-block';
-    saveButton.style.display = 'none';
-    cancelButton.style.display = 'none';
+    // Clear original values
+    delete nameInput.dataset.original;
+    delete endpointInput.dataset.original;
+    delete keyInput.dataset.original;
     
     // Update delete button onclick to use the new name
-    deleteButton.setAttribute('onclick', `confirmDeleteEndpoint(this, '${nameInput.value}')`);
+    const deleteBtn = row.querySelector('.delete');
+    if (deleteBtn) {
+        deleteBtn.setAttribute('onclick', `confirmDeleteEndpoint(this, '${nameInput.value}')`);
+    }
     
     // Show success message
     showNotification(`Endpoint '${nameInput.value}' updated`, 'success');
@@ -698,37 +1228,36 @@ function cancelEndpointEdit(button) {
     const row = button.closest('tr');
     if (!row) return;
     
+    // Get the inputs
     const nameInput = row.querySelector('.name-input');
     const endpointInput = row.querySelector('.endpoint-input');
     const keyInput = row.querySelector('.key-input');
-    const editButton = row.querySelector('.endpoint-action-btn.edit');
-    const saveButton = row.querySelector('.endpoint-action-btn.save');
-    const cancelButton = row.querySelector('.endpoint-action-btn.cancel');
-    const deleteButton = row.querySelector('.endpoint-action-btn.delete');
     
     // Restore original values
-    nameInput.value = nameInput.dataset.originalValue || nameInput.value;
-    endpointInput.value = endpointInput.dataset.originalValue || endpointInput.value;
-    keyInput.value = keyInput.dataset.originalValue || keyInput.value;
+    if (nameInput.dataset.original) {
+        nameInput.value = nameInput.dataset.original;
+        endpointInput.value = endpointInput.dataset.original;
+        keyInput.value = keyInput.dataset.original;
+        
+        // Clear original values
+        delete nameInput.dataset.original;
+        delete endpointInput.dataset.original;
+        delete keyInput.dataset.original;
+    }
     
-    // Exit edit mode
-    nameInput.classList.remove('editing');
-    nameInput.setAttribute('readonly', true);
+    // Make inputs readonly again
+    nameInput.readOnly = true;
+    endpointInput.readOnly = true;
+    keyInput.readOnly = true;
     
-    endpointInput.classList.remove('editing');
-    endpointInput.setAttribute('readonly', true);
+    // Toggle edit/save/cancel buttons
+    const editBtn = row.querySelector('.edit');
+    const saveBtn = row.querySelector('.save');
+    const cancelBtn = row.querySelector('.cancel');
     
-    keyInput.classList.remove('editing');
-    keyInput.setAttribute('readonly', true);
-    
-    // Show edit/delete buttons, hide save/cancel buttons
-    editButton.style.display = 'inline-block';
-    deleteButton.style.display = 'inline-block';
-    saveButton.style.display = 'none';
-    cancelButton.style.display = 'none';
-    
-    // Show info message
-    showNotification('Edit cancelled', 'info');
+    if (editBtn) editBtn.style.display = 'inline-block';
+    if (saveBtn) saveBtn.style.display = 'none';
+    if (cancelBtn) cancelBtn.style.display = 'none';
 }
 
 function applyTheme(theme) {

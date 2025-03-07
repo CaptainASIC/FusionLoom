@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FusionLoom - AI Platform</title>
-    <link rel="stylesheet" href="/static/css/fusionloom.css">
+    <link rel="stylesheet" href="static/css/fusionloom.css">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -17,7 +17,7 @@
     <!-- Side Menu -->
     <div class="fusion-sidebar">
         <div class="fusion-sidebar-header">
-            <img src="/static/img/fusion-logo.svg" alt="FusionLoom Logo" class="fusion-logo">
+            <img src="static/img/fusion-logo.svg" alt="FusionLoom Logo" class="fusion-logo">
             <h1>FusionLoom</h1>
             <p>v0.1</p>
         </div>
@@ -94,7 +94,7 @@
     <div class="fusion-content">
         <!-- Home Page -->
         <div id="page-home" class="fusion-page fusion-home">
-            <img src="/static/img/fusion-logo-large.svg" alt="FusionLoom" class="fusion-home-logo">
+            <img src="static/img/fusion-logo-large.svg" alt="FusionLoom" class="fusion-home-logo">
             <h1>Welcome to FusionLoom</h1>
             <p>
                 FusionLoom is a comprehensive platform that weaves together multiple AI technologies and content management systems into a unified, powerful interface. Designed for both AI enthusiasts and professionals, FusionLoom provides seamless access to Language Models, Image Generation, Text-to-Speech, Speech-to-Text, and more from a single intuitive workspace.
@@ -545,6 +545,32 @@
         </div>
     </div>
     
+    <!-- Status Bar -->
+    <div class="fusion-status-bar">
+        <div class="fusion-status-indicators">
+            <div class="fusion-status-indicator">
+                <span class="status-indicator disabled" id="podman-status" onclick="toggleContainerStatus(this)"></span>
+                <span class="status-label">Podman</span>
+            </div>
+            <div class="fusion-status-indicator">
+                <span class="status-indicator disabled" id="ollama-status" onclick="toggleContainerStatus(this)"></span>
+                <span class="status-label">Ollama</span>
+            </div>
+            <div class="fusion-status-indicator">
+                <span class="status-indicator disabled" id="sd-status" onclick="toggleContainerStatus(this)"></span>
+                <span class="status-label">Stable Diffusion</span>
+            </div>
+            <div class="fusion-status-indicator">
+                <span class="status-indicator disabled" id="tts-status" onclick="toggleContainerStatus(this)"></span>
+                <span class="status-label">TTS</span>
+            </div>
+            <div class="fusion-status-indicator">
+                <span class="status-indicator disabled" id="stt-status" onclick="toggleContainerStatus(this)"></span>
+                <span class="status-label">STT</span>
+            </div>
+        </div>
+    </div>
+    
     <!-- About Modal -->
     <div class="fusion-modal">
         <div class="fusion-modal-content">
@@ -554,7 +580,7 @@
             </div>
             <div class="fusion-modal-body">
                 <div class="fusion-about-logo">
-                    <img src="/static/img/fusion-logo-large.svg" alt="FusionLoom Logo" width="150" height="150">
+                    <img src="static/img/fusion-logo-large.svg" alt="FusionLoom Logo" width="150" height="150">
                 </div>
                 <p><strong>FusionLoom v0.1</strong></p>
                 <p>A comprehensive platform that weaves together multiple AI technologies and content management systems into a unified, powerful interface.</p>
@@ -568,6 +594,6 @@
         </div>
     </div>
     
-    <script src="/static/js/fusionloom.js"></script>
+    <script src="static/js/fusionloom.js"></script>
 </body>
 </html>

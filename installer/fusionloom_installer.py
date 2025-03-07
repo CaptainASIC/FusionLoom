@@ -44,6 +44,13 @@ PLATFORM_TYPES = ["auto", "dgx_digit", "jetson_orin", "jetson_agx", "apple_silic
 GPU_VENDORS = ["auto", "nvidia", "amd", "apple", "cpu"]
 POWER_MODES = ["balanced", "performance", "efficiency"]
 
+# Platform directory mapping
+PLATFORM_DIR_MAPPING = {
+    "apple_silicon": "apple",
+    "jetson_orin": "jetson/orin",
+    "jetson_agx": "jetson/agx"
+}
+
 # Define AI services
 AI_SERVICES = {
     "LLM Services": {
@@ -333,15 +340,17 @@ def install_containers(settings, progress_bar):
                 
                 # Copy the appropriate compose file
                 if service_id == "ollama":
-                    platform_dir = platform_type
-                    if platform_type in ["jetson_orin", "jetson_agx"]:
-                        platform_dir = platform_type.replace("_", "/")
+                    # Map platform type to directory
+                    platform_dir = PLATFORM_DIR_MAPPING.get(platform_type, platform_type)
                     
                     src_file = REPO_ROOT / "compose" / "platforms" / platform_dir / "ollama-compose.yaml"
                     dst_dir = REPO_ROOT / "data" / service_id
                     
                     if src_file.exists():
                         shutil.copy(src_file, dst_dir / "docker-compose.yaml")
+                        print(f"Copied {src_file} to {dst_dir / 'docker-compose.yaml'}")
+                    else:
+                        print(f"Warning: Could not find compose file for platform {platform_type} at {src_file}")
                 
                 progress_value += progress_step
     

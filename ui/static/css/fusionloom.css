@@ -305,7 +305,7 @@ body {
   background: var(--fusion-bg-secondary);
   border-radius: 8px;
   padding: 20px;
-  margin-bottom: 30px;
+  margin-bottom: 40px; /* Increased gap between sections */
 }
 
 .fusion-settings-section h2 {
@@ -405,7 +405,7 @@ body {
 
 .fusion-table input.endpoint-input {
   width: 100%;
-  min-width: 350px; /* Increased width */
+  min-width: 400px; /* Further increased width */
   padding: 8px 12px;
   border: 1px solid var(--fusion-input-border);
   border-radius: 4px;
@@ -415,7 +415,7 @@ body {
 
 .fusion-table input.key-input {
   width: 100%;
-  min-width: 220px; /* Increased width */
+  min-width: 250px; /* Further increased width */
   padding: 8px 12px;
   border: 1px solid var(--fusion-input-border);
   border-radius: 4px;
@@ -425,7 +425,7 @@ body {
 
 .fusion-table input.name-input {
   width: 100%;
-  min-width: 150px;
+  min-width: 180px; /* Increased width */
   padding: 8px 12px;
   border: 1px solid var(--fusion-input-border);
   border-radius: 4px;
@@ -504,6 +504,11 @@ body {
 .status-indicator.disabled {
   background-color: #9E9E9E;
   box-shadow: 0 0 5px #9E9E9E;
+}
+
+.status-indicator.warning {
+  background-color: #FFC107; /* Yellow for warning state */
+  box-shadow: 0 0 5px #FFC107;
 }
 
 .status-indicator.testing {
@@ -736,10 +741,47 @@ body {
   margin-top: 20px;
 }
 
+/* Status Bar Styles */
+.fusion-status-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background-color: var(--fusion-bg-secondary);
+  border-top: 1px solid var(--fusion-border);
+  display: flex;
+  align-items: center;
+  padding: 0 15px;
+  z-index: 1000;
+}
+
+.fusion-status-indicators {
+  display: flex;
+  gap: 15px;
+}
+
+.fusion-status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.status-label {
+  font-size: 12px;
+  color: var(--fusion-text-secondary);
+}
+
+/* Adjust content to make room for status bar */
+.fusion-content {
+  margin-bottom: 40px;
+}
+
 /* Notification Styles */
 .fusion-notification {
   position: fixed;
-  bottom: 20px;
+  bottom: 60px; /* Adjusted to be above status bar */
   right: 20px;
   padding: 12px 24px;
   border-radius: 4px;

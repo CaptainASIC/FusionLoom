@@ -2,7 +2,7 @@ version: "3"
 
 services:
   ollama:
-    image: ollama/ollama:latest
+    image: docker.io/ollama/ollama:latest
     container_name: fusionloom-ollama
     volumes:
       - ./data/ollama:/root/.ollama

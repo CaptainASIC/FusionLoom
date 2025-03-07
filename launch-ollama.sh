@@ -65,7 +65,7 @@ detect_platform() {
     
     # Check for Apple Silicon
     if [ "$(uname)" = "Darwin" ] && [ "$(uname -m)" = "arm64" ]; then
-        echo "apple"
+        echo "apple_silicon"
         return
     fi
     
@@ -110,11 +110,18 @@ create_network_if_needed "$ENGINE"
 PLATFORM=$(detect_platform)
 echo "Detected platform: $PLATFORM"
 
+# For backward compatibility, map apple_silicon to apple
+if [ "$PLATFORM" = "apple_silicon" ]; then
+    PLATFORM_DIR="apple"
+else
+    PLATFORM_DIR="$PLATFORM"
+fi
+
 # Check if the platform directory exists
-if [ ! -d "$PLATFORMS_DIR/$PLATFORM" ]; then
-    echo "Error: Platform directory not found: $PLATFORMS_DIR/$PLATFORM"
+if [ ! -d "$PLATFORMS_DIR/$PLATFORM_DIR" ]; then
+    echo "Error: Platform directory not found: $PLATFORMS_DIR/$PLATFORM_DIR"
     echo "Falling back to x86 platform."
-    PLATFORM="x86"
+    PLATFORM_DIR="x86"
 fi
 
 # Check if the container is already running
@@ -135,11 +142,11 @@ if [ "$CONTAINER_RUNNING" = true ]; then
 fi
 
 # Create data directory if it doesn't exist
-mkdir -p "$PLATFORMS_DIR/$PLATFORM/data/ollama"
+mkdir -p "$PLATFORMS_DIR/$PLATFORM_DIR/data/ollama"
 
 # Launch the container
-echo "Launching Ollama container for platform: $PLATFORM"
-cd "$PLATFORMS_DIR/$PLATFORM"
+echo "Launching Ollama container for platform: $PLATFORM_DIR"
+cd "$PLATFORMS_DIR/$PLATFORM_DIR"
 
 if [ "$ENGINE" = "podman" ]; then
     podman-compose -f ollama-compose.yaml up -d

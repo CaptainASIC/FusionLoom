@@ -7,6 +7,7 @@ services:
     volumes:
       - ./data:/app/backend/data
       - /Users/spresgraves/Repositories/FusionLoom/ui:/app/build
+      - /run/podman/podman.sock:/var/run/docker.sock:ro  # Mount Podman socket as Docker socket for compatibility
     ports:
       - "8080:8080"
     environment:
@@ -14,6 +15,8 @@ services:
       - WEBUI_APP_NAME=FusionLoom
       - CUSTOM_UI_ENABLED=false
       - OLLAMA_BASE_URL=http://fusionloom-ollama:11434
+      - CONTAINER_ENGINE=podman
+      - CONTAINER_NETWORK=fusionloom_net
     restart: unless-stopped
     labels:
       - "io.containers.autoupdate=image"
