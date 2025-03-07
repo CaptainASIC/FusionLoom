@@ -11,18 +11,25 @@ from pathlib import Path
 import streamlit as st
 
 # Try to import hardware detection libraries
+# These are optional and the installer will work without them
+HW_DETECTION_AVAILABLE = False
+GPU_DETECTION_AVAILABLE = False
+
 try:
     import psutil
     import cpuinfo
     HW_DETECTION_AVAILABLE = True
 except ImportError:
-    HW_DETECTION_AVAILABLE = False
+    pass
 
 try:
     import GPUtil
     GPU_DETECTION_AVAILABLE = True
 except ImportError:
-    GPU_DETECTION_AVAILABLE = False
+    pass
+
+# Check if we're on ARM architecture
+IS_ARM = platform.machine() in ["aarch64", "armv7l", "arm64"]
 
 # Set up paths
 SCRIPT_DIR = Path(__file__).parent.absolute()
@@ -103,12 +110,15 @@ def detect_platform():
     if os.path.exists("/etc/nv_tegra_release"):
         # Differentiate between Orin and AGX
         if os.path.exists("/proc/device-tree/model"):
-            with open("/proc/device-tree/model", "r") as f:
-                model = f.read()
-                if "ORIN" in model:
-                    return "jetson_orin"
-                else:
-                    return "jetson_agx"
+            try:
+                with open("/proc/device-tree/model", "r") as f:
+                    model = f.read()
+                    if "ORIN" in model:
+                        return "jetson_orin"
+                    else:
+                        return "jetson_agx"
+            except:
+                pass
         return "jetson_agx"  # Default to AGX if can't determine
     
     # Check for Apple Silicon
@@ -116,7 +126,7 @@ def detect_platform():
         return "apple_silicon"
     
     # Check for NVIDIA GPU
-    if GPU_DETECTION_AVAILABLE:
+    if GPU_DETECTION_AVAILABLE and not IS_ARM:
         try:
             nvidia_gpus = GPUtil.getGPUs()
             if nvidia_gpus:
@@ -148,7 +158,7 @@ def detect_gpu_vendor():
         return "apple"
     
     # Check for NVIDIA GPU
-    if GPU_DETECTION_AVAILABLE:
+    if GPU_DETECTION_AVAILABLE and not IS_ARM:
         try:
             nvidia_gpus = GPUtil.getGPUs()
             if nvidia_gpus:
@@ -424,8 +434,11 @@ def main():
             st.markdown(f"**Cores:** {cpu_info['cores']}")
             st.markdown(f"**Architecture:** {cpu_info['arch']}")
             st.markdown(f"**Memory:** {get_system_memory()} GB")
+        else:
+            st.markdown(f"**Architecture:** {platform.machine()}")
+            st.markdown(f"**System:** {platform.system()}")
         
-        if GPU_DETECTION_AVAILABLE:
+        if GPU_DETECTION_AVAILABLE and not IS_ARM:
             try:
                 gpus = GPUtil.getGPUs()
                 if gpus:

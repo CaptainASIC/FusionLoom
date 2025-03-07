@@ -1,0 +1,20 @@
+{
+  "platform": "apple_silicon",
+  "gpu_vendor": "apple",
+  "gpu_memory": "8",
+  "acceleration": true,
+  "power_mode": "performance",
+  "container_engine": "podman",
+  "auto_start": true,
+  "theme": "dark",
+  "save_sessions": true,
+  "services": {
+    "ollama": true,
+    "sillytavern": false,
+    "stable_diffusion": false,
+    "comfyui": false,
+    "tts": false,
+    "stt": false
+  },
+  "version": "0.1"
+}
