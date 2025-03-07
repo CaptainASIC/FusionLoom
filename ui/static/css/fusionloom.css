@@ -444,6 +444,16 @@ body {
 .endpoint-actions {
   display: flex;
   gap: 5px;
+  align-items: center;
+  height: 100%;
+}
+
+/* Ensure all table cells have consistent vertical alignment */
+.fusion-table td {
+  padding: 10px 15px;
+  border-bottom: 1px solid var(--fusion-border);
+  color: var(--fusion-text);
+  vertical-align: middle;
 }
 
 .endpoint-action-btn {
@@ -454,6 +464,11 @@ body {
   font-size: 16px;
   padding: 4px;
   transition: color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  width: 28px;
 }
 
 .endpoint-action-btn:hover {
@@ -485,10 +500,16 @@ body {
   border-radius: 50%;
   cursor: pointer;
   transition: transform 0.2s ease;
+  vertical-align: middle;
 }
 
 .status-indicator:hover {
   transform: scale(1.2);
+}
+
+/* Center status indicators in table cells */
+.fusion-table td:nth-child(4) {
+  text-align: center;
 }
 
 .status-indicator.online {
@@ -754,6 +775,20 @@ body {
   align-items: center;
   padding: 0 15px;
   z-index: 1000;
+}
+
+.fusion-status-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--fusion-text-secondary);
+  margin-right: 15px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.fusion-status-title i {
+  color: var(--fusion-accent);
 }
 
 .fusion-status-indicators {

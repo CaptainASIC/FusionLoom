@@ -14,6 +14,7 @@ import streamlit as st
 # These are optional and the installer will work without them
 HW_DETECTION_AVAILABLE = False
 GPU_DETECTION_AVAILABLE = False
+PODMAN_AVAILABLE = False
 
 try:
     import psutil
@@ -26,6 +27,14 @@ try:
     import GPUtil
     GPU_DETECTION_AVAILABLE = True
 except ImportError:
+    pass
+
+# Check if podman-py is available (optional)
+try:
+    import podman
+    PODMAN_AVAILABLE = True
+except ImportError:
+    # podman-py is not available, which is fine
     pass
 
 # Check if we're on ARM architecture

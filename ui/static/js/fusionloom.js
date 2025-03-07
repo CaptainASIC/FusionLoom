@@ -112,104 +112,82 @@ function navigateToPage(page) {
 
 // Status Bar Management
 function updateStatusBarIndicators() {
-    // Get status bar indicators
-    const podmanStatus = document.getElementById('podman-status');
-    const ollamaStatus = document.getElementById('ollama-status');
-    const sdStatus = document.getElementById('sd-status');
-    const ttsStatus = document.getElementById('tts-status');
-    const sttStatus = document.getElementById('stt-status');
-    
-    // Set initial status (will be updated by checkContainerStatus)
-    if (podmanStatus) podmanStatus.className = 'status-indicator disabled';
-    if (ollamaStatus) ollamaStatus.className = 'status-indicator disabled';
-    if (sdStatus) sdStatus.className = 'status-indicator disabled';
-    if (ttsStatus) ttsStatus.className = 'status-indicator disabled';
-    if (sttStatus) sttStatus.className = 'status-indicator disabled';
-    
-    // Add click handlers
-    if (podmanStatus) {
-        podmanStatus.addEventListener('click', function() {
-            toggleContainerStatus(this);
-        });
-    }
-    
-    if (ollamaStatus) {
-        ollamaStatus.addEventListener('click', function() {
-            toggleContainerStatus(this);
-        });
-    }
-    
-    if (sdStatus) {
-        sdStatus.addEventListener('click', function() {
-            toggleContainerStatus(this);
-        });
-    }
-    
-    if (ttsStatus) {
-        ttsStatus.addEventListener('click', function() {
-            toggleContainerStatus(this);
-        });
-    }
-    
-    if (sttStatus) {
-        sttStatus.addEventListener('click', function() {
-            toggleContainerStatus(this);
-        });
-    }
-    
-    // Update status periodically
-    setInterval(updateContainerStatusBar, 5000);
+    // Update container status periodically
+    setInterval(checkContainerStatus, 5000);
     
     // Initial update
-    updateContainerStatusBar();
-}
-
-function updateContainerStatusBar() {
-    // This function updates the status bar indicators
-    // In a real implementation, this would make API calls to check container status
-    
-    // For demo purposes, we'll simulate container status
-    const podmanStatus = document.getElementById('podman-status');
-    const ollamaStatus = document.getElementById('ollama-status');
-    const sdStatus = document.getElementById('sd-status');
-    const ttsStatus = document.getElementById('tts-status');
-    const sttStatus = document.getElementById('stt-status');
-    
-    // Simulate Podman status (always running in demo)
-    if (podmanStatus) {
-        podmanStatus.className = 'status-indicator online';
-    }
-    
-    // Simulate container statuses
-    if (ollamaStatus) {
-        // 80% chance of being online
-        ollamaStatus.className = Math.random() < 0.8 ? 
-            'status-indicator online' : 'status-indicator offline';
-    }
-    
-    if (sdStatus) {
-        // 60% chance of being online
-        sdStatus.className = Math.random() < 0.6 ? 
-            'status-indicator online' : 'status-indicator offline';
-    }
-    
-    if (ttsStatus) {
-        // 70% chance of being online
-        ttsStatus.className = Math.random() < 0.7 ? 
-            'status-indicator online' : 'status-indicator offline';
-    }
-    
-    if (sttStatus) {
-        // 70% chance of being online
-        sttStatus.className = Math.random() < 0.7 ? 
-            'status-indicator online' : 'status-indicator offline';
-    }
+    checkContainerStatus();
 }
 
 function toggleContainerStatus(indicator) {
     // Get the container name from the indicator's ID
     const containerId = indicator.id;
-    const containerName = containerId.replace('-status', '');
+    const serviceType = containerId.replace('-status', '');
+    
+    // Special case for container engine - can't control the container engine itself
+    if (serviceType === 'container-engine') {
+        showNotification('Cannot control the container engine directly', 'warning');
+        return;
+    }
+    
+    // Get the actual container name from the data attribute if it exists
+    // This is set by the checkContainerStatus function when it finds a container
+    let containerName = indicator.getAttribute('data-container-name');
+    
+    // If no container name is set, try to find it from the list of containers
+    if (!containerName) {
+        // Make API call to get container list
+        fetch('/api/host/containers')
+            .then(response => response.json())
+            .then(data => {
+                const allContainers = data.containers || [];
+                
+                // Try different naming patterns to find the container
+                let containerInfo = null;
+                
+                // Pattern 1: fusionloom-<service>
+                containerInfo = allContainers.find(c => 
+                    c.name && c.name.toLowerCase().includes(`fusionloom-${serviceType.toLowerCase()}`)
+                );
+                
+                // Pattern 2: <service> (exact match)
+                if (!containerInfo) {
+                    containerInfo = allContainers.find(c => 
+                        c.name && c.name.toLowerCase() === serviceType.toLowerCase()
+                    );
+                }
+                
+                // Pattern 3: contains <service>
+                if (!containerInfo) {
+                    containerInfo = allContainers.find(c => 
+                        c.name && c.name.toLowerCase().includes(serviceType.toLowerCase())
+                    );
+                }
+                
+                if (containerInfo && containerInfo.name) {
+                    // Store the container name for future use
+                    indicator.setAttribute('data-container-name', containerInfo.name);
+                    
+                    // Show the container actions modal with the found container name
+                    showContainerActionsModal(indicator, containerInfo.name);
+                } else {
+                    // No container found
+                    showNotification(`No container found for '${serviceType}'`, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error getting container list:', error);
+                showNotification('Error getting container list', 'error');
+            });
+        
+        return;
+    }
+    
+    // If we have a container name, show the actions modal
+    showContainerActionsModal(indicator, containerName);
+}
+
+function showContainerActionsModal(indicator, containerName) {
     
     // Create a modal for container actions
     let modal = document.createElement('div');
@@ -249,21 +227,65 @@ function toggleContainerStatus(indicator) {
         
         if (stopBtn) {
             stopBtn.onclick = function() {
-                // Simulate stopping the container
-                indicator.className = 'status-indicator offline';
-                showNotification(`Container '${containerName}' stopped`, 'info');
+                // Set to warning state while stopping
+                indicator.className = 'status-indicator warning';
+                showNotification(`Stopping container '${containerName}'...`, 'info');
+                
+                // Make API call to stop the container
+                fetch(`/api/host/containers/${containerName}/stop`, {
+                    method: 'POST'
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Update UI to show container is stopped
+                        indicator.className = 'status-indicator offline';
+                        showNotification(`Container '${containerName}' stopped successfully`, 'success');
+                    } else {
+                        // Handle error
+                        indicator.className = 'status-indicator online'; // Revert to online state
+                        showNotification(`Failed to stop container '${containerName}'`, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error stopping container:', error);
+                    indicator.className = 'status-indicator online'; // Revert to online state
+                    showNotification(`Error stopping container: ${error.message}`, 'error');
+                });
+                
                 modal.remove();
             };
         }
         
         if (restartBtn) {
             restartBtn.onclick = function() {
-                // Simulate restarting the container
+                // Set to warning state while restarting
                 indicator.className = 'status-indicator warning';
-                setTimeout(() => {
-                    indicator.className = 'status-indicator online';
-                }, 2000);
-                showNotification(`Container '${containerName}' restarting...`, 'info');
+                showNotification(`Restarting container '${containerName}'...`, 'info');
+                
+                // Make API call to restart the container
+                fetch(`/api/host/containers/${containerName}/restart`, {
+                    method: 'POST'
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Update UI to show container is restarting
+                        setTimeout(() => {
+                            // Check container status after a delay
+                            checkContainerStatus();
+                            showNotification(`Container '${containerName}' restarted successfully`, 'success');
+                        }, 2000);
+                    } else {
+                        // Handle error
+                        indicator.className = 'status-indicator online'; // Revert to online state
+                        showNotification(`Failed to restart container '${containerName}'`, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error restarting container:', error);
+                    indicator.className = 'status-indicator online'; // Revert to online state
+                    showNotification(`Error restarting container: ${error.message}`, 'error');
+                });
+                
                 modal.remove();
             };
         }
@@ -272,12 +294,34 @@ function toggleContainerStatus(indicator) {
         
         if (startBtn) {
             startBtn.onclick = function() {
-                // Simulate starting the container
+                // Set to warning state while starting
                 indicator.className = 'status-indicator warning';
-                setTimeout(() => {
-                    indicator.className = 'status-indicator online';
-                }, 2000);
-                showNotification(`Container '${containerName}' starting...`, 'info');
+                showNotification(`Starting container '${containerName}'...`, 'info');
+                
+                // Make API call to start the container
+                fetch(`/api/host/containers/${containerName}/start`, {
+                    method: 'POST'
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Update UI to show container is starting
+                        setTimeout(() => {
+                            // Check container status after a delay
+                            checkContainerStatus();
+                            showNotification(`Container '${containerName}' started successfully`, 'success');
+                        }, 2000);
+                    } else {
+                        // Handle error
+                        indicator.className = 'status-indicator offline'; // Revert to offline state
+                        showNotification(`Failed to start container '${containerName}'`, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error starting container:', error);
+                    indicator.className = 'status-indicator offline'; // Revert to offline state
+                    showNotification(`Error starting container: ${error.message}`, 'error');
+                });
+                
                 modal.remove();
             };
         }
@@ -375,101 +419,255 @@ function hideAboutModal() {
 // Container Status Management
 function checkContainerStatus() {
     // This function checks the status of containers and updates the UI
-    // In a real implementation, this would make API calls to the container engine
+    // Since the webUI is inside a container, we need to use a special endpoint
+    // that can access the host's container engine
     
-    // Define known containers and their status indicators in the footer
-    const footerContainerMap = {
-        'podman': document.getElementById('podman-status'),
-        'ollama': document.getElementById('ollama-status'),
-        'sd': document.getElementById('sd-status'),
-        'tts': document.getElementById('tts-status'),
-        'stt': document.getElementById('stt-status')
-    };
+    // Get the container indicators section
+    const containerIndicators = document.getElementById('container-indicators');
+    if (!containerIndicators) return;
     
-    // Make API call to check container status
-    fetch('/api/container-status')
-        .then(response => response.json())
+    // Try to detect the container engine from the environment
+    const containerEngine = window.CONTAINER_ENGINE || 'podman';
+    
+    // Make API call to check container status from the host
+    // This endpoint is provided by the container and has access to the host's container engine
+    fetch('/api/host/containers')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`API returned ${response.status}: ${response.statusText}`);
+            }
+            return response.json().catch(err => {
+                // Handle JSON parsing errors (e.g., HTML returned instead of JSON)
+                throw new Error(`Invalid response format. The API might be returning an error page instead of JSON.`);
+            });
+        })
         .then(data => {
-            // Filter containers to only show those with 'fusionloom-' in the name
-            const fusionloomContainers = data.containers.filter(c => c.name.includes('fusionloom-'));
+            // Get all containers
+            const allContainers = data.containers || [];
             
-            // Update footer status indicators based on container status
-            Object.entries(footerContainerMap).forEach(([serviceType, indicator]) => {
-                if (!indicator) return; // Skip if no indicator
+            console.log('Detected containers:', allContainers);
+            
+            // Clear existing container indicators
+            containerIndicators.innerHTML = '';
+            
+            // Add indicators for all containers
+            allContainers.forEach(container => {
+                if (!container.name) return;
                 
-                // Look for a container with a name matching the service type
-                const containerInfo = fusionloomContainers.find(c => c.name.includes(`fusionloom-${serviceType}`));
-                if (containerInfo) {
-                    updateContainerStatusIndicator(indicator, containerInfo.status);
-                } else {
-                    // Container not found, mark as offline
-                    updateContainerStatusIndicator(indicator, 'not_found');
+                // Create a safe ID from the container name
+                const containerId = container.name.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase();
+                const displayName = container.name;
+                
+                // Create a new indicator element
+                const indicatorElement = document.createElement('div');
+                indicatorElement.className = 'fusion-status-indicator';
+                indicatorElement.innerHTML = `
+                    <span class="status-indicator" id="${containerId}-status" onclick="toggleContainerStatus(this)"></span>
+                    <span class="status-label">${displayName}</span>
+                `;
+                
+                // Add to the container indicators section
+                containerIndicators.appendChild(indicatorElement);
+                
+                // Update the status
+                const statusIndicator = document.getElementById(`${containerId}-status`);
+                if (statusIndicator) {
+                    // Store the actual container name in a data attribute
+                    statusIndicator.setAttribute('data-container-name', container.name);
+                    updateContainerStatusIndicator(statusIndicator, container.status);
                 }
             });
+            
+            // If no containers were found, show a message
+            if (allContainers.length === 0) {
+                containerIndicators.innerHTML = `
+                    <div class="fusion-status-message">
+                        No containers detected. 
+                        <button class="fusion-button small" onclick="manuallyAddContainer()">Add Container Manually</button>
+                    </div>
+                `;
+            }
         })
         .catch(error => {
             console.error('Error checking container status:', error);
             
-            // Fallback to simulated status for demo
-            simulateContainerStatus(footerContainerMap);
+            // Show error message with troubleshooting info
+            containerIndicators.innerHTML = `
+                <div class="fusion-status-message">
+                    <p>Error checking container status: ${error.message}</p>
+                    <p>This may be due to permission issues with the ${containerEngine} socket.</p>
+                    <p>Possible solutions:</p>
+                    <ul>
+                        <li>Restart FusionLoom with the correct permissions</li>
+                        <li>Check if ${containerEngine} is running</li>
+                        <li>Add containers manually</li>
+                    </ul>
+                    <button class="fusion-button small" onclick="manuallyAddContainer()">Add Container Manually</button>
+                </div>
+            `;
         });
 }
 
-function simulateContainerStatus(containerMap) {
-    // This is a fallback function that simulates container status
-    // In a real implementation, this would be replaced with actual API calls
+// Function to manually add a container
+function manuallyAddContainer() {
+    // Create modal for adding a container manually
+    let modal = document.createElement('div');
+    modal.className = 'fusion-modal';
     
-    // For demo purposes, we'll set some containers as running and others as stopped
-    Object.entries(containerMap).forEach(([serviceType, indicator]) => {
-        if (!indicator) return; // Skip if no indicator
-        
-        if (serviceType === 'podman') {
-            // Podman is always running
-            updateContainerStatusIndicator(indicator, 'running');
-        } else if (serviceType === 'ollama') {
-            // Ollama is running
-            updateContainerStatusIndicator(indicator, 'running');
-        } else if (Math.random() > 0.5) {
-            // 50% chance of other services running
-            updateContainerStatusIndicator(indicator, 'running');
-        } else {
-            // Other containers are stopped
-            updateContainerStatusIndicator(indicator, 'exited');
-        }
-    });
+    modal.innerHTML = `
+        <div class="fusion-modal-content">
+            <div class="fusion-modal-header">
+                <h2 class="fusion-modal-title">Add Container Manually</h2>
+                <button class="fusion-modal-close" onclick="this.closest('.fusion-modal').remove()">&times;</button>
+            </div>
+            <div class="fusion-modal-body">
+                <p>Enter the container details below:</p>
+                <div class="fusion-setting-item">
+                    <label for="container-name">Container Name</label>
+                    <input type="text" id="container-name" placeholder="e.g., fusionloom-ollama">
+                </div>
+                <div class="fusion-setting-item">
+                    <label for="container-status">Container Status</label>
+                    <select id="container-status">
+                        <option value="running">Running</option>
+                        <option value="exited">Stopped</option>
+                        <option value="paused">Paused</option>
+                    </select>
+                </div>
+            </div>
+            <div class="fusion-modal-footer">
+                <button class="fusion-button" onclick="addManualContainer()">Add Container</button>
+                <button class="fusion-button secondary" onclick="this.closest('.fusion-modal').remove()">Cancel</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Show the modal
+    modal.style.display = 'flex';
 }
 
-// Function to simulate endpoint reachability
-function simulateEndpointReachability(serviceEndpoints) {
-    // In a real implementation, this would make actual HTTP requests to check if endpoints are reachable
-    // For now, we'll simulate the reachability based on the URL
+// Function to add a manually configured container
+function addManualContainer() {
+    const containerName = document.getElementById('container-name').value;
+    const containerStatus = document.getElementById('container-status').value;
     
-    Object.entries(serviceEndpoints).forEach(([serviceName, data]) => {
+    if (!containerName) {
+        showNotification('Container name is required', 'error');
+        return;
+    }
+    
+    // Get the container indicators section
+    const containerIndicators = document.getElementById('container-indicators');
+    if (!containerIndicators) return;
+    
+    // Create a safe ID from the container name
+    const containerId = containerName.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase();
+    
+    // Create a new indicator element
+    const indicatorElement = document.createElement('div');
+    indicatorElement.className = 'fusion-status-indicator';
+    indicatorElement.innerHTML = `
+        <span class="status-indicator" id="${containerId}-status" onclick="toggleContainerStatus(this)"></span>
+        <span class="status-label">${containerName}</span>
+    `;
+    
+    // Add to the container indicators section
+    containerIndicators.appendChild(indicatorElement);
+    
+    // Update the status
+    const statusIndicator = document.getElementById(`${containerId}-status`);
+    if (statusIndicator) {
+        // Store the actual container name in a data attribute
+        statusIndicator.setAttribute('data-container-name', containerName);
+        updateContainerStatusIndicator(statusIndicator, containerStatus);
+    }
+    
+    // Close the modal
+    const modal = document.querySelector('.fusion-modal');
+    if (modal) {
+        modal.remove();
+    }
+    
+    // Show success message
+    showNotification(`Container '${containerName}' added successfully`, 'success');
+}
+
+// Function to check endpoint reachability
+async function checkEndpointReachability(serviceEndpoints) {
+    // This function makes actual HTTP requests to check if endpoints are reachable
+    
+    // Process each endpoint in parallel
+    const checkPromises = Object.entries(serviceEndpoints).map(async ([serviceName, data]) => {
         const { indicator, urlInput } = data;
         const url = urlInput.value;
         
-        // Check if the endpoint is reachable
-        const isLocal = url.includes('localhost') || url.includes('127.0.0.1');
+        // Set to testing state while checking
+        indicator.classList.remove('online', 'offline');
+        indicator.classList.add('testing');
         
-        // Simulate reachability - local endpoints are more likely to be reachable
-        let isReachable;
-        if (isLocal) {
-            // 80% chance of local endpoints being reachable
-            isReachable = Math.random() < 0.8;
-        } else {
-            // 40% chance of external endpoints being reachable
-            isReachable = Math.random() < 0.4;
+        // Check if the endpoint is disabled
+        if (indicator.classList.contains('disabled')) {
+            return;
         }
         
-        // Update the status indicator based on reachability
-        if (isReachable) {
-            indicator.classList.remove('offline', 'testing');
-            indicator.classList.add('online');
-        } else {
+        try {
+            // For API endpoints, we'll use a HEAD request when possible to minimize data transfer
+            // Some APIs don't support HEAD, so we'll fall back to GET with a timeout
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 second timeout
+            
+            // Determine the appropriate URL to check
+            let checkUrl = url;
+            
+            // For some APIs, we need to check a specific endpoint that doesn't require authentication
+            if (url.includes('api.openai.com')) {
+                checkUrl = 'https://api.openai.com/v1';
+            } else if (url.includes('api.anthropic.com')) {
+                checkUrl = 'https://api.anthropic.com/v1/models';
+            } else if (url.includes('generativelanguage.googleapis.com')) {
+                checkUrl = 'https://generativelanguage.googleapis.com/v1/models';
+            }
+            
+            // Try HEAD request first
+            let response;
+            try {
+                response = await fetch(checkUrl, {
+                    method: 'HEAD',
+                    mode: 'no-cors', // This allows checking cross-origin endpoints
+                    signal: controller.signal
+                });
+            } catch (headError) {
+                // If HEAD fails, try GET
+                response = await fetch(checkUrl, {
+                    method: 'GET',
+                    mode: 'no-cors', // This allows checking cross-origin endpoints
+                    signal: controller.signal
+                });
+            }
+            
+            // Clear the timeout
+            clearTimeout(timeoutId);
+            
+            // Update the status indicator based on response
+            if (response.ok || response.status === 0) { // status 0 is for no-cors mode
+                indicator.classList.remove('offline', 'testing');
+                indicator.classList.add('online');
+            } else {
+                indicator.classList.remove('online', 'testing');
+                indicator.classList.add('offline');
+            }
+        } catch (error) {
+            console.error(`Error checking endpoint ${url}:`, error);
+            // Update the status indicator to offline
             indicator.classList.remove('online', 'testing');
             indicator.classList.add('offline');
         }
     });
+    
+    // Wait for all checks to complete
+    await Promise.all(checkPromises);
 }
 
 function updateContainerStatusIndicator(indicator, status) {
@@ -635,12 +833,14 @@ function updateConnectionStatus() {
     // This function handles the initial setup of service endpoint status indicators
     // It separates the enabled/disabled state from the reachability (online/offline) state
     
-    // Get all status indicators
-    const statusIndicators = document.querySelectorAll('.status-indicator');
+    // Get all status indicators in the settings table (service endpoints)
+    const serviceStatusIndicators = document.querySelectorAll('.fusion-table .status-indicator');
     
-    // For demonstration, we'll set LLM services as disabled by default
-    // Other services will be enabled but their reachability will be checked separately
-    statusIndicators.forEach(indicator => {
+    // Load saved settings to determine which services should be enabled
+    const settings = JSON.parse(localStorage.getItem('fusionloom_settings')) || getDefaultSettings();
+    
+    // Process each service endpoint indicator
+    serviceStatusIndicators.forEach(indicator => {
         const row = indicator.closest('tr');
         if (!row) return;
         
@@ -650,32 +850,45 @@ function updateConnectionStatus() {
         const nameInput = row.querySelector('.name-input');
         const serviceName = nameInput ? nameInput.value : '';
         
-        // Check if this is an LLM service
-        const isLLMService = serviceName.includes('LLM') || 
-                            serviceName.includes('API') || 
-                            serviceName.includes('Anthropic') || 
-                            serviceName.includes('OpenAI') ||
-                            serviceName.includes('Gemini') ||
-                            serviceName.includes('Grok');
+        // Get the endpoint ID from the input ID (e.g., "ollama_api" -> "ollama")
+        const endpointId = endpointInput.id.replace('_api', '');
         
-        // If it's an LLM service, keep it disabled by default
-        if (isLLMService) {
-            indicator.classList.remove('online', 'offline');
-            indicator.classList.add('disabled');
-        } else {
-            // For other services, set them as enabled but check reachability
+        // Check if this endpoint is enabled in settings
+        // By default, most external APIs are disabled, local services are enabled
+        const isLocalService = endpointInput.value.includes('localhost') || 
+                              endpointInput.value.includes('127.0.0.1');
+        
+        // Determine if the service should be enabled
+        // For this implementation, we'll enable local services by default
+        // and disable external services unless they have an API key set
+        let shouldBeEnabled = isLocalService;
+        
+        // If it's an external service with an API key in settings, enable it
+        if (!isLocalService) {
+            const apiKeyId = `${endpointId}_key`;
+            const hasApiKey = settings[apiKeyId] && settings[apiKeyId].length > 0;
+            shouldBeEnabled = hasApiKey;
+        }
+        
+        // Set the initial state based on whether it should be enabled
+        if (shouldBeEnabled) {
+            // Service is enabled, but we need to check reachability
             indicator.classList.remove('disabled');
             
             // Default to offline until reachability is checked
             indicator.classList.remove('online');
             indicator.classList.add('offline');
+        } else {
+            // Service is disabled
+            indicator.classList.remove('online', 'offline');
+            indicator.classList.add('disabled');
         }
     });
     
     // Create a mapping of enabled service endpoints for reachability checking
     const enabledEndpoints = {};
     
-    document.querySelectorAll('.status-indicator:not(.disabled)').forEach(indicator => {
+    document.querySelectorAll('.fusion-table .status-indicator:not(.disabled)').forEach(indicator => {
         const row = indicator.closest('tr');
         if (!row) return;
         
@@ -695,9 +908,10 @@ function updateConnectionStatus() {
     });
     
     // Check reachability of enabled endpoints
-    simulateEndpointReachability(enabledEndpoints);
+    checkEndpointReachability(enabledEndpoints);
     
     // After setting service status, check container status in the footer
+    // This is separate from service endpoints - containers are shown in the footer
     checkContainerStatus();
 }
 
@@ -736,14 +950,11 @@ function testConnections() {
         }
     });
     
-    // Simulate a delay for testing
-    setTimeout(() => {
-        // Check reachability of enabled endpoints
-        simulateEndpointReachability(serviceEndpoints);
-        
+    // Check reachability of enabled endpoints
+    checkEndpointReachability(serviceEndpoints).then(() => {
         // Show completion notification
         showNotification('Connection test complete', 'success');
-    }, 1500);
+    });
 }
 
 // Add Endpoint Modal
@@ -1115,7 +1326,7 @@ function toggleEndpointStatus(statusIndicator) {
                 };
                 
                 // Check reachability
-                simulateEndpointReachability(endpoint);
+                checkEndpointReachability(endpoint);
             }
             
             // Hide the modal

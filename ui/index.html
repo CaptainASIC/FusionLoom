@@ -545,29 +545,13 @@
         </div>
     </div>
     
-    <!-- Status Bar -->
+    <!-- Status Bar - Containers -->
     <div class="fusion-status-bar">
-        <div class="fusion-status-indicators">
-            <div class="fusion-status-indicator">
-                <span class="status-indicator disabled" id="podman-status" onclick="toggleContainerStatus(this)"></span>
-                <span class="status-label">Podman</span>
-            </div>
-            <div class="fusion-status-indicator">
-                <span class="status-indicator disabled" id="ollama-status" onclick="toggleContainerStatus(this)"></span>
-                <span class="status-label">Ollama</span>
-            </div>
-            <div class="fusion-status-indicator">
-                <span class="status-indicator disabled" id="sd-status" onclick="toggleContainerStatus(this)"></span>
-                <span class="status-label">Stable Diffusion</span>
-            </div>
-            <div class="fusion-status-indicator">
-                <span class="status-indicator disabled" id="tts-status" onclick="toggleContainerStatus(this)"></span>
-                <span class="status-label">TTS</span>
-            </div>
-            <div class="fusion-status-indicator">
-                <span class="status-indicator disabled" id="stt-status" onclick="toggleContainerStatus(this)"></span>
-                <span class="status-label">STT</span>
-            </div>
+        <div class="fusion-status-title">
+            <i class="fas fa-cube"></i> Containers
+        </div>
+        <div class="fusion-status-indicators" id="container-indicators">
+            <!-- Containers will be dynamically added here when detected -->
         </div>
     </div>
     

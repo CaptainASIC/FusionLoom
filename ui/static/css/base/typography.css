@@ -1,0 +1,250 @@
+/* FusionLoom v0.2 - Typography */
+
+/* Base Typography */
+body {
+  font-family: var(--fusion-font-family);
+  font-size: var(--fusion-font-size-md);
+  line-height: 1.5;
+  color: var(--fusion-text);
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  margin-bottom: var(--fusion-space-md);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--fusion-text);
+}
+
+h1 {
+  font-size: var(--fusion-font-size-xxl);
+}
+
+h2 {
+  font-size: var(--fusion-font-size-xl);
+}
+
+h3 {
+  font-size: var(--fusion-font-size-lg);
+}
+
+h4 {
+  font-size: var(--fusion-font-size-md);
+  font-weight: 700;
+}
+
+h5 {
+  font-size: var(--fusion-font-size-md);
+}
+
+h6 {
+  font-size: var(--fusion-font-size-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Paragraphs */
+p {
+  margin-bottom: var(--fusion-space-md);
+}
+
+/* Links */
+a {
+  color: var(--fusion-accent);
+  text-decoration: none;
+  transition: color var(--fusion-transition-fast);
+}
+
+a:hover {
+  color: var(--fusion-accent-hover);
+  text-decoration: underline;
+}
+
+/* Lists */
+ul, ol {
+  margin-bottom: var(--fusion-space-md);
+  padding-left: var(--fusion-space-lg);
+}
+
+ul {
+  list-style-type: disc;
+}
+
+ol {
+  list-style-type: decimal;
+}
+
+li {
+  margin-bottom: var(--fusion-space-xs);
+}
+
+/* Inline elements */
+strong, b {
+  font-weight: 700;
+}
+
+em, i {
+  font-style: italic;
+}
+
+small {
+  font-size: var(--fusion-font-size-xs);
+}
+
+/* Code */
+code, pre {
+  font-family: monospace;
+  background-color: var(--fusion-bg-secondary);
+  border-radius: var(--fusion-border-radius-sm);
+}
+
+code {
+  padding: 0.2em 0.4em;
+  font-size: 0.9em;
+}
+
+pre {
+  padding: var(--fusion-space-md);
+  margin-bottom: var(--fusion-space-md);
+  overflow-x: auto;
+}
+
+pre code {
+  padding: 0;
+  background-color: transparent;
+}
+
+/* Blockquote */
+blockquote {
+  padding: var(--fusion-space-md);
+  margin-bottom: var(--fusion-space-md);
+  border-left: 4px solid var(--fusion-accent);
+  background-color: var(--fusion-bg-secondary);
+}
+
+blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+/* Horizontal rule */
+hr {
+  margin: var(--fusion-space-lg) 0;
+  border: 0;
+  height: 1px;
+  background-color: var(--fusion-border);
+}
+
+/* Text utilities */
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-justify {
+  text-align: justify;
+}
+
+.text-uppercase {
+  text-transform: uppercase;
+}
+
+.text-lowercase {
+  text-transform: lowercase;
+}
+
+.text-capitalize {
+  text-transform: capitalize;
+}
+
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.text-break {
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.text-nowrap {
+  white-space: nowrap;
+}
+
+/* Font weights */
+.font-light {
+  font-weight: 300;
+}
+
+.font-normal {
+  font-weight: 400;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+/* Font sizes */
+.text-xs {
+  font-size: var(--fusion-font-size-xs);
+}
+
+.text-sm {
+  font-size: var(--fusion-font-size-sm);
+}
+
+.text-md {
+  font-size: var(--fusion-font-size-md);
+}
+
+.text-lg {
+  font-size: var(--fusion-font-size-lg);
+}
+
+.text-xl {
+  font-size: var(--fusion-font-size-xl);
+}
+
+.text-xxl {
+  font-size: var(--fusion-font-size-xxl);
+}
+
+/* Text colors */
+.text-primary {
+  color: var(--fusion-primary);
+}
+
+.text-secondary {
+  color: var(--fusion-text-secondary);
+}
+
+.text-accent {
+  color: var(--fusion-accent);
+}
+
+.text-success {
+  color: var(--fusion-success);
+}
+
+.text-warning {
+  color: var(--fusion-warning);
+}
+
+.text-danger {
+  color: var(--fusion-danger);
+}

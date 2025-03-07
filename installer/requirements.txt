@@ -5,6 +5,7 @@ py-cpuinfo>=9.0.0
 gputil>=1.4.0; platform_machine != "aarch64" and platform_machine != "armv7l" and platform_machine != "arm64"
 docker>=6.0.0; platform_machine != "aarch64" and platform_machine != "armv7l" and platform_machine != "arm64"
 docker>=5.0.0; platform_machine == "aarch64" or platform_machine == "armv7l" or platform_machine == "arm64"
-# podman-py is optional and only used for Podman container detection
-# If you're using Podman and want to install it, you can try:
-# pip install podman-py
+
+# Note: podman-py is not included as a dependency as it's not compatible with all platforms
+# If you're using Podman and want container detection, you can manually install it with:
+# pip install podman-py==3.0.0

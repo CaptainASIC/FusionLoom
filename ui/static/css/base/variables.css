@@ -1,0 +1,72 @@
+/* FusionLoom v0.2 - CSS Variables */
+
+:root {
+  /* Default Dark Theme */
+  --fusion-bg: #1a1a1a;
+  --fusion-bg-secondary: #2d2d2d;
+  --fusion-input-bg: #333333;
+  --fusion-input-border: #4a4a4a;
+  --fusion-input-focus: #3498db;
+  --fusion-primary: #2c3e50;
+  --fusion-secondary: #34495e;
+  --fusion-accent: #3498db;
+  --fusion-accent-hover: #2980b9;
+  --fusion-text: #ecf0f1;
+  --fusion-text-secondary: #bdc3c7;
+  --fusion-border: #7f8c8d;
+  --fusion-success: #2ecc71;
+  --fusion-warning: #f39c12;
+  --fusion-danger: #e74c3c;
+  --fusion-sidebar-width: 250px;
+  
+  /* Spacing */
+  --fusion-space-xs: 4px;
+  --fusion-space-sm: 8px;
+  --fusion-space-md: 16px;
+  --fusion-space-lg: 24px;
+  --fusion-space-xl: 32px;
+  
+  /* Typography */
+  --fusion-font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --fusion-font-size-xs: 12px;
+  --fusion-font-size-sm: 14px;
+  --fusion-font-size-md: 16px;
+  --fusion-font-size-lg: 18px;
+  --fusion-font-size-xl: 24px;
+  --fusion-font-size-xxl: 32px;
+  
+  /* Border Radius */
+  --fusion-border-radius-sm: 4px;
+  --fusion-border-radius-md: 8px;
+  --fusion-border-radius-lg: 12px;
+  --fusion-border-radius-xl: 16px;
+  --fusion-border-radius-circle: 50%;
+  
+  /* Shadows */
+  --fusion-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  --fusion-shadow-md: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  --fusion-shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  --fusion-shadow-xl: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  
+  /* Transitions */
+  --fusion-transition-fast: 0.2s ease;
+  --fusion-transition-medium: 0.3s ease;
+  --fusion-transition-slow: 0.5s ease;
+  
+  /* Z-index layers */
+  --fusion-z-index-base: 1;
+  --fusion-z-index-dropdown: 1000;
+  --fusion-z-index-sticky: 1100;
+  --fusion-z-index-fixed: 1200;
+  --fusion-z-index-modal-backdrop: 1300;
+  --fusion-z-index-modal: 1400;
+  --fusion-z-index-popover: 1500;
+  --fusion-z-index-tooltip: 1600;
+  --fusion-z-index-notification: 1700;
+}
+
+/* Media query variables */
+@custom-media --fusion-mobile (max-width: 576px);
+@custom-media --fusion-tablet (max-width: 768px);
+@custom-media --fusion-desktop (max-width: 992px);
+@custom-media --fusion-large-desktop (max-width: 1200px);
