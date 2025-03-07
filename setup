@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# Simple wrapper script to call setup.sh
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Execute the setup.sh script
+"${SCRIPT_DIR}/setup.sh"

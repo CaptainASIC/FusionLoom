@@ -6,8 +6,8 @@ services:
     container_name: fusionloom-webui
     volumes:
       - ./data:/app/backend/data
-      - /Users/spresgraves/Repositories/FusionLoom/ui:/app/build
-      - /run/podman/podman.sock:/var/run/docker.sock:ro  # Mount Podman socket as Docker socket for compatibility
+      - /run/media/asic/Data/Repositories/FusionLoom/ui:/app/build
+      # Removed Podman socket mount due to permission issues
     ports:
       - "8080:8080"
     environment:

@@ -2,7 +2,7 @@ version: "3"
 
 services:
   ollama:
-    image: ollama/ollama:rocm
+    image: docker.io/ollama/ollama:rocm
     container_name: fusionloom-ollama
     devices:
       - /dev/kfd:/dev/kfd

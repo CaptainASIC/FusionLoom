@@ -31,4 +31,5 @@ pip install -r "${SCRIPT_DIR}/requirements.txt"
 
 # Run the installer
 echo "Starting FusionLoom Installer..."
-streamlit run "${SCRIPT_DIR}/fusionloom_installer.py" -- --server.headless=false --server.port=8501
+# Use the full path to streamlit in the virtual environment
+"${SCRIPT_DIR}/venv/bin/streamlit" run "${SCRIPT_DIR}/fusionloom_installer.py" -- --server.headless=false --server.port=8501

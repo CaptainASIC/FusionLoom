@@ -41,6 +41,8 @@ create_network_if_needed() {
         elif [ "$engine" = "docker" ]; then
             docker network create fusionloom_net
         fi
+    else
+        echo "Network fusionloom_net already exists, skipping creation."
     fi
 }
 

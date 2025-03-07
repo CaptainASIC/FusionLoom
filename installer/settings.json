@@ -1,7 +1,7 @@
 {
-  "platform": "apple_silicon",
-  "gpu_vendor": "apple",
-  "gpu_memory": "8",
+  "platform": "amd",
+  "gpu_vendor": "amd",
+  "gpu_memory": "24",
   "acceleration": true,
   "power_mode": "performance",
   "container_engine": "podman",

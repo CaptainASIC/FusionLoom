@@ -24,11 +24,15 @@ if [ "${CONTAINER_ENGINE}" = "docker" ]; then
     if ! docker network ls | grep -q "fusionloom_net"; then
         echo "Creating fusionloom_net network..."
         docker network create fusionloom_net
+    else
+        echo "Network fusionloom_net already exists, skipping creation."
     fi
 elif [ "${CONTAINER_ENGINE}" = "podman" ]; then
     if ! podman network ls | grep -q "fusionloom_net"; then
         echo "Creating fusionloom_net network..."
         podman network create fusionloom_net
+    else
+        echo "Network fusionloom_net already exists, skipping creation."
     fi
 fi
 
