@@ -1,30 +1,47 @@
 #!/bin/bash
 
-# FusionLoom Arch Linux Setup Script
-# This script provides a workaround for Arch Linux systems where podman-py is not compatible
+# FusionLoom macOS Setup Script
+# This script provides a setup for macOS systems
 
 # Capture the current working directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Check if we're on Arch Linux
-if [ ! -f /etc/arch-release ]; then
-    echo "This script is specifically for Arch Linux systems."
+# Check if we're on macOS
+if [ "$(uname)" != "Darwin" ]; then
+    echo "This script is specifically for macOS systems."
     echo "For other systems, please use the standard setup.sh script."
     exit 1
 fi
 
-echo "Setting up FusionLoom for Arch Linux..."
+echo "Setting up FusionLoom for macOS..."
 
-# Check for Podman
-if command -v podman &> /dev/null; then
-    CONTAINER_ENGINE="podman"
-    echo "Podman detected, will use Podman for containers"
-elif command -v docker &> /dev/null; then
+# Set up colors for output
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+YELLOW='\033[1;33m'
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
+# Detect if Docker or Podman is installed
+if command -v docker &> /dev/null; then
     CONTAINER_ENGINE="docker"
-    echo "Docker detected, will use Docker for containers"
+    echo -e "${GREEN}Docker detected, will use Docker for containers${NC}"
+elif command -v podman &> /dev/null; then
+    CONTAINER_ENGINE="podman"
+    echo -e "${GREEN}Podman detected, will use Podman for containers${NC}"
 else
-    echo "Neither Docker nor Podman found. Please install one of them first."
-    exit 1
+    echo -e "${YELLOW}No container engine detected. Installing Podman...${NC}"
+    if command -v brew &> /dev/null; then
+        brew install podman
+        CONTAINER_ENGINE="podman"
+        echo -e "${GREEN}Podman installed successfully${NC}"
+    else
+        echo -e "${YELLOW}Homebrew not found. Installing Homebrew...${NC}"
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        brew install podman
+        CONTAINER_ENGINE="podman"
+        echo -e "${GREEN}Podman installed successfully${NC}"
+    fi
 fi
 
 # Create necessary directories
@@ -40,12 +57,12 @@ if [ ! -d "${SCRIPT_DIR}/ui" ]; then
     mkdir -p "${SCRIPT_DIR}/ui/static/img"
 fi
 
-# Create a minimal environment file
+# Create initial environment file
 ENV_FILE="${SCRIPT_DIR}/.env"
-echo "Creating environment file..."
+echo -e "${BLUE}Creating initial environment file...${NC}"
 cat > "$ENV_FILE" << EOL
 # FusionLoom Environment Configuration
-FUSION_LOOM_VERSION=0.1
+FUSION_LOOM_VERSION=0.2
 CONTAINER_ENGINE=${CONTAINER_ENGINE}
 
 # Data directories
@@ -90,10 +107,10 @@ auto_start = true
 container_engine = ${CONTAINER_ENGINE}
 
 [Hardware]
-gpu_vendor = auto
+gpu_vendor = apple
 gpu_memory_limit = 8G
 acceleration = true
-platform = auto
+platform = apple_silicon
 power_mode = balanced
 EOL
 
@@ -101,12 +118,25 @@ EOL
 echo "Setting up Ollama..."
 mkdir -p "${SCRIPT_DIR}/data/ollama"
 
-# Copy the appropriate compose file based on architecture
-ARCH=$(uname -m)
-if [ "${ARCH}" = "x86_64" ]; then
-    PLATFORM_DIR="amd"
-elif [ "${ARCH}" = "aarch64" ]; then
-    PLATFORM_DIR="arm"
+# Detect platform
+PLATFORM="unknown"
+if [[ $(uname -m) == "arm64" ]]; then
+    PLATFORM="apple_silicon"
+    echo -e "${GREEN}Detected Apple Silicon (ARM64)${NC}"
+elif [[ $(uname -m) == "x86_64" ]]; then
+    PLATFORM="intel_mac"
+    echo -e "${GREEN}Detected Intel Mac (x86_64)${NC}"
+else
+    echo -e "${YELLOW}Unknown macOS platform: $(uname -m), defaulting to Intel Mac${NC}"
+    PLATFORM="intel_mac"
+fi
+
+# Add platform to environment file
+echo "PLATFORM=${PLATFORM}" >> "$ENV_FILE"
+
+# Copy the appropriate compose file
+if [ "${PLATFORM}" = "apple_silicon" ]; then
+    PLATFORM_DIR="apple"
 else
     PLATFORM_DIR="x86"
 fi
@@ -121,13 +151,29 @@ else
     cp "${SCRIPT_DIR}/compose/platforms/x86/ollama-compose.yaml" "${SCRIPT_DIR}/data/ollama/docker-compose.yaml"
 fi
 
-# Make the launch and stop scripts executable
+# Check if Python is installed
+if command -v python3 &> /dev/null; then
+    PYTHON_CMD="python3"
+elif command -v python &> /dev/null; then
+    PYTHON_CMD="python"
+else
+    echo -e "${YELLOW}Python not found. Installing Python...${NC}"
+    brew install python
+    PYTHON_CMD="python3"
+    echo -e "${GREEN}Python installed successfully${NC}"
+fi
+
+# Install required Python packages
+echo -e "${BLUE}Installing requirements...${NC}"
+$PYTHON_CMD -m pip install streamlit>=1.28.0 pyyaml>=6.0 psutil>=5.9.0 py-cpuinfo>=9.0.0 gputil>=1.4.0 docker>=6.0.0
+
+# Make scripts executable
 chmod +x "${SCRIPT_DIR}/launch.sh"
 chmod +x "${SCRIPT_DIR}/stop.sh"
 chmod +x "${SCRIPT_DIR}/launch-ollama.sh"
 chmod +x "${SCRIPT_DIR}/stop-ollama.sh"
 
-echo "FusionLoom setup for Arch Linux completed successfully!"
+echo -e "${GREEN}FusionLoom setup for macOS completed successfully!${NC}"
 
 # Ask if the user wants to launch the application
 echo "Would you like to launch FusionLoom now?"

@@ -33,3 +33,11 @@ pip install -r "${SCRIPT_DIR}/requirements.txt"
 echo "Starting FusionLoom Installer..."
 # Use the full path to streamlit in the virtual environment
 "${SCRIPT_DIR}/venv/bin/streamlit" run "${SCRIPT_DIR}/fusionloom_installer.py" -- --server.headless=false --server.port=8501
+
+# Check the exit code
+INSTALLER_EXIT_CODE=$?
+if [ $INSTALLER_EXIT_CODE -eq 0 ]; then
+    echo "Installer completed successfully."
+else
+    echo "Installer exited with code: $INSTALLER_EXIT_CODE"
+fi

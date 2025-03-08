@@ -689,6 +689,13 @@ def main():
                     2. Access the web interface at http://localhost:8080
                     3. Stop FusionLoom by running `./stop.sh` in the FusionLoom directory
                     """)
+                    
+                    # Add an exit button
+                    if st.button("Exit Installer", type="primary"):
+                        st.success("Configuration completed. Exiting installer...")
+                        # Exit the Streamlit app
+                        import os
+                        os._exit(0)
                 else:
                     st.error("Failed to install containers. Please check the logs for more information.")
             else:

@@ -29,31 +29,51 @@ Fusion Loom is a comprehensive platform that weaves together multiple AI technol
 
 ## Installation
 
-### Graphical Installer (Recommended)
+### System Installation (Recommended)
 
-FusionLoom now includes a graphical installer that automatically detects your hardware and configures the application accordingly:
+FusionLoom now includes a system installer that installs the application to standard system locations:
+
+- `/opt/FusionLoom` on Linux systems
+- `/Applications/FusionLoom` on macOS
+
+This approach ensures consistent paths and better cross-platform compatibility:
 
 1. Clone the repository:  
    ```bash
    git clone https://github.com/CaptainASIC/FusionLoom
    ```
 
-2. Run the setup script:  
+2. Run the installer script:  
    ```bash
    cd FusionLoom
-   ./setup.sh
+   sudo ./installer.sh  # Use sudo on Linux
    ```
 
-3. Follow the graphical installer prompts to configure FusionLoom for your system.
-
-4. After installation completes, launch FusionLoom:  
+3. After installation completes, launch FusionLoom using one of these methods:
+   
+   **On Linux:**
    ```bash
-   ./launch.sh
+   # Using the command-line launcher
+   fusionloom-start
+   
+   # Or directly
+   /opt/FusionLoom/launch.sh
+   
+   # Or from your application menu
+   ```
+   
+   **On macOS:**
+   ```bash
+   # Using the application
+   open /Applications/FusionLoom/FusionLoom.app
+   
+   # Or directly
+   /Applications/FusionLoom/launch.sh
    ```
 
-### Manual Installation
+### Development Installation
 
-If you prefer manual installation:
+If you prefer to run FusionLoom from the source directory (for development or testing):
 
 1. Clone the repository:  
    ```bash
@@ -62,19 +82,19 @@ If you prefer manual installation:
 
 2. Run the setup script (platform-specific):  
    
-   **Linux/NVIDIA:**
+   **For most Linux distributions:**
    ```bash
    ./setup.sh
    ```
    
-   **macOS/Apple Silicon:**
+   **For Arch Linux:**
    ```bash
-   ./setup.sh
+   ./arch-setup.sh
    ```
    
-   **Jetson Devices:**
+   **For macOS:**
    ```bash
-   ./setup.sh
+   ./macos-setup.sh
    ```
 
 3. Run the application:  

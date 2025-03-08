@@ -250,4 +250,14 @@ EOL
 fi
 
 echo "FusionLoom v${FUSION_LOOM_VERSION} setup completed successfully!"
-echo "Run ./launch.sh to start the application."
+
+# Ask if the user wants to launch the application
+echo "Would you like to launch FusionLoom now?"
+read -p "Launch now? (y/n): " LAUNCH_NOW
+
+if [ "$LAUNCH_NOW" = "y" ] || [ "$LAUNCH_NOW" = "Y" ]; then
+    echo "Launching FusionLoom..."
+    "${SCRIPT_DIR}/launch.sh"
+else
+    echo "You can start FusionLoom by running: ./launch.sh"
+fi
