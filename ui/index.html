@@ -19,7 +19,7 @@
         <div class="fusion-sidebar-header">
             <img src="static/img/fusion-logo.svg" alt="FusionLoom Logo" class="fusion-logo">
             <h1>FusionLoom</h1>
-            <p>v0.1</p>
+            <p>v0.3</p>
         </div>
         
         <div class="fusion-sidebar-menu">
@@ -105,10 +105,292 @@
             </div>
         </div>
         
-        <!-- LLM Page (placeholder) -->
-        <div id="page-llm" class="fusion-page" style="display: none;">
+        <!-- LLM Page -->
+        <div id="page-llm" class="fusion-page llm-page" style="display: none;">
             <h1>Language Models</h1>
-            <p>This page will contain the LLM interface in future versions.</p>
+            
+            <!-- Service Tabs -->
+            <div class="llm-service-tabs">
+                <div class="llm-service-tab active" data-provider="ollama">
+                    <i class="fas fa-brain"></i>
+                    <span>Ollama</span>
+                </div>
+                <div class="llm-service-tab" data-provider="claude">
+                    <i class="fas fa-comment-dots"></i>
+                    <span>Claude</span>
+                </div>
+                <div class="llm-service-tab" data-provider="chatgpt">
+                    <i class="fas fa-robot"></i>
+                    <span>ChatGPT</span>
+                </div>
+                <div class="llm-service-tab" data-provider="gemini">
+                    <i class="fas fa-star"></i>
+                    <span>Gemini</span>
+                </div>
+                <div class="llm-service-tab" data-provider="local-services">
+                    <i class="fas fa-server"></i>
+                    <span>Local Services</span>
+                </div>
+            </div>
+            
+            <!-- Ollama Provider -->
+            <div id="ollama-container" class="llm-provider-container">
+                <div class="llm-chat-interface">
+                    <!-- Sidebar -->
+                    <div class="llm-sidebar">
+                        <!-- Chat History -->
+                        <div class="llm-history-header">
+                            <div class="llm-history-title">Chat History</div>
+                            <button id="llm-new-chat" class="llm-new-chat-button">New Chat</button>
+                        </div>
+                        <div id="llm-history-list" class="llm-history-list">
+                            <!-- Chat history items will be added here -->
+                        </div>
+                        
+                        <!-- Model Selection -->
+                        <div class="llm-model-header">
+                            <div class="llm-model-title">Models</div>
+                        </div>
+                        <div id="ollama-model-container" class="llm-model-selection">
+                            <!-- Model options will be added here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Main Chat Area -->
+                    <div class="llm-main">
+                        <!-- Chat Header -->
+                        <div class="llm-chat-header">
+                            <div class="llm-chat-title">Ollama Chat</div>
+                            <div class="llm-chat-actions">
+                                <button class="llm-chat-action-button" title="Export Chat">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                <button class="llm-chat-action-button" title="Clear Chat">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Chat Display -->
+                        <div id="llm-chat-display" class="llm-chat-display">
+                            <!-- Messages will be added here -->
+                        </div>
+                        
+                        <!-- Chat Input -->
+                        <div class="llm-chat-input">
+                            <div class="llm-message-input-container">
+                                <textarea id="llm-message-input" class="llm-message-input" placeholder="Type your message here..."></textarea>
+                            </div>
+                            <div class="llm-input-actions">
+                                <button id="llm-attach-button" class="llm-input-action-button" title="Attach File">
+                                    <i class="fas fa-paperclip"></i>
+                                </button>
+                                <button id="llm-send-button" class="llm-send-button">
+                                    Send <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Claude Provider -->
+            <div id="claude-container" class="llm-provider-container" style="display: none;">
+                <div class="llm-chat-interface">
+                    <!-- Sidebar -->
+                    <div class="llm-sidebar">
+                        <!-- Chat History -->
+                        <div class="llm-history-header">
+                            <div class="llm-history-title">Chat History</div>
+                            <button id="claude-new-chat" class="llm-new-chat-button">New Chat</button>
+                        </div>
+                        <div id="claude-history-list" class="llm-history-list">
+                            <!-- Chat history items will be added here -->
+                        </div>
+                        
+                        <!-- Model Selection -->
+                        <div class="llm-model-header">
+                            <div class="llm-model-title">Models</div>
+                        </div>
+                        <div id="claude-model-container" class="llm-model-selection">
+                            <!-- Model options will be added here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Main Chat Area -->
+                    <div class="llm-main">
+                        <!-- Chat Header -->
+                        <div class="llm-chat-header">
+                            <div class="llm-chat-title">Claude Chat</div>
+                            <div class="llm-chat-actions">
+                                <button class="llm-chat-action-button" title="Export Chat">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                <button class="llm-chat-action-button" title="Clear Chat">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Chat Display -->
+                        <div id="claude-chat-display" class="llm-chat-display">
+                            <!-- Messages will be added here -->
+                        </div>
+                        
+                        <!-- Chat Input -->
+                        <div class="llm-chat-input">
+                            <div class="llm-message-input-container">
+                                <textarea id="claude-message-input" class="llm-message-input" placeholder="Type your message here..."></textarea>
+                            </div>
+                            <div class="llm-input-actions">
+                                <button id="claude-attach-button" class="llm-input-action-button" title="Attach File">
+                                    <i class="fas fa-paperclip"></i>
+                                </button>
+                                <button id="claude-send-button" class="llm-send-button">
+                                    Send <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ChatGPT Provider -->
+            <div id="chatgpt-container" class="llm-provider-container" style="display: none;">
+                <div class="llm-chat-interface">
+                    <!-- Sidebar -->
+                    <div class="llm-sidebar">
+                        <!-- Chat History -->
+                        <div class="llm-history-header">
+                            <div class="llm-history-title">Chat History</div>
+                            <button id="chatgpt-new-chat" class="llm-new-chat-button">New Chat</button>
+                        </div>
+                        <div id="chatgpt-history-list" class="llm-history-list">
+                            <!-- Chat history items will be added here -->
+                        </div>
+                        
+                        <!-- Model Selection -->
+                        <div class="llm-model-header">
+                            <div class="llm-model-title">Models</div>
+                        </div>
+                        <div id="chatgpt-model-container" class="llm-model-selection">
+                            <!-- Model options will be added here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Main Chat Area -->
+                    <div class="llm-main">
+                        <!-- Chat Header -->
+                        <div class="llm-chat-header">
+                            <div class="llm-chat-title">ChatGPT Chat</div>
+                            <div class="llm-chat-actions">
+                                <button class="llm-chat-action-button" title="Export Chat">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                <button class="llm-chat-action-button" title="Clear Chat">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Chat Display -->
+                        <div id="chatgpt-chat-display" class="llm-chat-display">
+                            <!-- Messages will be added here -->
+                        </div>
+                        
+                        <!-- Chat Input -->
+                        <div class="llm-chat-input">
+                            <div class="llm-message-input-container">
+                                <textarea id="chatgpt-message-input" class="llm-message-input" placeholder="Type your message here..."></textarea>
+                            </div>
+                            <div class="llm-input-actions">
+                                <button id="chatgpt-attach-button" class="llm-input-action-button" title="Attach File">
+                                    <i class="fas fa-paperclip"></i>
+                                </button>
+                                <button id="chatgpt-send-button" class="llm-send-button">
+                                    Send <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Gemini Provider -->
+            <div id="gemini-container" class="llm-provider-container" style="display: none;">
+                <div class="llm-chat-interface">
+                    <!-- Sidebar -->
+                    <div class="llm-sidebar">
+                        <!-- Chat History -->
+                        <div class="llm-history-header">
+                            <div class="llm-history-title">Chat History</div>
+                            <button id="gemini-new-chat" class="llm-new-chat-button">New Chat</button>
+                        </div>
+                        <div id="gemini-history-list" class="llm-history-list">
+                            <!-- Chat history items will be added here -->
+                        </div>
+                        
+                        <!-- Model Selection -->
+                        <div class="llm-model-header">
+                            <div class="llm-model-title">Models</div>
+                        </div>
+                        <div id="gemini-model-container" class="llm-model-selection">
+                            <!-- Model options will be added here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Main Chat Area -->
+                    <div class="llm-main">
+                        <!-- Chat Header -->
+                        <div class="llm-chat-header">
+                            <div class="llm-chat-title">Gemini Chat</div>
+                            <div class="llm-chat-actions">
+                                <button class="llm-chat-action-button" title="Export Chat">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                <button class="llm-chat-action-button" title="Clear Chat">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Chat Display -->
+                        <div id="gemini-chat-display" class="llm-chat-display">
+                            <!-- Messages will be added here -->
+                        </div>
+                        
+                        <!-- Chat Input -->
+                        <div class="llm-chat-input">
+                            <div class="llm-message-input-container">
+                                <textarea id="gemini-message-input" class="llm-message-input" placeholder="Type your message here..."></textarea>
+                            </div>
+                            <div class="llm-input-actions">
+                                <button id="gemini-attach-button" class="llm-input-action-button" title="Attach File">
+                                    <i class="fas fa-paperclip"></i>
+                                </button>
+                                <button id="gemini-send-button" class="llm-send-button">
+                                    Send <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Local Services Provider -->
+            <div id="local-services-container" class="local-services-container" style="display: none;">
+                <!-- Tabs -->
+                <div id="local-services-tabs" class="local-services-tabs">
+                    <div id="add-local-service-tab" class="add-local-service-tab">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                </div>
+                
+                <!-- Content -->
+                <div id="local-services-content" class="local-services-content">
+                    <!-- Iframes will be added here -->
+                </div>
+            </div>
         </div>
         
         <!-- Generative AI Page (placeholder) -->
@@ -566,9 +848,9 @@
                 <div class="fusion-about-logo">
                     <img src="static/img/fusion-logo-large.svg" alt="FusionLoom Logo" width="150" height="150">
                 </div>
-                <p><strong>FusionLoom v0.1</strong></p>
+                <p><strong>FusionLoom v0.3</strong></p>
                 <p>A comprehensive platform that weaves together multiple AI technologies and content management systems into a unified, powerful interface.</p>
-                <p>This is the initial version focusing on the GUI component.</p>
+                <p>This version adds a fully functional LLM page with support for multiple providers.</p>
                 <p>For more information, updates, and to contribute, please visit our GitHub repository:</p>
                 <p><a href="https://github.com/CaptainASIC/FusionLoom" target="_blank" class="fusion-link">https://github.com/CaptainASIC/FusionLoom</a></p>
             </div>

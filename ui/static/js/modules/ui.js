@@ -94,6 +94,21 @@ export function navigateToPage(page) {
             module.checkContainerStatus();
         });
     }
+    
+    // Update menu item active state
+    const menuItems = document.querySelectorAll('.fusion-menu-item');
+    menuItems.forEach(item => {
+        if (item.getAttribute('data-page') === page) {
+            item.classList.add('active');
+        } else {
+            item.classList.remove('active');
+        }
+    });
+    
+    // Dispatch page changed event
+    document.dispatchEvent(new CustomEvent('pageChanged', { 
+        detail: { page: page }
+    }));
 }
 
 /**

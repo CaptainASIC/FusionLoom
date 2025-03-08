@@ -6,14 +6,13 @@ services:
     container_name: fusionloom-webui
     volumes:
       - ./data:/app/backend/data
-      - /run/media/asic/Data/Repositories/FusionLoom/ui:/app/build
+      - ../../ui:/app/build
       # Removed Podman socket mount due to permission issues
     ports:
       - "8080:8080"
     environment:
-      - WEBUI_VERSION=0.1
+      - WEBUI_VERSION=0.3
       - WEBUI_APP_NAME=FusionLoom
-      - CUSTOM_UI_ENABLED=false
       - OLLAMA_BASE_URL=http://fusionloom-ollama:11434
       - CONTAINER_ENGINE=podman
       - CONTAINER_NETWORK=fusionloom_net

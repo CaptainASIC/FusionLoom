@@ -1,0 +1,176 @@
+/* FusionLoom v0.3 - Service Tabs Component Styles */
+
+/* Service Tabs Container */
+.service-tabs-container {
+    width: 100%;
+    background-color: var(--fusion-bg-secondary);
+    border-bottom: 1px solid var(--fusion-border);
+}
+
+/* Service Tabs */
+.service-tabs {
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--fusion-border) transparent;
+}
+
+.service-tabs::-webkit-scrollbar {
+    height: 4px;
+}
+
+.service-tabs::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.service-tabs::-webkit-scrollbar-thumb {
+    background-color: var(--fusion-border);
+    border-radius: 2px;
+}
+
+/* Service Tab */
+.service-tab {
+    padding: 15px 20px;
+    white-space: nowrap;
+    cursor: pointer;
+    color: var(--fusion-text-secondary);
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+}
+
+.service-tab:hover {
+    color: var(--fusion-text);
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.service-tab.active {
+    color: var(--fusion-accent);
+    border-bottom-color: var(--fusion-accent);
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.service-tab i {
+    font-size: 16px;
+}
+
+/* Service Tab Badge */
+.service-tab-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    background-color: var(--fusion-accent);
+    color: white;
+}
+
+.service-tab-badge.new {
+    background-color: var(--fusion-accent);
+}
+
+.service-tab-badge.beta {
+    background-color: var(--fusion-warning);
+}
+
+.service-tab-badge.pro {
+    background-color: var(--fusion-success);
+}
+
+/* Service Tab Dropdown */
+.service-tab-dropdown {
+    position: relative;
+}
+
+.service-tab-dropdown-content {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: var(--fusion-bg-secondary);
+    border: 1px solid var(--fusion-border);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    min-width: 180px;
+    z-index: 100;
+    display: none;
+}
+
+.service-tab-dropdown:hover .service-tab-dropdown-content {
+    display: block;
+}
+
+.service-tab-dropdown-item {
+    padding: 10px 15px;
+    color: var(--fusion-text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.service-tab-dropdown-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--fusion-text);
+}
+
+.service-tab-dropdown-item i {
+    font-size: 14px;
+}
+
+/* Service Tab Divider */
+.service-tab-divider {
+    width: 1px;
+    height: 24px;
+    background-color: var(--fusion-border);
+    margin: 0 5px;
+    align-self: center;
+}
+
+/* Service Tab Actions */
+.service-tab-actions {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    padding-right: 15px;
+}
+
+.service-tab-action {
+    background: none;
+    border: none;
+    color: var(--fusion-text-secondary);
+    cursor: pointer;
+    font-size: 16px;
+    padding: 8px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.service-tab-action:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--fusion-text);
+}
+
+.service-tab-action.active {
+    color: var(--fusion-accent);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .service-tab {
+        padding: 12px 15px;
+    }
+    
+    .service-tab-text {
+        display: none;
+    }
+    
+    .service-tab i {
+        font-size: 18px;
+    }
+}

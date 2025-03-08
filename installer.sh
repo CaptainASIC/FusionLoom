@@ -214,14 +214,13 @@ services:
     container_name: fusionloom-webui
     volumes:
       - ${INSTALL_DIR}/data:/app/backend/data
-      - ${INSTALL_DIR}/ui:/app/frontend/custom-ui
+      - ${INSTALL_DIR}/ui:/app/build
       - /var/run/docker.sock:/var/run/docker.sock:ro
     ports:
       - "8080:8080"
     environment:
       - WEBUI_VERSION=${FUSION_LOOM_VERSION}
       - WEBUI_APP_NAME=FusionLoom
-      - CUSTOM_UI_PATH=/app/frontend/custom-ui
       - OLLAMA_BASE_URL=http://fusionloom-ollama:11434
       - CONTAINER_ENGINE=docker
       - CONTAINER_NETWORK=fusionloom_net
@@ -248,13 +247,12 @@ services:
     container_name: fusionloom-webui
     volumes:
       - ${INSTALL_DIR}/data:/app/backend/data
-      - ${INSTALL_DIR}/ui:/app/frontend/custom-ui
+      - ${INSTALL_DIR}/ui:/app/build
     ports:
       - "8080:8080"
     environment:
       - WEBUI_VERSION=${FUSION_LOOM_VERSION}
       - WEBUI_APP_NAME=FusionLoom
-      - CUSTOM_UI_PATH=/app/frontend/custom-ui
       - OLLAMA_BASE_URL=http://fusionloom-ollama:11434
       - CONTAINER_ENGINE=podman
       - CONTAINER_NETWORK=fusionloom_net

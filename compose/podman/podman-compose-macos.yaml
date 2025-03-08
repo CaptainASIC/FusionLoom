@@ -6,13 +6,12 @@ services:
     container_name: fusionloom-webui
     volumes:
       - ./data:/app/backend/data
-      - ${UI_PATH:-../../ui}:/app/frontend/custom-ui
+      - ${UI_PATH:-../../ui}:/app/build
     ports:
       - "8080:8080"
     environment:
-      - WEBUI_VERSION=0.2
+      - WEBUI_VERSION=0.3
       - WEBUI_APP_NAME=FusionLoom
-      - CUSTOM_UI_PATH=/app/frontend/custom-ui
       - OLLAMA_BASE_URL=http://fusionloom-ollama:11434
       - CONTAINER_ENGINE=podman
       - CONTAINER_NETWORK=fusionloom_net

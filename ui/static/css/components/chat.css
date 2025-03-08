@@ -1,0 +1,475 @@
+/* FusionLoom v0.3 - Chat Component Styles */
+
+/* LLM Page Layout */
+.llm-page {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+
+.llm-service-tabs {
+    display: flex;
+    background-color: var(--fusion-bg-secondary);
+    border-bottom: 1px solid var(--fusion-border);
+    padding: 0 10px;
+}
+
+.llm-service-tab {
+    padding: 12px 20px;
+    cursor: pointer;
+    color: var(--fusion-text-secondary);
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.llm-service-tab:hover {
+    color: var(--fusion-text);
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.llm-service-tab.active {
+    color: var(--fusion-accent);
+    border-bottom-color: var(--fusion-accent);
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.llm-service-tab i {
+    font-size: 16px;
+}
+
+/* Provider Containers */
+.llm-provider-container {
+    display: flex;
+    height: calc(100vh - 180px);
+    width: 100%;
+    overflow: hidden;
+}
+
+/* Chat Interface Layout */
+.llm-chat-interface {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+.llm-sidebar {
+    width: 250px;
+    background-color: var(--fusion-bg-secondary);
+    border-right: 1px solid var(--fusion-border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.llm-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Chat History Sidebar */
+.llm-history-header {
+    padding: 15px;
+    border-bottom: 1px solid var(--fusion-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.llm-history-title {
+    font-weight: 600;
+    color: var(--fusion-text);
+}
+
+.llm-new-chat-button {
+    background-color: var(--fusion-accent);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background-color 0.2s ease;
+}
+
+.llm-new-chat-button:hover {
+    background-color: var(--fusion-accent-hover);
+}
+
+.llm-history-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.llm-history-item {
+    padding: 10px 15px;
+    margin-bottom: 5px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    color: var(--fusion-text-secondary);
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.llm-history-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--fusion-text);
+}
+
+.llm-history-item.active {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--fusion-accent);
+}
+
+/* Model Selection */
+.llm-model-header {
+    padding: 15px;
+    border-bottom: 1px solid var(--fusion-border);
+}
+
+.llm-model-title {
+    font-weight: 600;
+    color: var(--fusion-text);
+    margin-bottom: 10px;
+}
+
+.llm-model-selection {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 5px 0;
+}
+
+.llm-model-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+}
+
+.llm-model-option input[type="radio"] {
+    margin: 0;
+}
+
+.llm-model-option label {
+    color: var(--fusion-text-secondary);
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.llm-model-option input[type="radio"]:checked + label {
+    color: var(--fusion-accent);
+    font-weight: 500;
+}
+
+/* Chat Display */
+.llm-chat-header {
+    padding: 15px;
+    border-bottom: 1px solid var(--fusion-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.llm-chat-title {
+    font-weight: 600;
+    color: var(--fusion-text);
+}
+
+.llm-chat-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.llm-chat-action-button {
+    background-color: transparent;
+    color: var(--fusion-text-secondary);
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    transition: color 0.2s ease;
+    padding: 5px;
+}
+
+.llm-chat-action-button:hover {
+    color: var(--fusion-accent);
+}
+
+.llm-chat-display {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.llm-chat-input {
+    padding: 15px;
+    border-top: 1px solid var(--fusion-border);
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+}
+
+.llm-message-input-container {
+    flex: 1;
+    position: relative;
+}
+
+.llm-message-input {
+    width: 100%;
+    min-height: 60px;
+    max-height: 200px;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid var(--fusion-border);
+    background-color: var(--fusion-bg-secondary);
+    color: var(--fusion-text);
+    font-size: 14px;
+    resize: none;
+    outline: none;
+    transition: border-color 0.2s ease;
+    line-height: 1.5;
+}
+
+.llm-message-input:focus {
+    border-color: var(--fusion-accent);
+}
+
+.llm-input-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.llm-input-action-button {
+    background-color: var(--fusion-bg-secondary);
+    color: var(--fusion-text-secondary);
+    border: 1px solid var(--fusion-border);
+    border-radius: 8px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.llm-input-action-button:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--fusion-text);
+}
+
+.llm-send-button {
+    background-color: var(--fusion-accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0 20px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-weight: 500;
+}
+
+.llm-send-button:hover {
+    background-color: var(--fusion-accent-hover);
+}
+
+.llm-send-button i {
+    margin-left: 5px;
+}
+
+/* Error Message */
+.llm-error-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    text-align: center;
+    color: var(--fusion-text-secondary);
+    gap: 15px;
+}
+
+.llm-error-message i {
+    font-size: 40px;
+    color: var(--fusion-warning);
+}
+
+.llm-error-message p {
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Local Services */
+.local-services-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+
+.local-services-tabs {
+    display: flex;
+    background-color: var(--fusion-bg-secondary);
+    border-bottom: 1px solid var(--fusion-border);
+    padding: 0 10px;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.local-service-tab {
+    padding: 12px 20px;
+    cursor: pointer;
+    color: var(--fusion-text-secondary);
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.local-service-tab:hover {
+    color: var(--fusion-text);
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.local-service-tab.active {
+    color: var(--fusion-accent);
+    border-bottom-color: var(--fusion-accent);
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.local-service-tab-name {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.local-service-tab-close {
+    background: none;
+    border: none;
+    color: var(--fusion-text-secondary);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.local-service-tab-close:hover {
+    color: var(--fusion-danger);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.add-local-service-tab {
+    padding: 12px 15px;
+    cursor: pointer;
+    color: var(--fusion-text-secondary);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.add-local-service-tab:hover {
+    color: var(--fusion-accent);
+}
+
+.local-services-content {
+    flex: 1;
+    position: relative;
+}
+
+.local-service-iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* Typing Indicator */
+.llm-typing-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 10px 15px;
+    background-color: var(--fusion-bg-secondary);
+    border-radius: 18px;
+}
+
+.llm-typing-indicator span {
+    width: 8px;
+    height: 8px;
+    background-color: var(--fusion-accent);
+    border-radius: 50%;
+    display: inline-block;
+    animation: typing-animation 1.4s infinite ease-in-out both;
+}
+
+.llm-typing-indicator span:nth-child(1) {
+    animation-delay: -0.32s;
+}
+
+.llm-typing-indicator span:nth-child(2) {
+    animation-delay: -0.16s;
+}
+
+@keyframes typing-animation {
+    0%, 80%, 100% { 
+        transform: scale(0.6);
+        opacity: 0.6;
+    }
+    40% { 
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .llm-provider-container {
+        flex-direction: column;
+        height: auto;
+    }
+    
+    .llm-sidebar {
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--fusion-border);
+    }
+    
+    .llm-history-list {
+        max-height: 200px;
+    }
+    
+    .llm-chat-interface {
+        flex-direction: column;
+    }
+}

@@ -6,14 +6,13 @@ services:
     container_name: fusionloom-webui
     volumes:
       - ./data:/app/backend/data
-      - ../../ui:/app/frontend/custom-ui
+      - ../../ui:/app/build
       - /var/run/docker.sock:/var/run/docker.sock:ro  # Mount Docker socket for container management
     ports:
       - "8080:8080"
     environment:
-      - WEBUI_VERSION=0.1
+      - WEBUI_VERSION=0.3
       - WEBUI_APP_NAME=FusionLoom
-      - CUSTOM_UI_PATH=/app/frontend/custom-ui
       - OLLAMA_BASE_URL=http://fusionloom-ollama:11434
       - CONTAINER_ENGINE=docker
       - CONTAINER_NETWORK=fusionloom_net

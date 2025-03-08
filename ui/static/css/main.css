@@ -1,4 +1,4 @@
-/* FusionLoom v0.2 - Main CSS Entry Point */
+/* FusionLoom v0.3 - Main CSS Entry Point */
 
 /* Base Styles */
 @import 'base/variables.css';
@@ -17,6 +17,12 @@
 @import 'components/modals.css';
 @import 'components/notifications.css';
 @import 'components/indicators.css';
+
+/* LLM Components */
+@import 'components/chat.css';
+@import 'components/message.css';
+@import 'components/model-selector.css';
+@import 'components/service-tabs.css';
 
 /* Themes */
 @import 'themes/dark.css';

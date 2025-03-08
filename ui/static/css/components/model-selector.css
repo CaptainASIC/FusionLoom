@@ -1,0 +1,226 @@
+/* FusionLoom v0.3 - Model Selector Component Styles */
+
+/* Model Selection Container */
+.model-selector {
+    padding: 15px;
+    background-color: var(--fusion-bg-secondary);
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.model-selector-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.model-selector-title {
+    font-weight: 600;
+    color: var(--fusion-text);
+    font-size: 16px;
+}
+
+.model-selector-toggle {
+    background: none;
+    border: none;
+    color: var(--fusion-text-secondary);
+    cursor: pointer;
+    font-size: 16px;
+    transition: color 0.2s ease;
+}
+
+.model-selector-toggle:hover {
+    color: var(--fusion-accent);
+}
+
+.model-selector-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.model-selector-content.expanded {
+    max-height: 500px;
+}
+
+/* Model Options */
+.model-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.model-option:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.model-option.selected {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.model-option-radio {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--fusion-text-secondary);
+    border-radius: 50%;
+    outline: none;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.model-option-radio:checked {
+    border-color: var(--fusion-accent);
+}
+
+.model-option-radio:checked::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: var(--fusion-accent);
+}
+
+.model-option-label {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.model-name {
+    font-weight: 500;
+    color: var(--fusion-text);
+    font-size: 14px;
+}
+
+.model-description {
+    color: var(--fusion-text-secondary);
+    font-size: 12px;
+}
+
+.model-option-badge {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    background-color: var(--fusion-bg);
+    color: var(--fusion-text-secondary);
+}
+
+.model-option-badge.recommended {
+    background-color: var(--fusion-success);
+    color: white;
+}
+
+.model-option-badge.new {
+    background-color: var(--fusion-accent);
+    color: white;
+}
+
+/* Model Parameters */
+.model-parameters {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid var(--fusion-border);
+}
+
+.model-parameters-title {
+    font-weight: 600;
+    color: var(--fusion-text);
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.model-parameter {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 15px;
+}
+
+.parameter-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.parameter-name {
+    font-size: 13px;
+    color: var(--fusion-text-secondary);
+}
+
+.parameter-value {
+    font-size: 13px;
+    color: var(--fusion-accent);
+    font-weight: 500;
+}
+
+.parameter-slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--fusion-bg);
+    outline: none;
+}
+
+.parameter-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--fusion-accent);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.parameter-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+}
+
+.parameter-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--fusion-accent);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.parameter-slider::-moz-range-thumb:hover {
+    transform: scale(1.1);
+}
+
+.parameter-description {
+    font-size: 11px;
+    color: var(--fusion-text-secondary);
+    margin-top: 2px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .model-selector {
+        padding: 10px;
+    }
+    
+    .model-option {
+        padding: 8px;
+    }
+}

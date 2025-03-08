@@ -1,7 +1,12 @@
-// FusionLoom v0.2 - Main JavaScript Entry Point
+// FusionLoom v0.3 - Main JavaScript Entry Point
 
 // Import modules
 import { initializeUI, navigateToPage } from './modules/ui.js';
+import { initializeLLMUI } from './modules/llm/ui.js';
+import { initializeOllamaUI } from './modules/llm/ollama.js';
+import { initializeClaudeUI } from './modules/llm/claude.js';
+import { initializeChatGPTUI } from './modules/llm/chatgpt.js';
+import { initializeGeminiUI } from './modules/llm/gemini.js';
 import { applyTheme, initializeThemePreview } from './modules/theme.js';
 import { loadSettings, saveSettings, resetSettings, getDefaultSettings } from './modules/settings.js';
 import { updateConnectionStatus, testConnections, checkEndpointReachability } from './modules/endpoints.js';
@@ -25,6 +30,10 @@ import {
 
 // Make functions globally available
 window.navigateToPage = navigateToPage;
+window.initializeOllamaUI = initializeOllamaUI;
+window.initializeClaudeUI = initializeClaudeUI;
+window.initializeChatGPTUI = initializeChatGPTUI;
+window.initializeGeminiUI = initializeGeminiUI;
 window.applyTheme = applyTheme;
 window.saveSettings = saveSettings;
 window.resetSettings = resetSettings;
@@ -53,6 +62,13 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Load saved settings
     loadSettings();
+    
+    // Initialize LLM UI when navigating to LLM page
+    document.addEventListener('pageChanged', function(e) {
+        if (e.detail.page === 'llm') {
+            initializeLLMUI();
+        }
+    });
     
     // Update performance gauges periodically
     setInterval(updatePerformanceGauges, 2000);

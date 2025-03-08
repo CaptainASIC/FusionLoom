@@ -1,0 +1,166 @@
+/* FusionLoom v0.3 - Message Component Styles */
+
+/* Message Bubbles */
+.llm-message {
+    display: flex;
+    flex-direction: column;
+    max-width: 85%;
+    gap: 5px;
+    animation: message-fade-in 0.3s ease-in-out;
+}
+
+.llm-message.user {
+    align-self: flex-end;
+}
+
+.llm-message.assistant {
+    align-self: flex-start;
+}
+
+.llm-message-role {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--fusion-text-secondary);
+    margin-bottom: 2px;
+}
+
+.llm-message-content {
+    padding: 12px 16px;
+    border-radius: 18px;
+    font-size: 14px;
+    line-height: 1.5;
+    word-break: break-word;
+    white-space: pre-wrap;
+}
+
+.llm-message.user .llm-message-content {
+    background-color: var(--fusion-accent);
+    color: white;
+    border-top-right-radius: 4px;
+}
+
+.llm-message.assistant .llm-message-content {
+    background-color: var(--fusion-bg-secondary);
+    color: var(--fusion-text);
+    border-top-left-radius: 4px;
+}
+
+.llm-message.typing .llm-message-content {
+    background-color: var(--fusion-bg-secondary);
+    color: var(--fusion-text);
+    border-top-left-radius: 4px;
+}
+
+.llm-message-timestamp {
+    font-size: 10px;
+    color: var(--fusion-text-secondary);
+    align-self: flex-end;
+    margin-top: 2px;
+}
+
+/* Code Blocks in Messages */
+.llm-message-content pre {
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin: 10px 0;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+}
+
+.llm-message-content code {
+    font-family: 'Courier New', monospace;
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+/* Lists in Messages */
+.llm-message-content ul,
+.llm-message-content ol {
+    margin: 10px 0;
+    padding-left: 20px;
+}
+
+.llm-message-content li {
+    margin-bottom: 5px;
+}
+
+/* Tables in Messages */
+.llm-message-content table {
+    border-collapse: collapse;
+    margin: 10px 0;
+    width: 100%;
+}
+
+.llm-message-content th,
+.llm-message-content td {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 8px;
+    text-align: left;
+}
+
+.llm-message-content th {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* Links in Messages */
+.llm-message-content a {
+    color: #74b9ff;
+    text-decoration: none;
+}
+
+.llm-message-content a:hover {
+    text-decoration: underline;
+}
+
+/* Message Actions */
+.llm-message-actions {
+    display: flex;
+    gap: 10px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    align-self: flex-end;
+    margin-top: 5px;
+}
+
+.llm-message:hover .llm-message-actions {
+    opacity: 1;
+}
+
+.llm-message-action {
+    background: none;
+    border: none;
+    color: var(--fusion-text-secondary);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 2px 5px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.llm-message-action:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--fusion-text);
+}
+
+/* Message Animations */
+@keyframes message-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .llm-message {
+        max-width: 90%;
+    }
+}
