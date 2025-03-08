@@ -14,6 +14,10 @@ source "${SCRIPT_DIR}/.env"
 
 echo "Stopping FusionLoom v${FUSION_LOOM_VERSION}..."
 
+# Stop the system information API server
+echo "Stopping system information API server..."
+pkill -f "python3 system_info.py --serve 5050" || echo "System information API server was not running."
+
 # Stop the Ollama container
 echo "Stopping Ollama container..."
 "${SCRIPT_DIR}/stop-ollama.sh"
@@ -31,3 +35,4 @@ else
 fi
 
 echo "FusionLoom v${FUSION_LOOM_VERSION} stopped successfully!"
+echo "All services have been stopped."

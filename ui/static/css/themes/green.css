@@ -1,0 +1,19 @@
+/* FusionLoom v0.3 - Green Theme */
+
+.theme-green {
+    --fusion-bg: #051a0a;
+    --fusion-bg-secondary: #0d2d15;
+    --fusion-input-bg: #0f331a;
+    --fusion-input-border: #1a4a28;
+    --fusion-input-focus: #27ae60;
+    --fusion-primary: #1c7b3d;
+    --fusion-secondary: #219248;
+    --fusion-accent: #27ae60;
+    --fusion-accent-hover: #2ecc71;
+    --fusion-text: #ecf0f1;
+    --fusion-text-secondary: #bdc3c7;
+    --fusion-border: #7f8c8d;
+    --fusion-success: #2ecc71;
+    --fusion-warning: #f39c12;
+    --fusion-danger: #e74c3c;
+}

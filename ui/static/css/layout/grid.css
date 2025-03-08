@@ -1,0 +1,18 @@
+/* FusionLoom v0.3 - Grid Layout */
+
+.fusion-settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--fusion-space-md);
+    margin-bottom: var(--fusion-space-lg);
+}
+
+.fusion-settings-section {
+    margin-bottom: var(--fusion-space-xl);
+}
+
+@media (max-width: 768px) {
+    .fusion-settings-grid {
+        grid-template-columns: 1fr;
+    }
+}

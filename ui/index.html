@@ -107,29 +107,74 @@
         
         <!-- LLM Page -->
         <div id="page-llm" class="fusion-page llm-page" style="display: none;">
-            <h1>Language Models</h1>
-            
             <!-- Service Tabs -->
-            <div class="llm-service-tabs">
-                <div class="llm-service-tab active" data-provider="ollama">
-                    <i class="fas fa-brain"></i>
-                    <span>Ollama</span>
+            <div class="llm-service-tabs-container">
+                <div class="llm-service-tabs-nav left">
+                    <i class="fas fa-chevron-left"></i>
                 </div>
-                <div class="llm-service-tab" data-provider="claude">
-                    <i class="fas fa-comment-dots"></i>
-                    <span>Claude</span>
+                
+                <div class="llm-service-tabs">
+                    <div class="llm-service-tab active" data-provider="ollama">
+                        <i class="fas fa-brain"></i>
+                        <span>Ollama</span>
+                        <div class="llm-service-tab-status online"></div>
+                        <div class="llm-service-tab-tooltip">Local LLM server</div>
+                    </div>
+                    <div class="llm-service-tab" data-provider="claude">
+                        <i class="fas fa-comment-dots"></i>
+                        <span>Claude</span>
+                        <div class="llm-service-tab-status offline"></div>
+                        <div class="llm-service-tab-tooltip">Anthropic's Claude API</div>
+                    </div>
+                    <div class="llm-service-tab" data-provider="chatgpt">
+                        <i class="fas fa-robot"></i>
+                        <span>ChatGPT</span>
+                        <div class="llm-service-tab-status offline"></div>
+                        <div class="llm-service-tab-tooltip">OpenAI's GPT models</div>
+                    </div>
+                    <div class="llm-service-tab" data-provider="gemini">
+                        <i class="fas fa-star"></i>
+                        <span>Gemini</span>
+                        <div class="llm-service-tab-status offline"></div>
+                        <div class="llm-service-tab-tooltip">Google's Gemini models</div>
+                    </div>
+                    <div class="llm-service-tab" data-provider="local-services">
+                        <i class="fas fa-server"></i>
+                        <span>Local Services</span>
+                        <div class="llm-service-tab-tooltip">Web-based LLM services</div>
+                    </div>
+                    
+                    <div class="llm-service-tabs-more" id="llm-service-more">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </div>
                 </div>
-                <div class="llm-service-tab" data-provider="chatgpt">
-                    <i class="fas fa-robot"></i>
-                    <span>ChatGPT</span>
+                
+                <div class="llm-service-tabs-nav right">
+                    <i class="fas fa-chevron-right"></i>
                 </div>
-                <div class="llm-service-tab" data-provider="gemini">
-                    <i class="fas fa-star"></i>
-                    <span>Gemini</span>
-                </div>
-                <div class="llm-service-tab" data-provider="local-services">
-                    <i class="fas fa-server"></i>
-                    <span>Local Services</span>
+                
+                <div class="llm-service-tabs-dropdown" id="llm-service-dropdown">
+                    <div class="llm-service-dropdown-item" data-provider="ollama">
+                        <i class="fas fa-brain"></i>
+                        <span>Ollama</span>
+                    </div>
+                    <div class="llm-service-dropdown-item" data-provider="claude">
+                        <i class="fas fa-comment-dots"></i>
+                        <span>Claude</span>
+                    </div>
+                    <div class="llm-service-dropdown-item" data-provider="chatgpt">
+                        <i class="fas fa-robot"></i>
+                        <span>ChatGPT</span>
+                    </div>
+                    <div class="llm-service-dropdown-item" data-provider="gemini">
+                        <i class="fas fa-star"></i>
+                        <span>Gemini</span>
+                    </div>
+                    <div class="llm-service-dropdown-divider"></div>
+                    <div class="llm-service-dropdown-item" data-provider="local-services">
+                        <i class="fas fa-server"></i>
+                        <span>Local Services</span>
+                    </div>
                 </div>
             </div>
             
@@ -137,12 +182,29 @@
             <div id="ollama-container" class="llm-provider-container">
                 <div class="llm-chat-interface">
                     <!-- Sidebar -->
-                    <div class="llm-sidebar">
+                    <div class="llm-sidebar" id="ollama-sidebar">
+                        <div class="llm-sidebar-header">
+                            <button class="llm-sidebar-toggle" id="ollama-sidebar-toggle" title="Toggle Sidebar">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                        </div>
+                        
                         <!-- Chat History -->
                         <div class="llm-history-header">
                             <div class="llm-history-title">Chat History</div>
-                            <button id="llm-new-chat" class="llm-new-chat-button">New Chat</button>
+                            <button id="llm-new-chat" class="llm-new-chat-button">
+                                <i class="fas fa-plus"></i>
+                                <span>New Chat</span>
+                            </button>
                         </div>
+                        
+                        <div class="llm-history-search">
+                            <div class="llm-model-search-container">
+                                <i class="fas fa-search llm-model-search-icon"></i>
+                                <input type="text" class="llm-model-search-input" placeholder="Search chats...">
+                            </div>
+                        </div>
+                        
                         <div id="llm-history-list" class="llm-history-list">
                             <!-- Chat history items will be added here -->
                         </div>
@@ -150,9 +212,33 @@
                         <!-- Model Selection -->
                         <div class="llm-model-header">
                             <div class="llm-model-title">Models</div>
+                            <button class="llm-model-refresh" id="ollama-refresh-models" title="Refresh Models">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
                         </div>
-                        <div id="ollama-model-container" class="llm-model-selection">
-                            <!-- Model options will be added here -->
+                        
+                        <div id="ollama-model-container" class="llm-model-container">
+                            <div class="llm-model-search">
+                                <div class="llm-model-search-container">
+                                    <i class="fas fa-search llm-model-search-icon"></i>
+                                    <input type="text" class="llm-model-search-input" placeholder="Search models...">
+                                </div>
+                            </div>
+                            
+                            <div class="llm-model-list">
+                                <!-- Model options will be added here -->
+                            </div>
+                            
+                            <div class="llm-model-actions">
+                                <button class="llm-model-refresh-button" id="ollama-refresh-button">
+                                    <i class="fas fa-sync-alt"></i>
+                                    <span>Refresh</span>
+                                </button>
+                                <button class="llm-model-pull-button" id="ollama-pull-button">
+                                    <i class="fas fa-download"></i>
+                                    <span>Pull Model</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                     
@@ -160,8 +246,14 @@
                     <div class="llm-main">
                         <!-- Chat Header -->
                         <div class="llm-chat-header">
-                            <div class="llm-chat-title">Ollama Chat</div>
+                            <div class="llm-chat-title">
+                                <i class="fas fa-brain"></i>
+                                <span>Ollama Chat</span>
+                            </div>
                             <div class="llm-chat-actions">
+                                <button class="llm-chat-action-button" title="Settings">
+                                    <i class="fas fa-sliders-h"></i>
+                                </button>
                                 <button class="llm-chat-action-button" title="Export Chat">
                                     <i class="fas fa-download"></i>
                                 </button>
@@ -173,21 +265,50 @@
                         
                         <!-- Chat Display -->
                         <div id="llm-chat-display" class="llm-chat-display">
-                            <!-- Messages will be added here -->
+                            <!-- Welcome message -->
+                            <div class="llm-welcome-message">
+                                <h2>Welcome to FusionLoom LLM Chat</h2>
+                                <p>Start a conversation with Ollama's local language models. Select a model from the sidebar and start chatting.</p>
+                                <div class="llm-welcome-suggestions">
+                                    <div class="llm-welcome-suggestion">Explain quantum computing in simple terms</div>
+                                    <div class="llm-welcome-suggestion">Write a short story about a robot learning to paint</div>
+                                    <div class="llm-welcome-suggestion">What are the best practices for sustainable gardening?</div>
+                                    <div class="llm-welcome-suggestion">Help me debug a Python function that's not working</div>
+                                </div>
+                            </div>
                         </div>
                         
-                        <!-- Chat Input -->
-                        <div class="llm-chat-input">
-                            <div class="llm-message-input-container">
-                                <textarea id="llm-message-input" class="llm-message-input" placeholder="Type your message here..."></textarea>
+                        <!-- Chat Input Container -->
+                        <div class="llm-chat-input-container">
+                            <!-- Chat Input -->
+                            <div class="llm-chat-input">
+                                <div class="llm-message-input-container">
+                                    <textarea id="llm-message-input" class="llm-message-input" placeholder="Type your message here..."></textarea>
+                                </div>
+                                <div class="llm-input-actions">
+                                    <button id="llm-attach-button" class="llm-input-action-button" title="Attach File">
+                                        <i class="fas fa-paperclip"></i>
+                                    </button>
+                                    <button id="llm-send-button" class="llm-send-button">
+                                        Send <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <div class="llm-input-actions">
-                                <button id="llm-attach-button" class="llm-input-action-button" title="Attach File">
-                                    <i class="fas fa-paperclip"></i>
-                                </button>
-                                <button id="llm-send-button" class="llm-send-button">
-                                    Send <i class="fas fa-paper-plane"></i>
-                                </button>
+                            
+                            <!-- Chat Input Options -->
+                            <div class="llm-chat-input-options">
+                                <div class="llm-chat-input-options-left">
+                                    <div class="llm-chat-input-option" title="Model Parameters">
+                                        <i class="fas fa-sliders-h"></i>
+                                        <span>Parameters</span>
+                                    </div>
+                                </div>
+                                <div class="llm-chat-input-options-right">
+                                    <div class="llm-model-status">
+                                        <div class="llm-model-status-indicator"></div>
+                                        <span>Ready</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -198,12 +319,29 @@
             <div id="claude-container" class="llm-provider-container" style="display: none;">
                 <div class="llm-chat-interface">
                     <!-- Sidebar -->
-                    <div class="llm-sidebar">
+                    <div class="llm-sidebar" id="claude-sidebar">
+                        <div class="llm-sidebar-header">
+                            <button class="llm-sidebar-toggle" id="claude-sidebar-toggle" title="Toggle Sidebar">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                        </div>
+                        
                         <!-- Chat History -->
                         <div class="llm-history-header">
                             <div class="llm-history-title">Chat History</div>
-                            <button id="claude-new-chat" class="llm-new-chat-button">New Chat</button>
+                            <button id="claude-new-chat" class="llm-new-chat-button">
+                                <i class="fas fa-plus"></i>
+                                <span>New Chat</span>
+                            </button>
                         </div>
+                        
+                        <div class="llm-history-search">
+                            <div class="llm-model-search-container">
+                                <i class="fas fa-search llm-model-search-icon"></i>
+                                <input type="text" class="llm-model-search-input" placeholder="Search chats...">
+                            </div>
+                        </div>
+                        
                         <div id="claude-history-list" class="llm-history-list">
                             <!-- Chat history items will be added here -->
                         </div>
@@ -211,9 +349,44 @@
                         <!-- Model Selection -->
                         <div class="llm-model-header">
                             <div class="llm-model-title">Models</div>
+                            <button class="llm-model-refresh" id="claude-refresh-models" title="Refresh Models">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
                         </div>
-                        <div id="claude-model-container" class="llm-model-selection">
-                            <!-- Model options will be added here -->
+                        
+                        <div id="claude-model-container" class="llm-model-container">
+                            <div class="llm-model-list">
+                                <div class="llm-model-item selected">
+                                    <input type="radio" id="claude-model-opus" name="claude-model" value="claude-3-opus-20240229" class="llm-model-radio" checked>
+                                    <div class="llm-model-info">
+                                        <label for="claude-model-opus" class="llm-model-name">Claude 3 Opus</label>
+                                        <div class="llm-model-description">Most powerful Claude model</div>
+                                    </div>
+                                    <div class="llm-model-details">
+                                        <div class="llm-model-size">200K</div>
+                                    </div>
+                                </div>
+                                <div class="llm-model-item">
+                                    <input type="radio" id="claude-model-sonnet" name="claude-model" value="claude-3-sonnet-20240229" class="llm-model-radio">
+                                    <div class="llm-model-info">
+                                        <label for="claude-model-sonnet" class="llm-model-name">Claude 3 Sonnet</label>
+                                        <div class="llm-model-description">Balanced performance and speed</div>
+                                    </div>
+                                    <div class="llm-model-details">
+                                        <div class="llm-model-size">200K</div>
+                                    </div>
+                                </div>
+                                <div class="llm-model-item">
+                                    <input type="radio" id="claude-model-haiku" name="claude-model" value="claude-3-haiku-20240307" class="llm-model-radio">
+                                    <div class="llm-model-info">
+                                        <label for="claude-model-haiku" class="llm-model-name">Claude 3 Haiku</label>
+                                        <div class="llm-model-description">Fastest Claude model</div>
+                                    </div>
+                                    <div class="llm-model-details">
+                                        <div class="llm-model-size">200K</div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     
@@ -221,8 +394,14 @@
                     <div class="llm-main">
                         <!-- Chat Header -->
                         <div class="llm-chat-header">
-                            <div class="llm-chat-title">Claude Chat</div>
+                            <div class="llm-chat-title">
+                                <i class="fas fa-comment-dots"></i>
+                                <span>Claude Chat</span>
+                            </div>
                             <div class="llm-chat-actions">
+                                <button class="llm-chat-action-button" title="Settings">
+                                    <i class="fas fa-sliders-h"></i>
+                                </button>
                                 <button class="llm-chat-action-button" title="Export Chat">
                                     <i class="fas fa-download"></i>
                                 </button>
@@ -234,21 +413,45 @@
                         
                         <!-- Chat Display -->
                         <div id="claude-chat-display" class="llm-chat-display">
-                            <!-- Messages will be added here -->
+                            <!-- API Key Required Message -->
+                            <div class="llm-error-message">
+                                <i class="fas fa-key"></i>
+                                <p>Claude API key required. Please add your API key in the Settings page.</p>
+                                <button class="fusion-button small" onclick="navigateToPage('settings')">Go to Settings</button>
+                            </div>
                         </div>
                         
-                        <!-- Chat Input -->
-                        <div class="llm-chat-input">
-                            <div class="llm-message-input-container">
-                                <textarea id="claude-message-input" class="llm-message-input" placeholder="Type your message here..."></textarea>
+                        <!-- Chat Input Container -->
+                        <div class="llm-chat-input-container">
+                            <!-- Chat Input -->
+                            <div class="llm-chat-input">
+                                <div class="llm-message-input-container">
+                                    <textarea id="claude-message-input" class="llm-message-input" placeholder="Type your message here..." disabled></textarea>
+                                </div>
+                                <div class="llm-input-actions">
+                                    <button id="claude-attach-button" class="llm-input-action-button" title="Attach File" disabled>
+                                        <i class="fas fa-paperclip"></i>
+                                    </button>
+                                    <button id="claude-send-button" class="llm-send-button" disabled>
+                                        Send <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <div class="llm-input-actions">
-                                <button id="claude-attach-button" class="llm-input-action-button" title="Attach File">
-                                    <i class="fas fa-paperclip"></i>
-                                </button>
-                                <button id="claude-send-button" class="llm-send-button">
-                                    Send <i class="fas fa-paper-plane"></i>
-                                </button>
+                            
+                            <!-- Chat Input Options -->
+                            <div class="llm-chat-input-options">
+                                <div class="llm-chat-input-options-left">
+                                    <div class="llm-chat-input-option" title="Model Parameters">
+                                        <i class="fas fa-sliders-h"></i>
+                                        <span>Parameters</span>
+                                    </div>
+                                </div>
+                                <div class="llm-chat-input-options-right">
+                                    <div class="llm-model-status">
+                                        <div class="llm-model-status-indicator error"></div>
+                                        <span>API Key Required</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -259,12 +462,29 @@
             <div id="chatgpt-container" class="llm-provider-container" style="display: none;">
                 <div class="llm-chat-interface">
                     <!-- Sidebar -->
-                    <div class="llm-sidebar">
+                    <div class="llm-sidebar" id="chatgpt-sidebar">
+                        <div class="llm-sidebar-header">
+                            <button class="llm-sidebar-toggle" id="chatgpt-sidebar-toggle" title="Toggle Sidebar">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                        </div>
+                        
                         <!-- Chat History -->
                         <div class="llm-history-header">
                             <div class="llm-history-title">Chat History</div>
-                            <button id="chatgpt-new-chat" class="llm-new-chat-button">New Chat</button>
+                            <button id="chatgpt-new-chat" class="llm-new-chat-button">
+                                <i class="fas fa-plus"></i>
+                                <span>New Chat</span>
+                            </button>
                         </div>
+                        
+                        <div class="llm-history-search">
+                            <div class="llm-model-search-container">
+                                <i class="fas fa-search llm-model-search-icon"></i>
+                                <input type="text" class="llm-model-search-input" placeholder="Search chats...">
+                            </div>
+                        </div>
+                        
                         <div id="chatgpt-history-list" class="llm-history-list">
                             <!-- Chat history items will be added here -->
                         </div>
@@ -272,9 +492,44 @@
                         <!-- Model Selection -->
                         <div class="llm-model-header">
                             <div class="llm-model-title">Models</div>
+                            <button class="llm-model-refresh" id="chatgpt-refresh-models" title="Refresh Models">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
                         </div>
-                        <div id="chatgpt-model-container" class="llm-model-selection">
-                            <!-- Model options will be added here -->
+                        
+                        <div id="chatgpt-model-container" class="llm-model-container">
+                            <div class="llm-model-list">
+                                <div class="llm-model-item selected">
+                                    <input type="radio" id="chatgpt-model-4o" name="chatgpt-model" value="gpt-4o" class="llm-model-radio" checked>
+                                    <div class="llm-model-info">
+                                        <label for="chatgpt-model-4o" class="llm-model-name">GPT-4o</label>
+                                        <div class="llm-model-description">Most capable GPT model</div>
+                                    </div>
+                                    <div class="llm-model-details">
+                                        <div class="llm-model-size">128K</div>
+                                    </div>
+                                </div>
+                                <div class="llm-model-item">
+                                    <input type="radio" id="chatgpt-model-4" name="chatgpt-model" value="gpt-4" class="llm-model-radio">
+                                    <div class="llm-model-info">
+                                        <label for="chatgpt-model-4" class="llm-model-name">GPT-4 Turbo</label>
+                                        <div class="llm-model-description">Advanced capabilities with vision</div>
+                                    </div>
+                                    <div class="llm-model-details">
+                                        <div class="llm-model-size">128K</div>
+                                    </div>
+                                </div>
+                                <div class="llm-model-item">
+                                    <input type="radio" id="chatgpt-model-3.5" name="chatgpt-model" value="gpt-3.5-turbo" class="llm-model-radio">
+                                    <div class="llm-model-info">
+                                        <label for="chatgpt-model-3.5" class="llm-model-name">GPT-3.5 Turbo</label>
+                                        <div class="llm-model-description">Fast and efficient</div>
+                                    </div>
+                                    <div class="llm-model-details">
+                                        <div class="llm-model-size">16K</div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     
@@ -282,8 +537,14 @@
                     <div class="llm-main">
                         <!-- Chat Header -->
                         <div class="llm-chat-header">
-                            <div class="llm-chat-title">ChatGPT Chat</div>
+                            <div class="llm-chat-title">
+                                <i class="fas fa-robot"></i>
+                                <span>ChatGPT</span>
+                            </div>
                             <div class="llm-chat-actions">
+                                <button class="llm-chat-action-button" title="Settings">
+                                    <i class="fas fa-sliders-h"></i>
+                                </button>
                                 <button class="llm-chat-action-button" title="Export Chat">
                                     <i class="fas fa-download"></i>
                                 </button>
@@ -295,21 +556,45 @@
                         
                         <!-- Chat Display -->
                         <div id="chatgpt-chat-display" class="llm-chat-display">
-                            <!-- Messages will be added here -->
+                            <!-- API Key Required Message -->
+                            <div class="llm-error-message">
+                                <i class="fas fa-key"></i>
+                                <p>OpenAI API key required. Please add your API key in the Settings page.</p>
+                                <button class="fusion-button small" onclick="navigateToPage('settings')">Go to Settings</button>
+                            </div>
                         </div>
                         
-                        <!-- Chat Input -->
-                        <div class="llm-chat-input">
-                            <div class="llm-message-input-container">
-                                <textarea id="chatgpt-message-input" class="llm-message-input" placeholder="Type your message here..."></textarea>
+                        <!-- Chat Input Container -->
+                        <div class="llm-chat-input-container">
+                            <!-- Chat Input -->
+                            <div class="llm-chat-input">
+                                <div class="llm-message-input-container">
+                                    <textarea id="chatgpt-message-input" class="llm-message-input" placeholder="Type your message here..." disabled></textarea>
+                                </div>
+                                <div class="llm-input-actions">
+                                    <button id="chatgpt-attach-button" class="llm-input-action-button" title="Attach File" disabled>
+                                        <i class="fas fa-paperclip"></i>
+                                    </button>
+                                    <button id="chatgpt-send-button" class="llm-send-button" disabled>
+                                        Send <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <div class="llm-input-actions">
-                                <button id="chatgpt-attach-button" class="llm-input-action-button" title="Attach File">
-                                    <i class="fas fa-paperclip"></i>
-                                </button>
-                                <button id="chatgpt-send-button" class="llm-send-button">
-                                    Send <i class="fas fa-paper-plane"></i>
-                                </button>
+                            
+                            <!-- Chat Input Options -->
+                            <div class="llm-chat-input-options">
+                                <div class="llm-chat-input-options-left">
+                                    <div class="llm-chat-input-option" title="Model Parameters">
+                                        <i class="fas fa-sliders-h"></i>
+                                        <span>Parameters</span>
+                                    </div>
+                                </div>
+                                <div class="llm-chat-input-options-right">
+                                    <div class="llm-model-status">
+                                        <div class="llm-model-status-indicator error"></div>
+                                        <span>API Key Required</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -320,12 +605,29 @@
             <div id="gemini-container" class="llm-provider-container" style="display: none;">
                 <div class="llm-chat-interface">
                     <!-- Sidebar -->
-                    <div class="llm-sidebar">
+                    <div class="llm-sidebar" id="gemini-sidebar">
+                        <div class="llm-sidebar-header">
+                            <button class="llm-sidebar-toggle" id="gemini-sidebar-toggle" title="Toggle Sidebar">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                        </div>
+                        
                         <!-- Chat History -->
                         <div class="llm-history-header">
                             <div class="llm-history-title">Chat History</div>
-                            <button id="gemini-new-chat" class="llm-new-chat-button">New Chat</button>
+                            <button id="gemini-new-chat" class="llm-new-chat-button">
+                                <i class="fas fa-plus"></i>
+                                <span>New Chat</span>
+                            </button>
                         </div>
+                        
+                        <div class="llm-history-search">
+                            <div class="llm-model-search-container">
+                                <i class="fas fa-search llm-model-search-icon"></i>
+                                <input type="text" class="llm-model-search-input" placeholder="Search chats...">
+                            </div>
+                        </div>
+                        
                         <div id="gemini-history-list" class="llm-history-list">
                             <!-- Chat history items will be added here -->
                         </div>
@@ -333,9 +635,34 @@
                         <!-- Model Selection -->
                         <div class="llm-model-header">
                             <div class="llm-model-title">Models</div>
+                            <button class="llm-model-refresh" id="gemini-refresh-models" title="Refresh Models">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
                         </div>
-                        <div id="gemini-model-container" class="llm-model-selection">
-                            <!-- Model options will be added here -->
+                        
+                        <div id="gemini-model-container" class="llm-model-container">
+                            <div class="llm-model-list">
+                                <div class="llm-model-item selected">
+                                    <input type="radio" id="gemini-model-pro" name="gemini-model" value="gemini-1.5-pro" class="llm-model-radio" checked>
+                                    <div class="llm-model-info">
+                                        <label for="gemini-model-pro" class="llm-model-name">Gemini 1.5 Pro</label>
+                                        <div class="llm-model-description">Most capable Gemini model</div>
+                                    </div>
+                                    <div class="llm-model-details">
+                                        <div class="llm-model-size">1M</div>
+                                    </div>
+                                </div>
+                                <div class="llm-model-item">
+                                    <input type="radio" id="gemini-model-flash" name="gemini-model" value="gemini-1.5-flash" class="llm-model-radio">
+                                    <div class="llm-model-info">
+                                        <label for="gemini-model-flash" class="llm-model-name">Gemini 1.5 Flash</label>
+                                        <div class="llm-model-description">Fast and efficient</div>
+                                    </div>
+                                    <div class="llm-model-details">
+                                        <div class="llm-model-size">1M</div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     
@@ -343,8 +670,14 @@
                     <div class="llm-main">
                         <!-- Chat Header -->
                         <div class="llm-chat-header">
-                            <div class="llm-chat-title">Gemini Chat</div>
+                            <div class="llm-chat-title">
+                                <i class="fas fa-star"></i>
+                                <span>Gemini Chat</span>
+                            </div>
                             <div class="llm-chat-actions">
+                                <button class="llm-chat-action-button" title="Settings">
+                                    <i class="fas fa-sliders-h"></i>
+                                </button>
                                 <button class="llm-chat-action-button" title="Export Chat">
                                     <i class="fas fa-download"></i>
                                 </button>
@@ -356,21 +689,45 @@
                         
                         <!-- Chat Display -->
                         <div id="gemini-chat-display" class="llm-chat-display">
-                            <!-- Messages will be added here -->
+                            <!-- API Key Required Message -->
+                            <div class="llm-error-message">
+                                <i class="fas fa-key"></i>
+                                <p>Google API key required. Please add your API key in the Settings page.</p>
+                                <button class="fusion-button small" onclick="navigateToPage('settings')">Go to Settings</button>
+                            </div>
                         </div>
                         
-                        <!-- Chat Input -->
-                        <div class="llm-chat-input">
-                            <div class="llm-message-input-container">
-                                <textarea id="gemini-message-input" class="llm-message-input" placeholder="Type your message here..."></textarea>
+                        <!-- Chat Input Container -->
+                        <div class="llm-chat-input-container">
+                            <!-- Chat Input -->
+                            <div class="llm-chat-input">
+                                <div class="llm-message-input-container">
+                                    <textarea id="gemini-message-input" class="llm-message-input" placeholder="Type your message here..." disabled></textarea>
+                                </div>
+                                <div class="llm-input-actions">
+                                    <button id="gemini-attach-button" class="llm-input-action-button" title="Attach File" disabled>
+                                        <i class="fas fa-paperclip"></i>
+                                    </button>
+                                    <button id="gemini-send-button" class="llm-send-button" disabled>
+                                        Send <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <div class="llm-input-actions">
-                                <button id="gemini-attach-button" class="llm-input-action-button" title="Attach File">
-                                    <i class="fas fa-paperclip"></i>
-                                </button>
-                                <button id="gemini-send-button" class="llm-send-button">
-                                    Send <i class="fas fa-paper-plane"></i>
-                                </button>
+                            
+                            <!-- Chat Input Options -->
+                            <div class="llm-chat-input-options">
+                                <div class="llm-chat-input-options-left">
+                                    <div class="llm-chat-input-option" title="Model Parameters">
+                                        <i class="fas fa-sliders-h"></i>
+                                        <span>Parameters</span>
+                                    </div>
+                                </div>
+                                <div class="llm-chat-input-options-right">
+                                    <div class="llm-model-status">
+                                        <div class="llm-model-status-indicator error"></div>
+                                        <span>API Key Required</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -860,6 +1217,6 @@
         </div>
     </div>
     
-    <script src="static/js/fusionloom.js"></script>
+    <script src="static/js/fusionloom.js" type="module"></script>
 </body>
 </html>

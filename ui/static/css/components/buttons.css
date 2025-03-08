@@ -1,0 +1,160 @@
+/* FusionLoom v0.3 - Button Components */
+
+.fusion-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--fusion-space-sm) var(--fusion-space-md);
+    background-color: var(--fusion-accent);
+    color: var(--fusion-text);
+    border: none;
+    border-radius: var(--fusion-border-radius-sm);
+    font-size: var(--fusion-font-size-md);
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color var(--fusion-transition-fast);
+    text-decoration: none;
+}
+
+.fusion-button:hover {
+    background-color: var(--fusion-accent-hover);
+}
+
+.fusion-button.secondary {
+    background-color: var(--fusion-secondary);
+}
+
+.fusion-button.secondary:hover {
+    background-color: var(--fusion-primary);
+}
+
+.fusion-button.small {
+    font-size: var(--fusion-font-size-sm);
+    padding: var(--fusion-space-xs) var(--fusion-space-sm);
+}
+
+.fusion-button i {
+    margin-left: var(--fusion-space-xs);
+}
+
+.fusion-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.llm-new-chat-button {
+    width: 100%;
+    padding: var(--fusion-space-xs) var(--fusion-space-sm);
+    background-color: var(--fusion-accent);
+    color: var(--fusion-text);
+    border: none;
+    border-radius: var(--fusion-border-radius-sm);
+    font-size: var(--fusion-font-size-sm);
+    cursor: pointer;
+    transition: background-color var(--fusion-transition-fast);
+}
+
+.llm-new-chat-button:hover {
+    background-color: var(--fusion-accent-hover);
+}
+
+.llm-send-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--fusion-space-xs) var(--fusion-space-md);
+    background-color: var(--fusion-accent);
+    color: var(--fusion-text);
+    border: none;
+    border-radius: var(--fusion-border-radius-sm);
+    font-size: var(--fusion-font-size-sm);
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color var(--fusion-transition-fast);
+}
+
+.llm-send-button:hover {
+    background-color: var(--fusion-accent-hover);
+}
+
+.llm-send-button i {
+    margin-left: var(--fusion-space-xs);
+}
+
+.llm-send-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.llm-input-action-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background-color: transparent;
+    color: var(--fusion-text-secondary);
+    border: 1px solid var(--fusion-border);
+    border-radius: var(--fusion-border-radius-sm);
+    cursor: pointer;
+    transition: all var(--fusion-transition-fast);
+}
+
+.llm-input-action-button:hover {
+    background-color: var(--fusion-bg-secondary);
+    color: var(--fusion-text);
+}
+
+.llm-chat-action-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background-color: transparent;
+    color: var(--fusion-text-secondary);
+    border: none;
+    border-radius: var(--fusion-border-radius-sm);
+    cursor: pointer;
+    transition: all var(--fusion-transition-fast);
+}
+
+.llm-chat-action-button:hover {
+    background-color: var(--fusion-bg-secondary);
+    color: var(--fusion-text);
+}
+
+.endpoint-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background-color: transparent;
+    color: var(--fusion-text-secondary);
+    border: none;
+    border-radius: var(--fusion-border-radius-sm);
+    cursor: pointer;
+    transition: all var(--fusion-transition-fast);
+}
+
+.endpoint-action-btn:hover {
+    background-color: var(--fusion-bg-secondary);
+    color: var(--fusion-text);
+}
+
+.endpoint-action-btn.edit:hover {
+    color: var(--fusion-accent);
+}
+
+.endpoint-action-btn.save:hover {
+    color: var(--fusion-success);
+}
+
+.endpoint-action-btn.cancel:hover {
+    color: var(--fusion-warning);
+}
+
+.endpoint-action-btn.delete:hover {
+    color: var(--fusion-danger);
+}

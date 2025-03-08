@@ -1,4 +1,4 @@
-// FusionLoom v0.2 - Notifications Module
+// FusionLoom v0.3 - Notifications Module
 
 /**
  * Show a notification to the user

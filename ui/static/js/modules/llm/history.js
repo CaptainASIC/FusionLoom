@@ -52,7 +52,8 @@ export function createNewChat(provider, name) {
     history[chatId] = {
         name: name || 'New Chat',
         messages: [],
-        created: new Date().toISOString()
+        created: new Date().toISOString(),
+        updated: new Date().toISOString()
     };
     
     saveChatHistory(provider, history);
@@ -69,6 +70,17 @@ export function saveChat(provider, chatId, chatData) {
     if (!chatId) return;
     
     const history = getChatHistory(provider);
+    
+    // If chat doesn't exist, create it
+    if (!history[chatId]) {
+        history[chatId] = {
+            name: chatData.name || 'New Chat',
+            messages: [],
+            created: new Date().toISOString()
+        };
+    }
+    
+    // Update chat data
     history[chatId] = {
         ...history[chatId],
         ...chatData,
@@ -119,11 +131,50 @@ export function renameChat(provider, chatId, newName) {
     
     if (history[chatId]) {
         history[chatId].name = newName;
+        history[chatId].updated = new Date().toISOString();
         saveChatHistory(provider, history);
         return true;
     }
     
     return false;
+}
+
+/**
+ * Search chat history for a provider
+ * @param {string} provider - The LLM provider
+ * @param {string} query - The search query
+ * @returns {Object} Matching chats
+ */
+export function searchChatHistory(provider, query) {
+    const history = getChatHistory(provider);
+    const results = {};
+    
+    if (!query) return history;
+    
+    const lowerQuery = query.toLowerCase();
+    
+    for (const chatId in history) {
+        const chat = history[chatId];
+        
+        // Check chat name
+        if (chat.name.toLowerCase().includes(lowerQuery)) {
+            results[chatId] = chat;
+            continue;
+        }
+        
+        // Check messages
+        if (chat.messages) {
+            const hasMatch = chat.messages.some(message => 
+                message.content.toLowerCase().includes(lowerQuery)
+            );
+            
+            if (hasMatch) {
+                results[chatId] = chat;
+            }
+        }
+    }
+    
+    return results;
 }
 
 /**
@@ -145,6 +196,30 @@ export function exportChatHistory(provider) {
 export function importChatHistory(provider, jsonData) {
     try {
         const history = JSON.parse(jsonData);
+        
+        // Validate the imported data
+        if (typeof history !== 'object') {
+            throw new Error('Invalid chat history format');
+        }
+        
+        // Check each chat
+        for (const chatId in history) {
+            const chat = history[chatId];
+            
+            if (!chat.name || !Array.isArray(chat.messages)) {
+                throw new Error(`Invalid chat format for chat ID: ${chatId}`);
+            }
+            
+            // Ensure created and updated dates
+            if (!chat.created) {
+                chat.created = new Date().toISOString();
+            }
+            
+            if (!chat.updated) {
+                chat.updated = new Date().toISOString();
+            }
+        }
+        
         saveChatHistory(provider, history);
         return true;
     } catch (error) {
@@ -159,4 +234,56 @@ export function importChatHistory(provider, jsonData) {
  */
 export function clearChatHistory(provider) {
     saveChatHistory(provider, {});
+}
+
+/**
+ * Get the total number of chats for a provider
+ * @param {string} provider - The LLM provider
+ * @returns {number} The number of chats
+ */
+export function getChatCount(provider) {
+    const history = getChatHistory(provider);
+    return Object.keys(history).length;
+}
+
+/**
+ * Get the total number of messages across all chats for a provider
+ * @param {string} provider - The LLM provider
+ * @returns {number} The number of messages
+ */
+export function getMessageCount(provider) {
+    const history = getChatHistory(provider);
+    let count = 0;
+    
+    for (const chatId in history) {
+        count += history[chatId].messages?.length || 0;
+    }
+    
+    return count;
+}
+
+/**
+ * Get the most recent chat for a provider
+ * @param {string} provider - The LLM provider
+ * @returns {Object|null} The most recent chat or null if none
+ */
+export function getMostRecentChat(provider) {
+    const history = getChatHistory(provider);
+    
+    if (Object.keys(history).length === 0) {
+        return null;
+    }
+    
+    // Sort chats by updated date
+    const sortedChatIds = Object.keys(history).sort((a, b) => {
+        const dateA = new Date(history[a].updated || history[a].created);
+        const dateB = new Date(history[b].updated || history[b].created);
+        return dateB - dateA;
+    });
+    
+    const mostRecentChatId = sortedChatIds[0];
+    return {
+        id: mostRecentChatId,
+        ...history[mostRecentChatId]
+    };
 }

@@ -1,0 +1,175 @@
+/* FusionLoom v0.3 - Content Layout */
+
+.fusion-content {
+    margin-left: var(--fusion-sidebar-width);
+    padding: var(--fusion-space-lg);
+    min-height: 100vh;
+    background-color: var(--fusion-bg);
+    color: var(--fusion-text);
+}
+
+.fusion-page {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.fusion-home {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: var(--fusion-space-xl) 0;
+}
+
+.fusion-home-logo {
+    width: 200px;
+    height: 200px;
+    margin-bottom: var(--fusion-space-lg);
+}
+
+.fusion-home h1 {
+    margin-bottom: var(--fusion-space-md);
+    font-size: var(--fusion-font-size-xxl);
+}
+
+.fusion-home p {
+    max-width: 800px;
+    margin-bottom: var(--fusion-space-lg);
+    line-height: 1.6;
+}
+
+.fusion-settings h1 {
+    margin-bottom: var(--fusion-space-lg);
+}
+
+.fusion-settings-section h2 {
+    display: flex;
+    align-items: center;
+    margin-bottom: var(--fusion-space-md);
+    font-size: var(--fusion-font-size-lg);
+}
+
+.fusion-settings-section h2 i {
+    margin-right: var(--fusion-space-sm);
+}
+
+.fusion-settings-actions {
+    display: flex;
+    gap: var(--fusion-space-md);
+    margin-top: var(--fusion-space-lg);
+}
+
+.fusion-settings-actions.table-actions {
+    justify-content: flex-end;
+}
+
+.fusion-setting-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--fusion-space-xs);
+}
+
+.fusion-setting-item label {
+    font-weight: bold;
+    font-size: var(--fusion-font-size-sm);
+}
+
+.fusion-settings-table {
+    overflow-x: auto;
+    margin-bottom: var(--fusion-space-lg);
+}
+
+.fusion-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.fusion-table th,
+.fusion-table td {
+    padding: var(--fusion-space-sm);
+    text-align: left;
+    border-bottom: 1px solid var(--fusion-border);
+}
+
+.fusion-table th {
+    font-weight: bold;
+    background-color: var(--fusion-bg-secondary);
+}
+
+.fusion-table tr.section-header td {
+    background-color: var(--fusion-bg-secondary);
+    font-weight: bold;
+    padding: var(--fusion-space-sm) var(--fusion-space-md);
+}
+
+.fusion-table tr.section-header i {
+    margin-right: var(--fusion-space-sm);
+}
+
+.fusion-status-bar {
+    position: fixed;
+    bottom: 0;
+    left: var(--fusion-sidebar-width);
+    right: 0;
+    background-color: var(--fusion-bg-secondary);
+    color: var(--fusion-text);
+    display: flex;
+    align-items: center;
+    padding: var(--fusion-space-xs) var(--fusion-space-md);
+    border-top: 1px solid var(--fusion-border);
+    z-index: var(--fusion-z-index-fixed);
+    height: 36px; /* Fixed height */
+    overflow: hidden; /* Prevent content from expanding */
+}
+
+.fusion-status-title {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    margin-right: var(--fusion-space-md);
+}
+
+.fusion-status-title i {
+    margin-right: var(--fusion-space-xs);
+}
+
+.fusion-status-indicators {
+    display: flex;
+    gap: var(--fusion-space-md);
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    max-width: calc(100% - 150px); /* Leave space for title */
+}
+
+/* Status message styling */
+.fusion-status-message {
+    display: flex;
+    align-items: center;
+    gap: var(--fusion-space-md);
+    max-width: calc(100% - 150px);
+}
+
+.fusion-status-message p {
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
+
+.fusion-status-message ul,
+.fusion-status-message p:not(:first-child) {
+    display: none; /* Hide all but the first paragraph and all lists */
+}
+
+@media (max-width: 768px) {
+    .fusion-content {
+        margin-left: 0;
+        padding: var(--fusion-space-lg) var(--fusion-space-md);
+    }
+    
+    .fusion-status-bar {
+        left: 0;
+    }
+}

@@ -1,176 +1,291 @@
 /* FusionLoom v0.3 - Service Tabs Component Styles */
 
-/* Service Tabs Container */
-.service-tabs-container {
-    width: 100%;
+.llm-service-tabs-container {
+    position: relative;
+    border: none;
+    box-shadow: none;
+}
+
+.llm-service-tabs {
+    display: flex;
     background-color: var(--fusion-bg-secondary);
     border-bottom: 1px solid var(--fusion-border);
-}
-
-/* Service Tabs */
-.service-tabs {
-    display: flex;
+    padding: 0 10px;
     overflow-x: auto;
     scrollbar-width: thin;
-    scrollbar-color: var(--fusion-border) transparent;
+    position: relative;
+    margin: 0;
+    border-radius: 0;
 }
 
-.service-tabs::-webkit-scrollbar {
-    height: 4px;
+.llm-service-tabs::-webkit-scrollbar {
+    height: 3px;
 }
 
-.service-tabs::-webkit-scrollbar-track {
-    background: transparent;
+.llm-service-tabs::-webkit-scrollbar-track {
+    background: var(--fusion-bg-secondary);
 }
 
-.service-tabs::-webkit-scrollbar-thumb {
-    background-color: var(--fusion-border);
-    border-radius: 2px;
+.llm-service-tabs::-webkit-scrollbar-thumb {
+    background-color: var(--fusion-accent);
+    border-radius: 3px;
 }
 
-/* Service Tab */
-.service-tab {
-    padding: 15px 20px;
-    white-space: nowrap;
+.llm-service-tab {
+    padding: 10px 16px;
     cursor: pointer;
     color: var(--fusion-text-secondary);
-    border-bottom: 3px solid transparent;
+    border-bottom: 2px solid transparent;
     transition: all 0.2s ease;
     font-weight: 500;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
+    white-space: nowrap;
     position: relative;
+    font-family: inherit;
+    font-size: 13px;
 }
 
-.service-tab:hover {
+.llm-service-tab:hover {
     color: var(--fusion-text);
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgba(255, 255, 255, 0.03);
 }
 
-.service-tab.active {
+.llm-service-tab.active {
     color: var(--fusion-accent);
     border-bottom-color: var(--fusion-accent);
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgba(255, 255, 255, 0.03);
 }
 
-.service-tab i {
-    font-size: 16px;
-}
-
-/* Service Tab Badge */
-.service-tab-badge {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    font-size: 10px;
-    padding: 2px 6px;
-    border-radius: 10px;
-    background-color: var(--fusion-accent);
-    color: white;
-}
-
-.service-tab-badge.new {
-    background-color: var(--fusion-accent);
-}
-
-.service-tab-badge.beta {
-    background-color: var(--fusion-warning);
-}
-
-.service-tab-badge.pro {
-    background-color: var(--fusion-success);
-}
-
-/* Service Tab Dropdown */
-.service-tab-dropdown {
-    position: relative;
-}
-
-.service-tab-dropdown-content {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background-color: var(--fusion-bg-secondary);
-    border: 1px solid var(--fusion-border);
-    border-radius: 6px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    min-width: 180px;
-    z-index: 100;
-    display: none;
-}
-
-.service-tab-dropdown:hover .service-tab-dropdown-content {
-    display: block;
-}
-
-.service-tab-dropdown-item {
-    padding: 10px 15px;
-    color: var(--fusion-text-secondary);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.service-tab-dropdown-item:hover {
-    background-color: rgba(255, 255, 255, 0.05);
-    color: var(--fusion-text);
-}
-
-.service-tab-dropdown-item i {
+.llm-service-tab i {
     font-size: 14px;
 }
 
-/* Service Tab Divider */
-.service-tab-divider {
-    width: 1px;
-    height: 24px;
-    background-color: var(--fusion-border);
-    margin: 0 5px;
-    align-self: center;
+.llm-service-tab-status {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    position: absolute;
+    top: 8px;
+    right: 8px;
 }
 
-/* Service Tab Actions */
-.service-tab-actions {
+.llm-service-tab-status.online {
+    background-color: var(--fusion-success);
+}
+
+.llm-service-tab-status.offline {
+    background-color: var(--fusion-danger);
+}
+
+.llm-service-tab-status.loading {
+    background-color: var(--fusion-warning);
+    animation: pulse 1.5s infinite;
+}
+
+/* Service Tab Navigation Arrows */
+.llm-service-tabs-nav {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 24px;
     display: flex;
     align-items: center;
-    margin-left: auto;
-    padding-right: 15px;
-}
-
-.service-tab-action {
-    background: none;
-    border: none;
-    color: var(--fusion-text-secondary);
+    justify-content: center;
+    background-color: var(--fusion-bg-secondary);
     cursor: pointer;
-    font-size: 16px;
-    padding: 8px;
-    border-radius: 4px;
-    transition: all 0.2s ease;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.2s ease;
 }
 
-.service-tab-action:hover {
-    background-color: rgba(255, 255, 255, 0.05);
+.llm-service-tabs-container:hover .llm-service-tabs-nav {
+    opacity: 1;
+}
+
+.llm-service-tabs-nav.left {
+    left: 0;
+    background: linear-gradient(to right, var(--fusion-bg-secondary) 60%, transparent);
+}
+
+.llm-service-tabs-nav.right {
+    right: 0;
+    background: linear-gradient(to left, var(--fusion-bg-secondary) 60%, transparent);
+}
+
+.llm-service-tabs-nav i {
+    color: var(--fusion-text-secondary);
+    font-size: 14px;
+}
+
+.llm-service-tabs-nav:hover i {
     color: var(--fusion-text);
 }
 
-.service-tab-action.active {
+/* Service Tab Dropdown */
+.llm-service-tabs-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 10px;
+    background-color: var(--fusion-bg-secondary);
+    border: 1px solid var(--fusion-border);
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 100;
+    min-width: 180px;
+    display: none;
+}
+
+.llm-service-tabs-dropdown.show {
+    display: block;
+    animation: dropdown-fade-in 0.2s ease-in-out;
+}
+
+.llm-service-dropdown-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    color: var(--fusion-text-secondary);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-family: inherit;
+}
+
+.llm-service-dropdown-item:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+    color: var(--fusion-text);
+}
+
+.llm-service-dropdown-item.active {
     color: var(--fusion-accent);
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+.llm-service-dropdown-item i {
+    font-size: 14px;
+}
+
+.llm-service-dropdown-divider {
+    height: 1px;
+    background-color: var(--fusion-border);
+    margin: 4px 0;
+}
+
+/* Service Tab More Button */
+.llm-service-tabs-more {
+    padding: 10px 12px;
+    cursor: pointer;
+    color: var(--fusion-text-secondary);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 2px solid transparent;
+}
+
+.llm-service-tabs-more:hover {
+    color: var(--fusion-text);
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+.llm-service-tabs-more.active {
+    color: var(--fusion-accent);
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* Service Tab Badge */
+.llm-service-tab-badge {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background-color: var(--fusion-accent);
+    color: white;
+    font-size: 9px;
+    font-weight: bold;
+    padding: 1px 4px;
+    border-radius: 8px;
+    min-width: 14px;
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Service Tab Tooltip */
+.llm-service-tab-tooltip {
+    position: absolute;
+    bottom: -32px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--fusion-bg-secondary);
+    color: var(--fusion-text);
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    white-space: nowrap;
+    z-index: 100;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    pointer-events: none;
+    border: 1px solid var(--fusion-border);
+}
+
+.llm-service-tab:hover .llm-service-tab-tooltip {
+    opacity: 1;
+    visibility: visible;
+}
+
+.llm-service-tab-tooltip::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 0 4px 4px 4px;
+    border-style: solid;
+    border-color: transparent transparent var(--fusion-bg-secondary) transparent;
+}
+
+/* Animations */
+@keyframes dropdown-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.5;
+    }
 }
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
-    .service-tab {
-        padding: 12px 15px;
+    .llm-service-tab {
+        padding: 10px 12px;
     }
     
-    .service-tab-text {
+    .llm-service-tab span {
         display: none;
     }
     
-    .service-tab i {
-        font-size: 18px;
+    .llm-service-tab i {
+        font-size: 16px;
     }
 }

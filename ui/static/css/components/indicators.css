@@ -1,0 +1,132 @@
+/* FusionLoom v0.3 - Indicator Components */
+
+.fusion-container-indicator {
+    display: flex;
+    align-items: center;
+    gap: var(--fusion-space-xs);
+    padding: var(--fusion-space-xs) var(--fusion-space-sm);
+    border-radius: var(--fusion-border-radius-sm);
+    font-size: var(--fusion-font-size-xs);
+    cursor: pointer;
+    transition: background-color var(--fusion-transition-fast);
+}
+
+.fusion-container-indicator:hover {
+    background-color: var(--fusion-bg);
+}
+
+.fusion-container-indicator-status {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.fusion-container-indicator-status.running {
+    background-color: var(--fusion-success);
+}
+
+.fusion-container-indicator-status.stopped {
+    background-color: var(--fusion-danger);
+}
+
+.fusion-container-indicator-status.paused {
+    background-color: var(--fusion-warning);
+}
+
+.fusion-container-indicator-name {
+    font-weight: bold;
+}
+
+.fusion-container-indicator-actions {
+    display: flex;
+    gap: var(--fusion-space-xs);
+}
+
+.fusion-container-indicator-action {
+    background: none;
+    border: none;
+    color: var(--fusion-text-secondary);
+    cursor: pointer;
+    transition: color var(--fusion-transition-fast);
+    padding: 0;
+    font-size: var(--fusion-font-size-xs);
+}
+
+.fusion-container-indicator-action:hover {
+    color: var(--fusion-text);
+}
+
+.fusion-container-indicator-action.start:hover {
+    color: var(--fusion-success);
+}
+
+.fusion-container-indicator-action.stop:hover {
+    color: var(--fusion-danger);
+}
+
+.fusion-container-indicator-action.restart:hover {
+    color: var(--fusion-warning);
+}
+
+.fusion-loading-indicator {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: var(--fusion-accent);
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.fusion-progress-bar {
+    height: 4px;
+    background-color: var(--fusion-bg);
+    border-radius: var(--fusion-border-radius-sm);
+    overflow: hidden;
+}
+
+.fusion-progress-bar-fill {
+    height: 100%;
+    background-color: var(--fusion-accent);
+    transition: width var(--fusion-transition-medium);
+}
+
+.fusion-badge {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: var(--fusion-border-radius-sm);
+    font-size: var(--fusion-font-size-xs);
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.fusion-badge.success {
+    background-color: var(--fusion-success);
+    color: #fff;
+}
+
+.fusion-badge.warning {
+    background-color: var(--fusion-warning);
+    color: #fff;
+}
+
+.fusion-badge.danger {
+    background-color: var(--fusion-danger);
+    color: #fff;
+}
+
+.fusion-badge.info {
+    background-color: var(--fusion-accent);
+    color: #fff;
+}
+
+.fusion-badge.secondary {
+    background-color: var(--fusion-secondary);
+    color: #fff;
+}

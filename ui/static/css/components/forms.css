@@ -1,0 +1,149 @@
+/* FusionLoom v0.3 - Form Components */
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+input[type="url"],
+select,
+textarea {
+    width: 100%;
+    padding: var(--fusion-space-sm);
+    background-color: var(--fusion-input-bg);
+    color: var(--fusion-text);
+    border: 1px solid var(--fusion-input-border);
+    border-radius: var(--fusion-border-radius-sm);
+    font-size: var(--fusion-font-size-sm);
+    transition: border-color var(--fusion-transition-fast);
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus,
+input[type="number"]:focus,
+input[type="url"]:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--fusion-input-focus);
+}
+
+select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23bdc3c7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+    padding-right: 30px;
+}
+
+textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.fusion-toggle {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.fusion-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.fusion-toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--fusion-input-border);
+    transition: var(--fusion-transition-fast);
+    border-radius: 24px;
+}
+
+.fusion-toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: var(--fusion-text);
+    transition: var(--fusion-transition-fast);
+    border-radius: 50%;
+}
+
+.fusion-toggle input:checked + .fusion-toggle-slider {
+    background-color: var(--fusion-accent);
+}
+
+.fusion-toggle input:checked + .fusion-toggle-slider:before {
+    transform: translateX(26px);
+}
+
+.name-input,
+.endpoint-input,
+.key-input {
+    padding: var(--fusion-space-xs) var(--fusion-space-sm);
+    font-size: var(--fusion-font-size-xs);
+}
+
+.name-input {
+    background-color: transparent;
+    border: none;
+    font-weight: bold;
+}
+
+.name-input:focus {
+    background-color: var(--fusion-input-bg);
+}
+
+.status-indicator {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.status-indicator.online {
+    background-color: var(--fusion-success);
+}
+
+.status-indicator.offline {
+    background-color: var(--fusion-danger);
+}
+
+.status-indicator.disabled {
+    background-color: var(--fusion-text-secondary);
+}
+
+.llm-message-input-container {
+    flex: 1;
+    position: relative;
+}
+
+.llm-message-input {
+    width: 100%;
+    min-height: 60px;
+    max-height: 200px;
+    padding: var(--fusion-space-sm);
+    background-color: var(--fusion-input-bg);
+    color: var(--fusion-text);
+    border: 1px solid var(--fusion-input-border);
+    border-radius: var(--fusion-border-radius-sm);
+    font-size: var(--fusion-font-size-sm);
+    resize: none;
+    transition: border-color var(--fusion-transition-fast);
+}
+
+.llm-message-input:focus {
+    outline: none;
+    border-color: var(--fusion-input-focus);
+}

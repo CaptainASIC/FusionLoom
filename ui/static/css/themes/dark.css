@@ -1,0 +1,19 @@
+/* FusionLoom v0.3 - Dark Theme */
+
+.theme-dark {
+    --fusion-bg: #1a1a1a;
+    --fusion-bg-secondary: #2d2d2d;
+    --fusion-input-bg: #333333;
+    --fusion-input-border: #4a4a4a;
+    --fusion-input-focus: #3498db;
+    --fusion-primary: #2c3e50;
+    --fusion-secondary: #34495e;
+    --fusion-accent: #3498db;
+    --fusion-accent-hover: #2980b9;
+    --fusion-text: #ecf0f1;
+    --fusion-text-secondary: #bdc3c7;
+    --fusion-border: #7f8c8d;
+    --fusion-success: #2ecc71;
+    --fusion-warning: #f39c12;
+    --fusion-danger: #e74c3c;
+}

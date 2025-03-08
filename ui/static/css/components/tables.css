@@ -1,0 +1,47 @@
+/* FusionLoom v0.3 - Table Components */
+
+.fusion-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: var(--fusion-space-lg);
+}
+
+.fusion-table th,
+.fusion-table td {
+    padding: var(--fusion-space-sm);
+    text-align: left;
+    border-bottom: 1px solid var(--fusion-border);
+}
+
+.fusion-table th {
+    font-weight: bold;
+    background-color: var(--fusion-bg-secondary);
+    color: var(--fusion-text);
+}
+
+.fusion-table tr:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.fusion-table tr.section-header td {
+    background-color: var(--fusion-bg-secondary);
+    font-weight: bold;
+    padding: var(--fusion-space-sm) var(--fusion-space-md);
+}
+
+.fusion-table tr.section-header i {
+    margin-right: var(--fusion-space-sm);
+}
+
+.endpoint-actions {
+    display: flex;
+    gap: var(--fusion-space-xs);
+    justify-content: flex-end;
+}
+
+@media (max-width: 768px) {
+    .fusion-table {
+        display: block;
+        overflow-x: auto;
+    }
+}

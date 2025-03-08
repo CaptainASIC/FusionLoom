@@ -1,0 +1,110 @@
+/* FusionLoom v0.3 - Notification Components */
+
+.fusion-notifications-container {
+    position: fixed;
+    top: var(--fusion-space-md);
+    right: var(--fusion-space-md);
+    width: 300px;
+    max-width: calc(100% - var(--fusion-space-md) * 2);
+    z-index: var(--fusion-z-index-notification);
+    display: flex;
+    flex-direction: column;
+    gap: var(--fusion-space-sm);
+}
+
+.fusion-notification {
+    background-color: var(--fusion-bg-secondary);
+    color: var(--fusion-text);
+    border-radius: var(--fusion-border-radius-sm);
+    padding: var(--fusion-space-sm) var(--fusion-space-md);
+    box-shadow: var(--fusion-shadow-md);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    animation: notification-slide-in 0.3s ease forwards;
+    overflow: hidden;
+}
+
+.fusion-notification.closing {
+    animation: notification-slide-out 0.3s ease forwards;
+}
+
+.fusion-notification-content {
+    display: flex;
+    align-items: center;
+    gap: var(--fusion-space-sm);
+}
+
+.fusion-notification-icon {
+    font-size: var(--fusion-font-size-lg);
+}
+
+.fusion-notification-message {
+    font-size: var(--fusion-font-size-sm);
+}
+
+.fusion-notification-close {
+    background: none;
+    border: none;
+    color: var(--fusion-text-secondary);
+    cursor: pointer;
+    transition: color var(--fusion-transition-fast);
+}
+
+.fusion-notification-close:hover {
+    color: var(--fusion-text);
+}
+
+.fusion-notification.success {
+    border-left: 4px solid var(--fusion-success);
+}
+
+.fusion-notification.success .fusion-notification-icon {
+    color: var(--fusion-success);
+}
+
+.fusion-notification.warning {
+    border-left: 4px solid var(--fusion-warning);
+}
+
+.fusion-notification.warning .fusion-notification-icon {
+    color: var(--fusion-warning);
+}
+
+.fusion-notification.error {
+    border-left: 4px solid var(--fusion-danger);
+}
+
+.fusion-notification.error .fusion-notification-icon {
+    color: var(--fusion-danger);
+}
+
+.fusion-notification.info {
+    border-left: 4px solid var(--fusion-accent);
+}
+
+.fusion-notification.info .fusion-notification-icon {
+    color: var(--fusion-accent);
+}
+
+@keyframes notification-slide-in {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes notification-slide-out {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}

@@ -1,4 +1,4 @@
-// FusionLoom v0.2 - Containers Module
+// FusionLoom v0.3 - Containers Module
 
 import { showNotification } from './notifications.js';
 
@@ -79,18 +79,11 @@ export function checkContainerStatus() {
         .catch(error => {
             console.error('Error checking container status:', error);
             
-            // Show error message with troubleshooting info
+            // Show simplified error message
             containerIndicators.innerHTML = `
                 <div class="fusion-status-message">
-                    <p>Error checking container status: ${error.message}</p>
-                    <p>This may be due to permission issues with the ${containerEngine} socket.</p>
-                    <p>Possible solutions:</p>
-                    <ul>
-                        <li>Restart FusionLoom with the correct permissions</li>
-                        <li>Check if ${containerEngine} is running</li>
-                        <li>Add containers manually</li>
-                    </ul>
-                    <button class="fusion-button small" onclick="manuallyAddContainer()">Add Container Manually</button>
+                    <p>Connection error</p>
+                    <button class="fusion-button small" onclick="manuallyAddContainer()">Add Container</button>
                 </div>
             `;
         });

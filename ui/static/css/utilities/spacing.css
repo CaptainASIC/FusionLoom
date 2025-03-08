@@ -1,0 +1,110 @@
+/* FusionLoom v0.3 - Spacing Utilities */
+
+/* Margin */
+.m-0 { margin: 0 !important; }
+.m-xs { margin: var(--fusion-space-xs) !important; }
+.m-sm { margin: var(--fusion-space-sm) !important; }
+.m-md { margin: var(--fusion-space-md) !important; }
+.m-lg { margin: var(--fusion-space-lg) !important; }
+.m-xl { margin: var(--fusion-space-xl) !important; }
+
+.mt-0 { margin-top: 0 !important; }
+.mt-xs { margin-top: var(--fusion-space-xs) !important; }
+.mt-sm { margin-top: var(--fusion-space-sm) !important; }
+.mt-md { margin-top: var(--fusion-space-md) !important; }
+.mt-lg { margin-top: var(--fusion-space-lg) !important; }
+.mt-xl { margin-top: var(--fusion-space-xl) !important; }
+
+.mr-0 { margin-right: 0 !important; }
+.mr-xs { margin-right: var(--fusion-space-xs) !important; }
+.mr-sm { margin-right: var(--fusion-space-sm) !important; }
+.mr-md { margin-right: var(--fusion-space-md) !important; }
+.mr-lg { margin-right: var(--fusion-space-lg) !important; }
+.mr-xl { margin-right: var(--fusion-space-xl) !important; }
+
+.mb-0 { margin-bottom: 0 !important; }
+.mb-xs { margin-bottom: var(--fusion-space-xs) !important; }
+.mb-sm { margin-bottom: var(--fusion-space-sm) !important; }
+.mb-md { margin-bottom: var(--fusion-space-md) !important; }
+.mb-lg { margin-bottom: var(--fusion-space-lg) !important; }
+.mb-xl { margin-bottom: var(--fusion-space-xl) !important; }
+
+.ml-0 { margin-left: 0 !important; }
+.ml-xs { margin-left: var(--fusion-space-xs) !important; }
+.ml-sm { margin-left: var(--fusion-space-sm) !important; }
+.ml-md { margin-left: var(--fusion-space-md) !important; }
+.ml-lg { margin-left: var(--fusion-space-lg) !important; }
+.ml-xl { margin-left: var(--fusion-space-xl) !important; }
+
+.mx-0 { margin-left: 0 !important; margin-right: 0 !important; }
+.mx-xs { margin-left: var(--fusion-space-xs) !important; margin-right: var(--fusion-space-xs) !important; }
+.mx-sm { margin-left: var(--fusion-space-sm) !important; margin-right: var(--fusion-space-sm) !important; }
+.mx-md { margin-left: var(--fusion-space-md) !important; margin-right: var(--fusion-space-md) !important; }
+.mx-lg { margin-left: var(--fusion-space-lg) !important; margin-right: var(--fusion-space-lg) !important; }
+.mx-xl { margin-left: var(--fusion-space-xl) !important; margin-right: var(--fusion-space-xl) !important; }
+.mx-auto { margin-left: auto !important; margin-right: auto !important; }
+
+.my-0 { margin-top: 0 !important; margin-bottom: 0 !important; }
+.my-xs { margin-top: var(--fusion-space-xs) !important; margin-bottom: var(--fusion-space-xs) !important; }
+.my-sm { margin-top: var(--fusion-space-sm) !important; margin-bottom: var(--fusion-space-sm) !important; }
+.my-md { margin-top: var(--fusion-space-md) !important; margin-bottom: var(--fusion-space-md) !important; }
+.my-lg { margin-top: var(--fusion-space-lg) !important; margin-bottom: var(--fusion-space-lg) !important; }
+.my-xl { margin-top: var(--fusion-space-xl) !important; margin-bottom: var(--fusion-space-xl) !important; }
+
+/* Padding */
+.p-0 { padding: 0 !important; }
+.p-xs { padding: var(--fusion-space-xs) !important; }
+.p-sm { padding: var(--fusion-space-sm) !important; }
+.p-md { padding: var(--fusion-space-md) !important; }
+.p-lg { padding: var(--fusion-space-lg) !important; }
+.p-xl { padding: var(--fusion-space-xl) !important; }
+
+.pt-0 { padding-top: 0 !important; }
+.pt-xs { padding-top: var(--fusion-space-xs) !important; }
+.pt-sm { padding-top: var(--fusion-space-sm) !important; }
+.pt-md { padding-top: var(--fusion-space-md) !important; }
+.pt-lg { padding-top: var(--fusion-space-lg) !important; }
+.pt-xl { padding-top: var(--fusion-space-xl) !important; }
+
+.pr-0 { padding-right: 0 !important; }
+.pr-xs { padding-right: var(--fusion-space-xs) !important; }
+.pr-sm { padding-right: var(--fusion-space-sm) !important; }
+.pr-md { padding-right: var(--fusion-space-md) !important; }
+.pr-lg { padding-right: var(--fusion-space-lg) !important; }
+.pr-xl { padding-right: var(--fusion-space-xl) !important; }
+
+.pb-0 { padding-bottom: 0 !important; }
+.pb-xs { padding-bottom: var(--fusion-space-xs) !important; }
+.pb-sm { padding-bottom: var(--fusion-space-sm) !important; }
+.pb-md { padding-bottom: var(--fusion-space-md) !important; }
+.pb-lg { padding-bottom: var(--fusion-space-lg) !important; }
+.pb-xl { padding-bottom: var(--fusion-space-xl) !important; }
+
+.pl-0 { padding-left: 0 !important; }
+.pl-xs { padding-left: var(--fusion-space-xs) !important; }
+.pl-sm { padding-left: var(--fusion-space-sm) !important; }
+.pl-md { padding-left: var(--fusion-space-md) !important; }
+.pl-lg { padding-left: var(--fusion-space-lg) !important; }
+.pl-xl { padding-left: var(--fusion-space-xl) !important; }
+
+.px-0 { padding-left: 0 !important; padding-right: 0 !important; }
+.px-xs { padding-left: var(--fusion-space-xs) !important; padding-right: var(--fusion-space-xs) !important; }
+.px-sm { padding-left: var(--fusion-space-sm) !important; padding-right: var(--fusion-space-sm) !important; }
+.px-md { padding-left: var(--fusion-space-md) !important; padding-right: var(--fusion-space-md) !important; }
+.px-lg { padding-left: var(--fusion-space-lg) !important; padding-right: var(--fusion-space-lg) !important; }
+.px-xl { padding-left: var(--fusion-space-xl) !important; padding-right: var(--fusion-space-xl) !important; }
+
+.py-0 { padding-top: 0 !important; padding-bottom: 0 !important; }
+.py-xs { padding-top: var(--fusion-space-xs) !important; padding-bottom: var(--fusion-space-xs) !important; }
+.py-sm { padding-top: var(--fusion-space-sm) !important; padding-bottom: var(--fusion-space-sm) !important; }
+.py-md { padding-top: var(--fusion-space-md) !important; padding-bottom: var(--fusion-space-md) !important; }
+.py-lg { padding-top: var(--fusion-space-lg) !important; padding-bottom: var(--fusion-space-lg) !important; }
+.py-xl { padding-top: var(--fusion-space-xl) !important; padding-bottom: var(--fusion-space-xl) !important; }
+
+/* Gap */
+.gap-0 { gap: 0 !important; }
+.gap-xs { gap: var(--fusion-space-xs) !important; }
+.gap-sm { gap: var(--fusion-space-sm) !important; }
+.gap-md { gap: var(--fusion-space-md) !important; }
+.gap-lg { gap: var(--fusion-space-lg) !important; }
+.gap-xl { gap: var(--fusion-space-xl) !important; }

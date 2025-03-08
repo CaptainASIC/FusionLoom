@@ -1,4 +1,4 @@
-// FusionLoom v0.2 - Performance Module
+// FusionLoom v0.3 - Performance Module
 
 /**
  * Update all performance gauges with random values (for demo purposes)
@@ -44,35 +44,94 @@ export function updateGauge(id, value) {
 
 /**
  * Update system information in the UI
- * In a real implementation, this would fetch actual system information
+ * This function fetches system information from the server
  */
 export function updateSystemInfo() {
     const systemInfo = document.querySelector('.fusion-system-info');
     
     if (systemInfo) {
-        // Get browser and OS information
-        const userAgent = navigator.userAgent;
-        let osInfo = "Unknown OS";
-        let browserInfo = "Unknown Browser";
-        
-        // Detect OS
-        if (userAgent.indexOf("Win") !== -1) osInfo = "Windows";
-        else if (userAgent.indexOf("Mac") !== -1) osInfo = "MacOS";
-        else if (userAgent.indexOf("Linux") !== -1) osInfo = "Linux";
-        else if (userAgent.indexOf("Android") !== -1) osInfo = "Android";
-        else if (userAgent.indexOf("iOS") !== -1) osInfo = "iOS";
-        
-        // Detect browser
-        if (userAgent.indexOf("Chrome") !== -1) browserInfo = "Chrome";
-        else if (userAgent.indexOf("Firefox") !== -1) browserInfo = "Firefox";
-        else if (userAgent.indexOf("Safari") !== -1) browserInfo = "Safari";
-        else if (userAgent.indexOf("Edge") !== -1) browserInfo = "Edge";
-        
+        // Show loading state
         systemInfo.innerHTML = `
-            <div>System: ${osInfo}</div>
-            <div>Browser: ${browserInfo}</div>
-            <div>Resolution: ${window.innerWidth}x${window.innerHeight}</div>
-            <div>FusionLoom v0.2</div>
+            <div>Loading system information...</div>
         `;
+        
+        // Fetch system information from the server API
+        // Use the full URL to avoid CORS issues with containers
+        fetch('http://localhost:5050/api/system-info')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`API returned ${response.status}`);
+                }
+                console.log('System info API response:', response);
+                return response.json();
+            })
+            .then(data => {
+                // Update the UI with the system information from the server
+                systemInfo.innerHTML = `
+                    <div>System: ${data.architecture || 'Unknown'}</div>
+                    <div>CPU: ${data.cpu || 'Unknown'}</div>
+                    <div>GPU: ${data.gpu || 'Unknown'}</div>
+                    <div>RAM: ${data.ram || 'Unknown'}</div>
+                    <div>OS: ${data.os || 'Unknown'}</div>
+                    <div>FusionLoom v0.3</div>
+                `;
+            })
+            .catch(error => {
+                console.error('Error fetching system information:', error);
+                // Try with HTTP if HTTPS fails (for local development)
+                if (window.location.protocol === 'https:') {
+                    console.log('Retrying with HTTP...');
+                    fetch('http://localhost:5050/api/system-info')
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`API returned ${response.status}`);
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            // Update the UI with the system information from the server
+                            systemInfo.innerHTML = `
+                                <div>System: ${data.architecture || 'Unknown'}</div>
+                                <div>CPU: ${data.cpu || 'Unknown'}</div>
+                                <div>GPU: ${data.gpu || 'Unknown'}</div>
+                                <div>RAM: ${data.ram || 'Unknown'}</div>
+                                <div>OS: ${data.os || 'Unknown'}</div>
+                                <div>FusionLoom v0.3</div>
+                            `;
+                            return;
+                        })
+                        .catch(secondError => {
+                            console.error('Error on second attempt:', secondError);
+                            showFallbackInfo();
+                        });
+                } else {
+                    showFallbackInfo();
+                }
+                
+                // Function to show fallback information
+                function showFallbackInfo() {
+                    // Fallback to basic detection if the API fails
+                    const userAgent = navigator.userAgent;
+                    let osInfo = "Unknown";
+                    
+                    // Basic OS detection
+                    if (userAgent.indexOf("Win") !== -1) osInfo = "Windows";
+                    else if (userAgent.indexOf("Mac") !== -1) osInfo = "macOS";
+                    else if (userAgent.indexOf("Linux") !== -1) osInfo = "Linux";
+                    else if (userAgent.indexOf("Android") !== -1) osInfo = "Android";
+                    else if (userAgent.indexOf("iOS") !== -1) osInfo = "iOS";
+                    
+                    // Show fallback information
+                    systemInfo.innerHTML = `
+                        <div>System: ${navigator.platform}</div>
+                        <div>CPU: ${navigator.hardwareConcurrency || 'Unknown'} cores</div>
+                        <div>GPU: WebGL Renderer</div>
+                        <div>RAM: Not available</div>
+                        <div>OS: ${osInfo}</div>
+                        <div>FusionLoom v0.3</div>
+                        <div class="system-info-note">API connection failed</div>
+                    `;
+                }
+            });
     }
 }

@@ -1,0 +1,124 @@
+/* FusionLoom v0.3 - Modal Components */
+
+.fusion-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: var(--fusion-z-index-modal);
+}
+
+.fusion-modal.open {
+    display: flex;
+}
+
+.fusion-modal-content {
+    background-color: var(--fusion-bg-secondary);
+    border-radius: var(--fusion-border-radius-md);
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--fusion-shadow-lg);
+    display: flex;
+    flex-direction: column;
+}
+
+.fusion-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--fusion-space-md);
+    border-bottom: 1px solid var(--fusion-border);
+}
+
+.fusion-modal-title {
+    margin: 0;
+    font-size: var(--fusion-font-size-lg);
+}
+
+.fusion-modal-close {
+    background: none;
+    border: none;
+    color: var(--fusion-text-secondary);
+    font-size: 24px;
+    cursor: pointer;
+    transition: color var(--fusion-transition-fast);
+}
+
+.fusion-modal-close:hover {
+    color: var(--fusion-text);
+}
+
+.fusion-modal-body {
+    padding: var(--fusion-space-md);
+    flex: 1;
+    overflow-y: auto;
+}
+
+.fusion-modal-footer {
+    padding: var(--fusion-space-md);
+    border-top: 1px solid var(--fusion-border);
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--fusion-space-md);
+}
+
+.fusion-about-logo {
+    text-align: center;
+    margin-bottom: var(--fusion-space-md);
+}
+
+.fusion-link {
+    color: var(--fusion-accent);
+    text-decoration: none;
+    transition: color var(--fusion-transition-fast);
+}
+
+.fusion-link:hover {
+    color: var(--fusion-accent-hover);
+    text-decoration: underline;
+}
+
+.fusion-modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--fusion-space-md);
+}
+
+.fusion-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--fusion-space-xs);
+}
+
+.fusion-form-group label {
+    font-weight: bold;
+    font-size: var(--fusion-font-size-sm);
+}
+
+.fusion-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--fusion-space-md);
+    margin-top: var(--fusion-space-md);
+}
+
+.fusion-confirm-modal {
+    text-align: center;
+}
+
+.fusion-confirm-modal p {
+    margin-bottom: var(--fusion-space-lg);
+}
+
+.fusion-confirm-actions {
+    display: flex;
+    justify-content: center;
+    gap: var(--fusion-space-md);
+}
