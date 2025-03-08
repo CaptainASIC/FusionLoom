@@ -264,6 +264,10 @@ fi
 # Source the environment file
 source "\${INSTALL_DIR}/.env"
 
+# Ensure data directories exist
+mkdir -p "\${INSTALL_DIR}/data"
+mkdir -p "\${INSTALL_DIR}/logs"
+
 echo "Starting FusionLoom v\${FUSION_LOOM_VERSION}..."
 echo "The web UI will be available at http://localhost:8080 once startup is complete."
 
@@ -480,6 +484,11 @@ if [ ! -d "\$PLATFORMS_DIR/\$PLATFORM_DIR" ]; then
     PLATFORM_DIR="x86"
 fi
 
+# Ensure all required directories exist
+mkdir -p "\${INSTALL_DIR}/data/ollama"
+mkdir -p "\${INSTALL_DIR}/logs"
+mkdir -p "\$PLATFORMS_DIR/\$PLATFORM_DIR/data/ollama"
+
 # Check if the container is already running
 CONTAINER_RUNNING=false
 if [ "\$ENGINE" = "podman" ]; then
@@ -496,9 +505,6 @@ if [ "\$CONTAINER_RUNNING" = true ]; then
     echo "Container \$CONTAINER_NAME is already running."
     exit 0
 fi
-
-# Create data directory if it doesn't exist
-mkdir -p "\$PLATFORMS_DIR/\$PLATFORM_DIR/data/ollama"
 
 # Launch the container
 echo "Launching Ollama container for platform: \$PLATFORM_DIR"
