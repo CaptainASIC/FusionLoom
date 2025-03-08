@@ -82,6 +82,17 @@ if [ "$OS_TYPE" = "Linux" ]; then
     run_with_sudo mkdir -p "$INSTALL_DIR/data/ollama"
     run_with_sudo mkdir -p "$INSTALL_DIR/logs"
     
+    # Create platform-specific directories
+    echo -e "${BLUE}Creating platform-specific directories (requires sudo)...${NC}"
+    run_with_sudo mkdir -p "$INSTALL_DIR/compose/platforms/apple/data/ollama"
+    run_with_sudo mkdir -p "$INSTALL_DIR/compose/platforms/amd/data/ollama"
+    run_with_sudo mkdir -p "$INSTALL_DIR/compose/platforms/arm/data/ollama"
+    run_with_sudo mkdir -p "$INSTALL_DIR/compose/platforms/dgx_digit/data/ollama"
+    run_with_sudo mkdir -p "$INSTALL_DIR/compose/platforms/jetson/orin/data/ollama"
+    run_with_sudo mkdir -p "$INSTALL_DIR/compose/platforms/jetson/agx/data/ollama"
+    run_with_sudo mkdir -p "$INSTALL_DIR/compose/platforms/nvidia/data/ollama"
+    run_with_sudo mkdir -p "$INSTALL_DIR/compose/platforms/x86/data/ollama"
+    
     # Set permissions so the user can access the installation
     run_with_sudo chown -R $(id -u):$(id -g) "$INSTALL_DIR"
 else
@@ -95,6 +106,17 @@ else
     # Create data and log directories
     mkdir -p "$INSTALL_DIR/data/ollama"
     mkdir -p "$INSTALL_DIR/logs"
+    
+    # Create platform-specific directories
+    echo -e "${BLUE}Creating platform-specific directories...${NC}"
+    mkdir -p "$INSTALL_DIR/compose/platforms/apple/data/ollama"
+    mkdir -p "$INSTALL_DIR/compose/platforms/amd/data/ollama"
+    mkdir -p "$INSTALL_DIR/compose/platforms/arm/data/ollama"
+    mkdir -p "$INSTALL_DIR/compose/platforms/dgx_digit/data/ollama"
+    mkdir -p "$INSTALL_DIR/compose/platforms/jetson/orin/data/ollama"
+    mkdir -p "$INSTALL_DIR/compose/platforms/jetson/agx/data/ollama"
+    mkdir -p "$INSTALL_DIR/compose/platforms/nvidia/data/ollama"
+    mkdir -p "$INSTALL_DIR/compose/platforms/x86/data/ollama"
 fi
 
 # Check for container engine (Docker or Podman)

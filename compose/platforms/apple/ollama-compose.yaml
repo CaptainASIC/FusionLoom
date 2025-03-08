@@ -8,16 +8,11 @@ services:
       - ./data/ollama:/root/.ollama
     ports:
       - "11434:11434"
-    environment:
-      - OLLAMA_HOST=0.0.0.0
-      # Metal GPU acceleration is enabled by default on Apple Silicon
     restart: unless-stopped
     labels:
       - "io.containers.autoupdate=image"
     networks:
       - fusionloom_net
-    # Note: For Apple Silicon, the container will automatically use Metal for GPU acceleration
-    # No special device mounts are needed as Metal is integrated with macOS
 
 networks:
   fusionloom_net:
