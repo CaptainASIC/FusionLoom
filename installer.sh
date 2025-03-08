@@ -321,11 +321,11 @@ fi
 
 # Start the web UI container
 if [ "\${CONTAINER_ENGINE}" = "docker" ]; then
-    cd "\${INSTALL_DIR}/compose/docker"
-    docker-compose up -d
+    # Use absolute path to compose file instead of changing directory
+    docker-compose -f "\${INSTALL_DIR}/compose/docker/docker-compose.yaml" up -d
 elif [ "\${CONTAINER_ENGINE}" = "podman" ]; then
-    cd "\${INSTALL_DIR}/compose/podman"
-    podman-compose up -d
+    # Use absolute path to compose file instead of changing directory
+    podman-compose -f "\${INSTALL_DIR}/compose/podman/podman-compose.yaml" up -d
 else
     echo "Error: No container engine configured. Please run the installer again."
     exit 1
@@ -530,12 +530,12 @@ fi
 
 # Launch the container
 echo "Launching Ollama container for platform: \$PLATFORM_DIR"
-cd "\$PLATFORMS_DIR/\$PLATFORM_DIR"
 
+# Use absolute path to compose file instead of changing directory
 if [ "\$ENGINE" = "podman" ]; then
-    podman-compose -f ollama-compose.yaml up -d
+    podman-compose -f "\$PLATFORMS_DIR/\$PLATFORM_DIR/ollama-compose.yaml" up -d
 elif [ "\$ENGINE" = "docker" ]; then
-    docker-compose -f ollama-compose.yaml up -d
+    docker-compose -f "\$PLATFORMS_DIR/\$PLATFORM_DIR/ollama-compose.yaml" up -d
 fi
 
 # Check if the container started successfully

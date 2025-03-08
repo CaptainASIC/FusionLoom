@@ -5,7 +5,7 @@ services:
     image: docker.io/ollama/ollama:latest
     container_name: fusionloom-ollama
     volumes:
-      - ./data/ollama:/root/.ollama
+      - /Applications/FusionLoom/compose/platforms/apple/data/ollama:/root/.ollama
     ports:
       - "11434:11434"
     restart: unless-stopped
