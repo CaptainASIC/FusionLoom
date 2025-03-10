@@ -92,4 +92,4 @@ webui.db
 audit.log
 vector_db/
 uploads/
-config.ini
+cfg/config.ini
