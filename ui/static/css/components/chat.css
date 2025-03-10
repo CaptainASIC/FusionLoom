@@ -400,6 +400,8 @@
     border: none;
     border-radius: 0;
     box-shadow: none;
+    max-width: 900px;
+    margin: 0 auto;
 }
 
 .llm-chat-display::-webkit-scrollbar {
@@ -421,6 +423,9 @@
     background-color: var(--fusion-bg-secondary);
     border-radius: 0;
     margin: 0;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
 }
 
 .llm-chat-input {
@@ -626,6 +631,8 @@
     color: var(--fusion-text-secondary);
     gap: 20px;
     height: 100%;
+    max-width: 900px;
+    margin: 0 auto;
 }
 
 .llm-welcome-message h2 {
