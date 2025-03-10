@@ -182,6 +182,14 @@
                         <i class="fas fa-star"></i>
                         <span>Gemini</span>
                     </div>
+                    <div class="llm-service-dropdown-item" data-provider="grok">
+                        <i class="fas fa-bolt"></i>
+                        <span>Grok</span>
+                    </div>
+                    <div class="llm-service-dropdown-item" data-provider="openrouter">
+                        <i class="fas fa-network-wired"></i>
+                        <span>OpenRouter</span>
+                    </div>
                     <div class="llm-service-dropdown-divider"></div>
                     <div class="llm-service-dropdown-item" data-provider="local-services">
                         <i class="fas fa-server"></i>
@@ -721,6 +729,272 @@
                                         <i class="fas fa-paperclip"></i>
                                     </button>
                                     <button id="gemini-send-button" class="llm-send-button" disabled>
+                                        Send <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Chat Input Options -->
+                            <div class="llm-chat-input-options">
+                                <div class="llm-chat-input-options-left">
+                                    <div class="llm-chat-input-option" title="Model Parameters">
+                                        <i class="fas fa-sliders-h"></i>
+                                        <span>Parameters</span>
+                                    </div>
+                                </div>
+                                <div class="llm-chat-input-options-right">
+                                    <div class="llm-model-status">
+                                        <div class="llm-model-status-indicator error"></div>
+                                        <span>API Key Required</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Grok Provider -->
+            <div id="grok-container" class="llm-provider-container" style="display: none;">
+                <div class="llm-chat-interface">
+                    <!-- Sidebar -->
+                    <div class="llm-sidebar" id="grok-sidebar">
+                        <div class="llm-sidebar-header">
+                            <button class="llm-sidebar-toggle" id="grok-sidebar-toggle" title="Toggle Sidebar">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Chat History -->
+                        <div class="llm-history-header">
+                            <div class="llm-history-title">Chat History</div>
+                            <button id="grok-new-chat" class="llm-new-chat-button">
+                                <i class="fas fa-plus"></i>
+                                <span>New Chat</span>
+                            </button>
+                        </div>
+                        
+                        <div class="llm-history-search">
+                            <div class="llm-model-search-container">
+                                <i class="fas fa-search llm-model-search-icon"></i>
+                                <input type="text" class="llm-model-search-input" placeholder="Search chats...">
+                            </div>
+                        </div>
+                        
+                        <div id="grok-history-list" class="llm-history-list">
+                            <!-- Chat history items will be added here -->
+                        </div>
+                        
+                        <!-- Model Selection -->
+                        <div class="llm-model-header">
+                            <div class="llm-model-title">Models</div>
+                            <button class="llm-model-refresh" id="grok-refresh-models" title="Refresh Models">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                        
+                        <div id="grok-model-container" class="llm-model-container">
+                            <div class="llm-model-list">
+                                <div class="llm-model-item selected">
+                                    <input type="radio" id="grok-model-1" name="grok-model" value="grok-1" class="llm-model-radio" checked>
+                                    <div class="llm-model-info">
+                                        <label for="grok-model-1" class="llm-model-name">Grok-1</label>
+                                        <div class="llm-model-description">xAI's Grok model</div>
+                                    </div>
+                                    <div class="llm-model-details">
+                                        <div class="llm-model-size">128K</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Main Chat Area -->
+                    <div class="llm-main">
+                        <!-- Chat Header -->
+                        <div class="llm-chat-header">
+                            <div class="llm-chat-title">
+                                <i class="fas fa-bolt"></i>
+                                <span>Grok Chat</span>
+                            </div>
+                            <div class="llm-chat-actions">
+                                <button class="llm-chat-action-button" title="Settings">
+                                    <i class="fas fa-sliders-h"></i>
+                                </button>
+                                <button class="llm-chat-action-button" title="Export Chat">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                <button class="llm-chat-action-button" title="Clear Chat">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Chat Display -->
+                        <div id="grok-chat-display" class="llm-chat-display">
+                            <!-- API Key Required Message -->
+                            <div class="llm-error-message">
+                                <i class="fas fa-key"></i>
+                                <p>Grok API key required. Please add your API key in the Settings page.</p>
+                                <button class="fusion-button small" onclick="navigateToPage('settings')">Go to Settings</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Chat Input Container -->
+                        <div class="llm-chat-input-container">
+                            <!-- Chat Input -->
+                            <div class="llm-chat-input">
+                                <div class="llm-message-input-container">
+                                    <textarea id="grok-message-input" class="llm-message-input" placeholder="Type your message here..." disabled></textarea>
+                                </div>
+                                <div class="llm-input-actions">
+                                    <button id="grok-attach-button" class="llm-input-action-button" title="Attach File" disabled>
+                                        <i class="fas fa-paperclip"></i>
+                                    </button>
+                                    <button id="grok-send-button" class="llm-send-button" disabled>
+                                        Send <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Chat Input Options -->
+                            <div class="llm-chat-input-options">
+                                <div class="llm-chat-input-options-left">
+                                    <div class="llm-chat-input-option" title="Model Parameters">
+                                        <i class="fas fa-sliders-h"></i>
+                                        <span>Parameters</span>
+                                    </div>
+                                </div>
+                                <div class="llm-chat-input-options-right">
+                                    <div class="llm-model-status">
+                                        <div class="llm-model-status-indicator error"></div>
+                                        <span>API Key Required</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- OpenRouter Provider -->
+            <div id="openrouter-container" class="llm-provider-container" style="display: none;">
+                <div class="llm-chat-interface">
+                    <!-- Sidebar -->
+                    <div class="llm-sidebar" id="openrouter-sidebar">
+                        <div class="llm-sidebar-header">
+                            <button class="llm-sidebar-toggle" id="openrouter-sidebar-toggle" title="Toggle Sidebar">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Chat History -->
+                        <div class="llm-history-header">
+                            <div class="llm-history-title">Chat History</div>
+                            <button id="openrouter-new-chat" class="llm-new-chat-button">
+                                <i class="fas fa-plus"></i>
+                                <span>New Chat</span>
+                            </button>
+                        </div>
+                        
+                        <div class="llm-history-search">
+                            <div class="llm-model-search-container">
+                                <i class="fas fa-search llm-model-search-icon"></i>
+                                <input type="text" class="llm-model-search-input" placeholder="Search chats...">
+                            </div>
+                        </div>
+                        
+                        <div id="openrouter-history-list" class="llm-history-list">
+                            <!-- Chat history items will be added here -->
+                        </div>
+                        
+                        <!-- Model Selection -->
+                        <div class="llm-model-header">
+                            <div class="llm-model-title">Models</div>
+                            <button class="llm-model-refresh" id="openrouter-refresh-models" title="Refresh Models">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                        
+                        <div id="openrouter-model-container" class="llm-model-container">
+                            <div class="llm-model-list">
+                                <div class="llm-model-item selected">
+                                    <input type="radio" id="openrouter-model-claude" name="openrouter-model" value="anthropic/claude-3-opus" class="llm-model-radio" checked>
+                                    <div class="llm-model-info">
+                                        <label for="openrouter-model-claude" class="llm-model-name">Claude 3 Opus</label>
+                                        <div class="llm-model-description">Anthropic's most powerful model</div>
+                                    </div>
+                                    <div class="llm-model-details">
+                                        <div class="llm-model-size">200K</div>
+                                    </div>
+                                </div>
+                                <div class="llm-model-item">
+                                    <input type="radio" id="openrouter-model-gpt4" name="openrouter-model" value="openai/gpt-4o" class="llm-model-radio">
+                                    <div class="llm-model-info">
+                                        <label for="openrouter-model-gpt4" class="llm-model-name">GPT-4o</label>
+                                        <div class="llm-model-description">OpenAI's most capable model</div>
+                                    </div>
+                                    <div class="llm-model-details">
+                                        <div class="llm-model-size">128K</div>
+                                    </div>
+                                </div>
+                                <div class="llm-model-item">
+                                    <input type="radio" id="openrouter-model-mistral" name="openrouter-model" value="mistralai/mistral-large" class="llm-model-radio">
+                                    <div class="llm-model-info">
+                                        <label for="openrouter-model-mistral" class="llm-model-name">Mistral Large</label>
+                                        <div class="llm-model-description">Mistral AI's flagship model</div>
+                                    </div>
+                                    <div class="llm-model-details">
+                                        <div class="llm-model-size">32K</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Main Chat Area -->
+                    <div class="llm-main">
+                        <!-- Chat Header -->
+                        <div class="llm-chat-header">
+                            <div class="llm-chat-title">
+                                <i class="fas fa-network-wired"></i>
+                                <span>OpenRouter Chat</span>
+                            </div>
+                            <div class="llm-chat-actions">
+                                <button class="llm-chat-action-button" title="Settings">
+                                    <i class="fas fa-sliders-h"></i>
+                                </button>
+                                <button class="llm-chat-action-button" title="Export Chat">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                <button class="llm-chat-action-button" title="Clear Chat">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Chat Display -->
+                        <div id="openrouter-chat-display" class="llm-chat-display">
+                            <!-- API Key Required Message -->
+                            <div class="llm-error-message">
+                                <i class="fas fa-key"></i>
+                                <p>OpenRouter API key required. Please add your API key in the Settings page.</p>
+                                <button class="fusion-button small" onclick="navigateToPage('settings')">Go to Settings</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Chat Input Container -->
+                        <div class="llm-chat-input-container">
+                            <!-- Chat Input -->
+                            <div class="llm-chat-input">
+                                <div class="llm-message-input-container">
+                                    <textarea id="openrouter-message-input" class="llm-message-input" placeholder="Type your message here..." disabled></textarea>
+                                </div>
+                                <div class="llm-input-actions">
+                                    <button id="openrouter-attach-button" class="llm-input-action-button" title="Attach File" disabled>
+                                        <i class="fas fa-paperclip"></i>
+                                    </button>
+                                    <button id="openrouter-send-button" class="llm-send-button" disabled>
                                         Send <i class="fas fa-paper-plane"></i>
                                     </button>
                                 </div>

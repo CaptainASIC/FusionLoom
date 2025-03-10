@@ -313,6 +313,12 @@ export async function initializeOllamaUI() {
     const modelList = modelContainer.querySelector('.llm-model-list');
     if (!modelList) return;
     
+    // Set up pull button event listener
+    const pullButton = document.getElementById('ollama-pull-button');
+    if (pullButton) {
+        pullButton.addEventListener('click', promptPullModel);
+    }
+    
     try {
         // Check if Ollama is available
         const isAvailable = await checkOllamaAvailability();
@@ -362,9 +368,7 @@ export async function initializeOllamaUI() {
             // Add pull button event listener
             const pullButton = document.getElementById('ollama-pull-now');
             if (pullButton) {
-                pullButton.addEventListener('click', () => {
-                    promptPullModel();
-                });
+                pullButton.addEventListener('click', promptPullModel);
             }
             
             // Add retry button event listener
