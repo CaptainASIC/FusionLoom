@@ -286,6 +286,16 @@ function updateStatusIndicators(settings) {
     if (geminiStatus) {
         geminiStatus.className = settings.gemini_key ? 'llm-service-tab-status online' : 'llm-service-tab-status offline';
     }
+    
+    const grokStatus = document.querySelector('.llm-service-tab[data-provider="grok"] .llm-service-tab-status');
+    if (grokStatus) {
+        grokStatus.className = settings.grok_key ? 'llm-service-tab-status online' : 'llm-service-tab-status offline';
+    }
+    
+    const openrouterStatus = document.querySelector('.llm-service-tab[data-provider="openrouter"] .llm-service-tab-status');
+    if (openrouterStatus) {
+        openrouterStatus.className = settings.openrouter_key ? 'llm-service-tab-status online' : 'llm-service-tab-status offline';
+    }
 }
 
 /**
@@ -537,6 +547,26 @@ function switchProvider(provider) {
                 module.initializeGeminiUI();
             }).catch(error => {
                 console.error('Error initializing Gemini:', error);
+            });
+        } else if (provider === 'openrouter') {
+            console.log('Initializing OpenRouter with settings:', {
+                api_key: settings.openrouter_key ? 'Set (hidden)' : 'Not set',
+                api_endpoint: settings.openrouter_api
+            });
+            
+            import('./openrouter.js').then(module => {
+                if (settings.openrouter_key) {
+                    console.log('Setting OpenRouter API key from switchProvider');
+                    module.setOpenRouterApiKey(settings.openrouter_key);
+                }
+                if (settings.openrouter_api) {
+                    console.log('Setting OpenRouter endpoint to:', settings.openrouter_api);
+                    module.setOpenRouterEndpoint(settings.openrouter_api);
+                }
+                console.log('Initializing OpenRouter UI');
+                module.initializeOpenRouterUI();
+            }).catch(error => {
+                console.error('Error initializing OpenRouter:', error);
             });
         }
     }

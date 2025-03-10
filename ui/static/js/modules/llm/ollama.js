@@ -446,7 +446,10 @@ export async function initializeOllamaUI() {
             pullButton.addEventListener('click', () => {
                 const downloadInput = document.getElementById('ollama-download-input');
                 if (downloadInput && downloadInput.value.trim()) {
+                    console.log('Pulling model from input field:', downloadInput.value.trim());
                     pullOllamaModel(downloadInput.value.trim());
+                    // Clear the input after pulling
+                    downloadInput.value = '';
                 } else {
                     promptPullModel();
                 }
@@ -731,6 +734,7 @@ export async function pullOllamaModel(model) {
             return false;
         }
         
+        console.log(`Pulling Ollama model: ${model} from ${ollamaEndpoint}/pull`);
         showNotification(`Pulling model: ${model}...`, 'info');
         
         // Update model status
@@ -749,13 +753,18 @@ export async function pullOllamaModel(model) {
         // Update downloads panel
         updateDownloadsPanel();
         
+        // Log the request details
+        const requestBody = JSON.stringify({ name: model });
+        console.log('Pull request body:', requestBody);
+        
         // Start the pull process
         const response = await fetch(`${ollamaEndpoint}/pull`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
             },
-            body: JSON.stringify({ name: model }),
+            body: requestBody,
             signal: controller.signal
         });
         
