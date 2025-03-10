@@ -49,7 +49,7 @@ ENV_FILE = REPO_ROOT / ".env"
 
 # Define container options
 CONTAINER_ENGINES = ["auto", "docker", "podman"]
-PLATFORM_TYPES = ["auto", "dgx_digit", "jetson_orin", "jetson_agx", "apple_silicon", "nvidia", "amd", "x86", "arm"]
+PLATFORM_TYPES = ["auto", "dgx_digit", "jetson_orin", "jetson_agx", "apple_silicon", "nvidia", "amd_x86", "intel_x86", "arm"]
 GPU_VENDORS = ["auto", "nvidia", "amd", "apple", "cpu"]
 POWER_MODES = ["balanced", "performance", "efficiency"]
 
@@ -57,7 +57,9 @@ POWER_MODES = ["balanced", "performance", "efficiency"]
 PLATFORM_DIR_MAPPING = {
     "apple_silicon": "apple",
     "jetson_orin": "jetson/orin",
-    "jetson_agx": "jetson/agx"
+    "jetson_agx": "jetson/agx",
+    "amd_x86": "amd",
+    "intel_x86": "intel"
 }
 
 # Define AI services
@@ -150,11 +152,31 @@ def detect_platform():
         except:
             pass
     
-    # Check for AMD GPU
+    # Check for AMD GPU/CPU
     if system == "Linux":
         try:
+            # Check for AMD GPU with ROCm
             if os.path.exists("/opt/rocm") or subprocess.run(["rocminfo"], capture_output=True, text=True, check=False).returncode == 0:
-                return "amd"
+                return "amd_x86"
+            
+            # Check for AMD CPU
+            if HW_DETECTION_AVAILABLE:
+                try:
+                    info = cpuinfo.get_cpu_info()
+                    vendor = info.get("vendor_id_raw", "").lower()
+                    if "amd" in vendor:
+                        return "amd_x86"
+                except:
+                    pass
+            
+            # Alternative check for AMD CPU
+            try:
+                with open("/proc/cpuinfo", "r") as f:
+                    cpuinfo_content = f.read().lower()
+                    if "amd" in cpuinfo_content:
+                        return "amd_x86"
+            except:
+                pass
         except:
             pass
     
@@ -162,8 +184,8 @@ def detect_platform():
     if machine in ["aarch64", "armv7l", "arm64"]:
         return "arm"
     
-    # Default to x86
-    return "x86"
+    # Default to Intel x86
+    return "intel_x86"
 
 def detect_gpu_vendor():
     """Detect the GPU vendor"""
