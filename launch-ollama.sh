@@ -79,7 +79,13 @@ detect_platform() {
     
     # Check for AMD GPU with ROCm
     if command -v rocminfo &> /dev/null || [ -d "/opt/rocm" ]; then
-        echo "amd"
+        echo "amd_x86"
+        return
+    fi
+    
+    # Check for AMD CPU
+    if grep -q "AMD" /proc/cpuinfo 2>/dev/null; then
+        echo "amd_x86"
         return
     fi
     
@@ -89,8 +95,8 @@ detect_platform() {
         return
     fi
     
-    # Default to x86
-    echo "x86"
+    # Default to Intel x86
+    echo "intel_x86"
 }
 
 # Main execution
@@ -112,9 +118,13 @@ create_network_if_needed "$ENGINE"
 PLATFORM=$(detect_platform)
 echo "Detected platform: $PLATFORM"
 
-# For backward compatibility, map apple_silicon to apple
+# Map platform types to directory names
 if [ "$PLATFORM" = "apple_silicon" ]; then
     PLATFORM_DIR="apple"
+elif [ "$PLATFORM" = "amd_x86" ]; then
+    PLATFORM_DIR="amd"
+elif [ "$PLATFORM" = "intel_x86" ]; then
+    PLATFORM_DIR="intel"
 else
     PLATFORM_DIR="$PLATFORM"
 fi
@@ -122,8 +132,8 @@ fi
 # Check if the platform directory exists
 if [ ! -d "$PLATFORMS_DIR/$PLATFORM_DIR" ]; then
     echo "Error: Platform directory not found: $PLATFORMS_DIR/$PLATFORM_DIR"
-    echo "Falling back to x86 platform."
-    PLATFORM_DIR="x86"
+    echo "Falling back to intel_x86 platform."
+    PLATFORM_DIR="intel"
 fi
 
 # Check if the container is already running
