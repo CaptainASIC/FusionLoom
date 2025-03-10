@@ -125,6 +125,21 @@ function initializeLLMProviders(settings) {
                 console.error('Error setting Gemini API key:', error);
             });
         }
+        
+        // Update OpenRouter API key
+        if (settings.openrouter_key) {
+            console.log('Setting OpenRouter API key from loadSettings');
+            import('./llm/openrouter.js').then(module => {
+                module.setOpenRouterApiKey(settings.openrouter_key);
+                if (settings.openrouter_api) {
+                    module.setOpenRouterEndpoint(settings.openrouter_api);
+                }
+                // Initialize OpenRouter UI
+                module.initializeOpenRouterUI();
+            }).catch(error => {
+                console.error('Error setting OpenRouter API key:', error);
+            });
+        }
     }
 }
 
@@ -257,6 +272,23 @@ export function saveSettings() {
                 }
             }).catch(error => {
                 console.error('Error updating Gemini settings:', error);
+            });
+        }
+        
+        // Update OpenRouter API key
+        if (settings.openrouter_key) {
+            console.log('Updating OpenRouter API key');
+            import('./llm/openrouter.js').then(module => {
+                module.setOpenRouterApiKey(settings.openrouter_key);
+                if (settings.openrouter_api) {
+                    module.setOpenRouterEndpoint(settings.openrouter_api);
+                }
+                // Reinitialize UI if OpenRouter is the active provider
+                if (document.querySelector('.llm-service-tab[data-provider="openrouter"].active')) {
+                    module.initializeOpenRouterUI();
+                }
+            }).catch(error => {
+                console.error('Error updating OpenRouter settings:', error);
             });
         }
         

@@ -479,11 +479,22 @@ export async function initializeOllamaUI() {
  * Set up model search functionality
  */
 function setupModelSearch() {
-    const searchInput = document.querySelector('#ollama-model-container .llm-model-search-input');
-    if (!searchInput) return;
+    const downloadInput = document.getElementById('ollama-download-input');
+    if (!downloadInput) return;
     
-    searchInput.addEventListener('input', () => {
-        const query = searchInput.value.toLowerCase();
+    // Add keydown event listener to handle Enter key
+    downloadInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && downloadInput.value.trim()) {
+            // Pull the model when Enter is pressed
+            pullOllamaModel(downloadInput.value.trim());
+            // Clear the input after pulling
+            downloadInput.value = '';
+        }
+    });
+    
+    // For backward compatibility, still handle filtering of existing models
+    downloadInput.addEventListener('input', () => {
+        const query = downloadInput.value.toLowerCase();
         const modelItems = document.querySelectorAll('#ollama-model-container .llm-model-item');
         
         modelItems.forEach(item => {
@@ -502,9 +513,9 @@ function setupModelSearch() {
     const searchClear = document.querySelector('#ollama-model-container .llm-model-search-clear');
     if (searchClear) {
         searchClear.addEventListener('click', () => {
-            searchInput.value = '';
-            searchInput.dispatchEvent(new Event('input'));
-            searchInput.focus();
+            downloadInput.value = '';
+            downloadInput.dispatchEvent(new Event('input'));
+            downloadInput.focus();
         });
     }
 }
