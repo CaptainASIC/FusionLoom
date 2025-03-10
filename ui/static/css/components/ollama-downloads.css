@@ -1,0 +1,163 @@
+/* Ollama Downloads Panel */
+.ollama-downloads-panel {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 350px;
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.ollama-downloads-panel.minimized {
+    height: 40px;
+}
+
+.downloads-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.downloads-panel-header h3 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.downloads-panel-minimize {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+}
+
+.downloads-panel-minimize:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.downloads-panel-content {
+    padding: 10px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.minimized .downloads-panel-content {
+    display: none;
+}
+
+.download-item {
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: var(--card-bg-color);
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+}
+
+.download-item:last-child {
+    margin-bottom: 0;
+}
+
+.download-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.download-item-name {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.download-item-cancel {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.download-item-cancel:hover {
+    background-color: var(--hover-color);
+}
+
+.download-progress {
+    height: 6px;
+    background-color: var(--border-color);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.download-progress-bar {
+    height: 100%;
+    background-color: var(--primary-color);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+.download-status {
+    font-size: 12px;
+    color: var(--secondary-text-color);
+}
+
+/* Model Pull Dialog */
+.fusion-model-suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.fusion-model-suggestion {
+    background-color: var(--card-bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.fusion-model-suggestion:hover {
+    background-color: var(--hover-color);
+    border-color: var(--primary-color);
+}
+
+.fusion-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.fusion-link:hover {
+    text-decoration: underline;
+}
+
+.fusion-input-error {
+    border-color: var(--error-color) !important;
+}

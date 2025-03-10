@@ -124,6 +124,10 @@ def update_settings():
         config['API_Keys']['openai_key'] = settings['openai_key']
     if 'gemini_key' in settings:
         config['API_Keys']['gemini_key'] = settings['gemini_key']
+    if 'openrouter_key' in settings:
+        config['API_Keys']['openrouter_key'] = settings['openrouter_key']
+    if 'grok_key' in settings:
+        config['API_Keys']['grok_key'] = settings['grok_key']
     
     # Write config to file
     with open(CONFIG_FILE, 'w') as f:

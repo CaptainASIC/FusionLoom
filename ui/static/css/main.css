@@ -23,6 +23,7 @@
 @import 'components/message.css';
 @import 'components/model-selector.css';
 @import 'components/service-tabs.css';
+@import 'components/ollama-downloads.css';
 
 /* Themes */
 @import 'themes/dark.css';
