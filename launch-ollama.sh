@@ -153,8 +153,10 @@ if [ "$CONTAINER_RUNNING" = true ]; then
     exit 0
 fi
 
-# Create data directory if it doesn't exist
+# Create data directories if they don't exist
 mkdir -p "$PLATFORMS_DIR/$PLATFORM_DIR/data/ollama"
+mkdir -p "$BASE_DIR/data/ollama/models"
+echo "Created persistent Ollama models directory at $BASE_DIR/data/ollama/models"
 
 # Launch the container
 echo "Launching Ollama container for platform: $PLATFORM_DIR"

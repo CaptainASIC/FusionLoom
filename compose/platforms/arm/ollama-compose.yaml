@@ -6,6 +6,7 @@ services:
     container_name: fusionloom-ollama
     volumes:
       - ./data/ollama:/root/.ollama
+      - ../../../data/ollama/models:/root/.ollama/models
     ports:
       - "11434:11434"
     environment:
