@@ -1,4 +1,4 @@
-// FusionLoom v0.3 - LLM Chat Module
+// FusionLoom v0.4 - LLM Chat Module
 // Core chat functionality for all LLM providers
 
 import { showNotification } from '../../modules/notifications.js';
@@ -475,19 +475,69 @@ export async function sendMessage() {
     messageInput.style.height = 'auto';
 
     try {
+        // Import the provider module
+        const providerModule = await import(`./${currentProvider}.js`);
+        
+        // Check if API key is set
+        if (currentProvider !== 'ollama') {
+            // For external API providers, check if API key is set
+            // If not, try to get it from settings
+            if (!providerModule[`${currentProvider}ApiKey`] && !providerModule.checkApiKeySet?.()) {
+                const settings = JSON.parse(localStorage.getItem('fusionloom_settings')) || {};
+                const apiKeyMap = {
+                    'claude': 'anthropic_key',
+                    'chatgpt': 'openai_key',
+                    'gemini': 'gemini_key'
+                };
+                
+                const apiKey = settings[apiKeyMap[currentProvider]];
+                if (!apiKey) {
+                    throw new Error(`${currentProvider.charAt(0).toUpperCase() + currentProvider.slice(1)} API key is not set. Please set it in the settings.`);
+                }
+                
+                // Set the API key
+                switch (currentProvider) {
+                    case 'claude':
+                        providerModule.setClaudeApiKey(apiKey);
+                        break;
+                    case 'chatgpt':
+                        providerModule.setOpenAIApiKey(apiKey);
+                        break;
+                    case 'gemini':
+                        providerModule.setGeminiApiKey(apiKey);
+                        break;
+                }
+            }
+        }
+        
         // Get the selected model based on provider
         switch (currentProvider) {
             case 'ollama':
                 currentModel = getSelectedModel();
                 break;
             case 'claude':
-                currentModel = document.querySelector('input[name="claude-model"]:checked')?.value || 'claude-3-opus-20240229';
+                currentModel = document.querySelector('input[name="claude-model"]:checked')?.value;
+                if (!currentModel) {
+                    // Get default model from the first available model
+                    const models = await providerModule.getClaudeModels();
+                    currentModel = models[0];
+                }
                 break;
             case 'chatgpt':
-                currentModel = document.querySelector('input[name="chatgpt-model"]:checked')?.value || 'gpt-4o';
+                currentModel = document.querySelector('input[name="chatgpt-model"]:checked')?.value;
+                if (!currentModel) {
+                    // Get default model from the first available model
+                    const models = await providerModule.getOpenAIModels();
+                    currentModel = models[0];
+                }
                 break;
             case 'gemini':
-                currentModel = document.querySelector('input[name="gemini-model"]:checked')?.value || 'gemini-1.5-pro';
+                currentModel = document.querySelector('input[name="gemini-model"]:checked')?.value;
+                if (!currentModel) {
+                    // Get default model from the first available model
+                    const models = await providerModule.getGeminiModels();
+                    currentModel = models[0];
+                }
                 break;
             default:
                 currentModel = null;
@@ -497,16 +547,16 @@ export async function sendMessage() {
         let sendFunction;
         switch (currentProvider) {
             case 'ollama':
-                sendFunction = (await import('./ollama.js')).sendOllamaMessage;
+                sendFunction = providerModule.sendOllamaMessage;
                 break;
             case 'claude':
-                sendFunction = (await import('./claude.js')).sendClaudeMessage;
+                sendFunction = providerModule.sendClaudeMessage;
                 break;
             case 'chatgpt':
-                sendFunction = (await import('./chatgpt.js')).sendChatGPTMessage;
+                sendFunction = providerModule.sendChatGPTMessage;
                 break;
             case 'gemini':
-                sendFunction = (await import('./gemini.js')).sendGeminiMessage;
+                sendFunction = providerModule.sendGeminiMessage;
                 break;
             default:
                 throw new Error(`Unknown provider: ${currentProvider}`);

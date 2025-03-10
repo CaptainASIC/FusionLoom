@@ -31,6 +31,11 @@ else
     # Start the API server in the background
     nohup python3 system_info.py --serve 5050 > "${SCRIPT_DIR}/logs/system_api.log" 2>&1 &
     echo "System information API started at http://localhost:5050/api/system-info"
+    
+    # Start the settings API server
+    echo "Starting settings API server..."
+    nohup python3 settings_api.py 5052 > "${SCRIPT_DIR}/logs/settings_api.log" 2>&1 &
+    echo "Settings API started at http://localhost:5052/api/settings"
 fi
 cd "${SCRIPT_DIR}"
 

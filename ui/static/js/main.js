@@ -67,6 +67,45 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('pageChanged', function(e) {
         if (e.detail.page === 'llm') {
             initializeLLMUI();
+            
+            // Load API keys from settings for LLM providers
+            const settings = JSON.parse(localStorage.getItem('fusionloom_settings')) || {};
+            
+            // Initialize Claude with API key from settings
+            if (settings.anthropic_key) {
+                import('./modules/llm/claude.js').then(module => {
+                    module.setClaudeApiKey(settings.anthropic_key);
+                    if (settings.anthropic_api) {
+                        module.setClaudeEndpoint(settings.anthropic_api + '/messages');
+                    }
+                    // Initialize UI after setting API key
+                    module.initializeClaudeUI();
+                });
+            }
+            
+            // Initialize ChatGPT with API key from settings
+            if (settings.openai_key) {
+                import('./modules/llm/chatgpt.js').then(module => {
+                    module.setOpenAIApiKey(settings.openai_key);
+                    if (settings.openai_api) {
+                        module.setOpenAIEndpoint(settings.openai_api + '/chat/completions');
+                    }
+                    // Initialize UI after setting API key
+                    module.initializeChatGPTUI();
+                });
+            }
+            
+            // Initialize Gemini with API key from settings
+            if (settings.gemini_key) {
+                import('./modules/llm/gemini.js').then(module => {
+                    module.setGeminiApiKey(settings.gemini_key);
+                    if (settings.gemini_api) {
+                        module.setGeminiEndpoint(settings.gemini_api);
+                    }
+                    // Initialize UI after setting API key
+                    module.initializeGeminiUI();
+                });
+            }
         }
     });
     

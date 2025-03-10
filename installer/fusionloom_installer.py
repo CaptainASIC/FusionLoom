@@ -280,7 +280,7 @@ def create_config(settings):
     
     # Create .env file
     with open(ENV_FILE, "w") as f:
-        f.write(f"FUSION_LOOM_VERSION=0.1\n")
+        f.write(f"FUSION_LOOM_VERSION=0.4\n")
         f.write(f"CONTAINER_ENGINE={settings['container_engine']}\n")
         f.write(f"DATA_DIR={REPO_ROOT}/data\n")
         
@@ -293,7 +293,7 @@ def create_config(settings):
     
     # Create JSON settings file for the installer
     installer_settings = settings.copy()
-    installer_settings['version'] = "0.1"
+    installer_settings['version'] = "0.4"
     
     with open(REPO_ROOT / "installer" / "settings.json", "w") as f:
         json.dump(installer_settings, f, indent=2)
@@ -427,7 +427,7 @@ def main():
     # Sidebar
     with st.sidebar:
         st.image("https://raw.githubusercontent.com/CaptainASIC/FusionLoom/main/ui/static/img/fusion-logo.svg", width=100)
-        st.header("FusionLoom v0.1")
+        st.header("FusionLoom v0.4")
         
         # Navigation
         st.subheader("Navigation")

@@ -332,12 +332,13 @@ This project is licensed under the GNU General Public License v3.0 (GPL-3.0). Se
 
 ## Roadmap
 
-- **v1.1**: UI improvements and bug fixes
-- **v1.2**: NVIDIA Digit optimization and specialized container builds
-- **v1.3**: RAG capabilities integration
-- **v1.4**: AI Agent support
-- **v1.5**: Content management systems (images, documents)
-- **v2.0**: Note integration and full ecosystem connectivity
+- **v0.4**: ✅ External LLM provider integration (Claude, ChatGPT, Gemini) with proxy server for CORS handling and improved settings management
+- **v0.5**: UI improvements and bug fixes
+- **v0.6**: NVIDIA Digit optimization and specialized container builds
+- **v0.7**: RAG capabilities integration
+- **v0.8**: AI Agent support
+- **v0.9**: Content management systems (images, documents)
+- **v1.0**: Note integration and full ecosystem connectivity
 
 ## Acknowledgements
 

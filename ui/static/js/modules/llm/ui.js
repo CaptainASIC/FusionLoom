@@ -1,4 +1,4 @@
-// FusionLoom v0.3 - LLM UI Module
+// FusionLoom v0.4 - LLM UI Module
 // Handles UI components and interactions for the LLM page
 
 import { initializeChat, setProvider } from './chat.js';
@@ -158,7 +158,7 @@ function updateDropdownItems() {
 /**
  * Update service tab status indicators
  */
-function updateServiceTabStatus() {
+export function updateServiceTabStatus() {
     // This would typically check the status of each service
     // For now, we'll just set Ollama to online and others to offline
     
@@ -186,23 +186,105 @@ function updateServiceTabStatus() {
         }
     });
     
-    // Check other services based on API keys
-    const anthropicKey = localStorage.getItem('anthropic_key');
+    // Check other services based on API keys from settings
+    // First try to get settings from localStorage
+    let settings = JSON.parse(localStorage.getItem('fusionloom_settings')) || {};
+    
+    // Then try to get settings from config.ini via API
+    fetch('http://localhost:5052/api/settings')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to load settings from config.ini');
+            }
+            return response.json();
+        })
+        .then(configSettings => {
+            console.log('Loaded settings from config.ini:', configSettings);
+            
+            // Merge settings, with config.ini taking precedence
+            settings = { ...settings, ...configSettings };
+            
+            // Update status indicators with merged settings
+            updateStatusIndicators(settings);
+            
+            // Update provider modules with API keys
+            updateProviderModules(settings);
+        })
+        .catch(error => {
+            console.error('Error loading settings from config.ini:', error);
+            console.log('Using settings from localStorage only');
+            
+            // Update status indicators with localStorage settings
+            updateStatusIndicators(settings);
+            
+            // Update provider modules with API keys
+            updateProviderModules(settings);
+        });
+    
+    // Update status indicators with the given settings
+    updateStatusIndicators(settings);
+    
+    // Update provider modules with API keys if they're set in settings
+    const updateProviderModules = async () => {
+        if (settings.anthropic_key) {
+            try {
+                const claudeModule = await import('./claude.js');
+                claudeModule.setClaudeApiKey(settings.anthropic_key);
+                if (settings.anthropic_api) {
+                    claudeModule.setClaudeEndpoint(settings.anthropic_api + '/messages');
+                }
+            } catch (error) {
+                console.error('Error updating Claude API key:', error);
+            }
+        }
+        
+        if (settings.openai_key) {
+            try {
+                const chatgptModule = await import('./chatgpt.js');
+                chatgptModule.setOpenAIApiKey(settings.openai_key);
+                if (settings.openai_api) {
+                    chatgptModule.setOpenAIEndpoint(settings.openai_api + '/chat/completions');
+                }
+            } catch (error) {
+                console.error('Error updating OpenAI API key:', error);
+            }
+        }
+        
+        if (settings.gemini_key) {
+            try {
+                const geminiModule = await import('./gemini.js');
+                geminiModule.setGeminiApiKey(settings.gemini_key);
+                if (settings.gemini_api) {
+                    geminiModule.setGeminiEndpoint(settings.gemini_api);
+                }
+            } catch (error) {
+                console.error('Error updating Gemini API key:', error);
+            }
+        }
+    };
+    
+    // Update provider modules
+    updateProviderModules();
+}
+
+/**
+ * Update status indicators with the given settings
+ * @param {Object} settings - The settings object containing API keys
+ */
+function updateStatusIndicators(settings) {
     const claudeStatus = document.querySelector('.llm-service-tab[data-provider="claude"] .llm-service-tab-status');
     if (claudeStatus) {
-        claudeStatus.className = anthropicKey ? 'llm-service-tab-status online' : 'llm-service-tab-status offline';
+        claudeStatus.className = settings.anthropic_key ? 'llm-service-tab-status online' : 'llm-service-tab-status offline';
     }
     
-    const openaiKey = localStorage.getItem('openai_key');
     const chatgptStatus = document.querySelector('.llm-service-tab[data-provider="chatgpt"] .llm-service-tab-status');
     if (chatgptStatus) {
-        chatgptStatus.className = openaiKey ? 'llm-service-tab-status online' : 'llm-service-tab-status offline';
+        chatgptStatus.className = settings.openai_key ? 'llm-service-tab-status online' : 'llm-service-tab-status offline';
     }
     
-    const geminiKey = localStorage.getItem('gemini_key');
     const geminiStatus = document.querySelector('.llm-service-tab[data-provider="gemini"] .llm-service-tab-status');
     if (geminiStatus) {
-        geminiStatus.className = geminiKey ? 'llm-service-tab-status online' : 'llm-service-tab-status offline';
+        geminiStatus.className = settings.gemini_key ? 'llm-service-tab-status online' : 'llm-service-tab-status offline';
     }
 }
 
@@ -355,6 +437,8 @@ function setupAnimationPreferences() {
 function switchProvider(provider) {
     if (provider === activeProvider) return;
     
+    console.log(`Switching provider from ${activeProvider} to ${provider}`);
+    
     // Hide all provider containers with a smooth transition
     const providerContainers = document.querySelectorAll('.llm-provider-container');
     providerContainers.forEach(container => {
@@ -389,6 +473,72 @@ function switchProvider(provider) {
     } else {
         // Initialize chat for the selected provider
         initializeChat(provider);
+        
+        // Load API keys from settings and update provider modules
+        const settings = JSON.parse(localStorage.getItem('fusionloom_settings')) || {};
+        console.log(`Loaded settings for ${provider}:`, settings);
+        
+        if (provider === 'claude') {
+            console.log('Initializing Claude with settings:', {
+                api_key: settings.anthropic_key ? 'Set (hidden)' : 'Not set',
+                api_endpoint: settings.anthropic_api
+            });
+            
+            import('./claude.js').then(module => {
+                if (settings.anthropic_key) {
+                    console.log('Setting Claude API key from switchProvider');
+                    module.setClaudeApiKey(settings.anthropic_key);
+                }
+                if (settings.anthropic_api) {
+                    console.log('Setting Claude endpoint to:', settings.anthropic_api + '/messages');
+                    module.setClaudeEndpoint(settings.anthropic_api + '/messages');
+                }
+                console.log('Initializing Claude UI');
+                module.initializeClaudeUI();
+            }).catch(error => {
+                console.error('Error initializing Claude:', error);
+            });
+        } else if (provider === 'chatgpt') {
+            console.log('Initializing ChatGPT with settings:', {
+                api_key: settings.openai_key ? 'Set (hidden)' : 'Not set',
+                api_endpoint: settings.openai_api
+            });
+            
+            import('./chatgpt.js').then(module => {
+                if (settings.openai_key) {
+                    console.log('Setting OpenAI API key from switchProvider');
+                    module.setOpenAIApiKey(settings.openai_key);
+                }
+                if (settings.openai_api) {
+                    console.log('Setting OpenAI endpoint to:', settings.openai_api + '/chat/completions');
+                    module.setOpenAIEndpoint(settings.openai_api + '/chat/completions');
+                }
+                console.log('Initializing ChatGPT UI');
+                module.initializeChatGPTUI();
+            }).catch(error => {
+                console.error('Error initializing ChatGPT:', error);
+            });
+        } else if (provider === 'gemini') {
+            console.log('Initializing Gemini with settings:', {
+                api_key: settings.gemini_key ? 'Set (hidden)' : 'Not set',
+                api_endpoint: settings.gemini_api
+            });
+            
+            import('./gemini.js').then(module => {
+                if (settings.gemini_key) {
+                    console.log('Setting Gemini API key from switchProvider');
+                    module.setGeminiApiKey(settings.gemini_key);
+                }
+                if (settings.gemini_api) {
+                    console.log('Setting Gemini endpoint to:', settings.gemini_api);
+                    module.setGeminiEndpoint(settings.gemini_api);
+                }
+                console.log('Initializing Gemini UI');
+                module.initializeGeminiUI();
+            }).catch(error => {
+                console.error('Error initializing Gemini:', error);
+            });
+        }
     }
     
     activeProvider = provider;
@@ -739,27 +889,31 @@ export function loadLocalServiceTabs() {
     const tabsData = localStorage.getItem('fusionloom_local_service_tabs');
     
     if (tabsData) {
-        const tabs = JSON.parse(tabsData);
-        
-        // Clear existing tabs except the add button
-        const tabsContainer = document.getElementById('local-services-tabs');
-        const addButton = document.getElementById('add-local-service-tab');
-        
-        if (tabsContainer && addButton) {
-            // Keep only the add button
-            tabsContainer.innerHTML = '';
-            tabsContainer.appendChild(addButton);
+        try {
+            const tabs = JSON.parse(tabsData);
             
-            // Clear existing iframes
-            const contentContainer = document.getElementById('local-services-content');
-            if (contentContainer) {
-                contentContainer.innerHTML = '';
+            // Clear existing tabs except the add button
+            const tabsContainer = document.getElementById('local-services-tabs');
+            const addButton = document.getElementById('add-local-service-tab');
+            
+            if (tabsContainer && addButton) {
+                // Keep only the add button
+                tabsContainer.innerHTML = '';
+                tabsContainer.appendChild(addButton);
+                
+                // Clear existing iframes
+                const contentContainer = document.getElementById('local-services-content');
+                if (contentContainer) {
+                    contentContainer.innerHTML = '';
+                }
+                
+                // Add saved tabs
+                tabs.forEach(tab => {
+                    addLocalServiceTab(tab.name, tab.url);
+                });
             }
-            
-            // Add saved tabs
-            tabs.forEach(tab => {
-                addLocalServiceTab(tab.name, tab.url);
-            });
+        } catch (error) {
+            console.error('Error loading local service tabs:', error);
         }
     }
 }

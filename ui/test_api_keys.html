@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FusionLoom API Key Test</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .provider {
+            margin-bottom: 30px;
+        }
+        .provider-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .provider-icon {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+        .provider-name {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .status {
+            margin-left: auto;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        .online {
+            background-color: #2ecc71;
+            color: white;
+        }
+        .offline {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .loading {
+            background-color: #f39c12;
+            color: white;
+        }
+        .key-info {
+            margin-top: 10px;
+            font-family: monospace;
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            border-left: 4px solid #3498db;
+        }
+        .button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        .button:hover {
+            background-color: #2980b9;
+        }
+        .log {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            border-radius: 4px;
+            font-family: monospace;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>FusionLoom API Key Test</h1>
+    
+    <div class="card">
+        <p>This page tests the loading of API keys from both localStorage and the settings API (config.ini).</p>
+        <button id="test-button" class="button">Test API Keys</button>
+        <button id="clear-button" class="button">Clear Log</button>
+    </div>
+    
+    <div class="provider">
+        <div class="provider-header">
+            <div class="provider-icon">🧠</div>
+            <div class="provider-name">Claude (Anthropic)</div>
+            <div id="claude-status" class="status loading">Loading...</div>
+        </div>
+        <div id="claude-info" class="key-info">
+            Checking API key...
+        </div>
+    </div>
+    
+    <div class="provider">
+        <div class="provider-header">
+            <div class="provider-icon">🤖</div>
+            <div class="provider-name">ChatGPT (OpenAI)</div>
+            <div id="openai-status" class="status loading">Loading...</div>
+        </div>
+        <div id="openai-info" class="key-info">
+            Checking API key...
+        </div>
+    </div>
+    
+    <div class="provider">
+        <div class="provider-header">
+            <div class="provider-icon">✨</div>
+            <div class="provider-name">Gemini (Google)</div>
+            <div id="gemini-status" class="status loading">Loading...</div>
+        </div>
+        <div id="gemini-info" class="key-info">
+            Checking API key...
+        </div>
+    </div>
+    
+    <div id="log" class="log">
+        Test log will appear here...
+    </div>
+    
+    <script>
+        // Log function
+        function log(message) {
+            const logElement = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logElement.innerHTML += `[${timestamp}] ${message}<br>`;
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+        
+        // Update provider status
+        function updateProviderStatus(provider, hasKey, keySource) {
+            const statusElement = document.getElementById(`${provider}-status`);
+            const infoElement = document.getElementById(`${provider}-info`);
+            
+            if (hasKey) {
+                statusElement.className = 'status online';
+                statusElement.textContent = 'Online';
+                infoElement.textContent = `API key found in ${keySource}`;
+            } else {
+                statusElement.className = 'status offline';
+                statusElement.textContent = 'Offline';
+                infoElement.textContent = 'API key not found';
+            }
+        }
+        
+        // Test API keys
+        async function testApiKeys() {
+            log('Starting API key test...');
+            
+            // Reset status indicators
+            document.getElementById('claude-status').className = 'status loading';
+            document.getElementById('claude-status').textContent = 'Loading...';
+            document.getElementById('openai-status').className = 'status loading';
+            document.getElementById('openai-status').textContent = 'Loading...';
+            document.getElementById('gemini-status').className = 'status loading';
+            document.getElementById('gemini-status').textContent = 'Loading...';
+            
+            document.getElementById('claude-info').textContent = 'Checking API key...';
+            document.getElementById('openai-info').textContent = 'Checking API key...';
+            document.getElementById('gemini-info').textContent = 'Checking API key...';
+            
+            // Check localStorage first
+            log('Checking localStorage for API keys...');
+            const settings = JSON.parse(localStorage.getItem('fusionloom_settings')) || {};
+            
+            const localStorageKeys = {
+                claude: settings.anthropic_key ? true : false,
+                openai: settings.openai_key ? true : false,
+                gemini: settings.gemini_key ? true : false
+            };
+            
+            log(`localStorage keys: Claude: ${localStorageKeys.claude ? 'Found' : 'Not found'}, OpenAI: ${localStorageKeys.openai ? 'Found' : 'Not found'}, Gemini: ${localStorageKeys.gemini ? 'Found' : 'Not found'}`);
+            
+            // Check settings API (config.ini)
+            log('Checking settings API (config.ini) for API keys...');
+            try {
+                const response = await fetch('http://localhost:5052/api/settings');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const configSettings = await response.json();
+                log('Settings API response received');
+                
+                const configKeys = {
+                    claude: configSettings.anthropic_key ? true : false,
+                    openai: configSettings.openai_key ? true : false,
+                    gemini: configSettings.gemini_key ? true : false
+                };
+                
+                log(`config.ini keys: Claude: ${configKeys.claude ? 'Found' : 'Not found'}, OpenAI: ${configKeys.openai ? 'Found' : 'Not found'}, Gemini: ${configKeys.gemini ? 'Found' : 'Not found'}`);
+                
+                // Update status indicators based on both sources
+                updateProviderStatus('claude', 
+                    localStorageKeys.claude || configKeys.claude, 
+                    localStorageKeys.claude && configKeys.claude ? 'localStorage and config.ini' : 
+                    localStorageKeys.claude ? 'localStorage only' : 
+                    configKeys.claude ? 'config.ini only' : 'neither source');
+                
+                updateProviderStatus('openai', 
+                    localStorageKeys.openai || configKeys.openai, 
+                    localStorageKeys.openai && configKeys.openai ? 'localStorage and config.ini' : 
+                    localStorageKeys.openai ? 'localStorage only' : 
+                    configKeys.openai ? 'config.ini only' : 'neither source');
+                
+                updateProviderStatus('gemini', 
+                    localStorageKeys.gemini || configKeys.gemini, 
+                    localStorageKeys.gemini && configKeys.gemini ? 'localStorage and config.ini' : 
+                    localStorageKeys.gemini ? 'localStorage only' : 
+                    configKeys.gemini ? 'config.ini only' : 'neither source');
+                
+                log('API key test completed successfully');
+            } catch (error) {
+                log(`Error checking settings API: ${error.message}`);
+                
+                // Update status indicators based on localStorage only
+                updateProviderStatus('claude', localStorageKeys.claude, 'localStorage only (API error)');
+                updateProviderStatus('openai', localStorageKeys.openai, 'localStorage only (API error)');
+                updateProviderStatus('gemini', localStorageKeys.gemini, 'localStorage only (API error)');
+            }
+        }
+        
+        // Event listeners
+        document.getElementById('test-button').addEventListener('click', testApiKeys);
+        
+        document.getElementById('clear-button').addEventListener('click', () => {
+            document.getElementById('log').innerHTML = 'Log cleared<br>';
+        });
+        
+        // Run test on page load
+        window.addEventListener('load', testApiKeys);
+    </script>
+</body>
+</html>

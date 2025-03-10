@@ -18,6 +18,10 @@ echo "Stopping FusionLoom v${FUSION_LOOM_VERSION}..."
 echo "Stopping system information API server..."
 pkill -f "python3 system_info.py --serve 5050" || echo "System information API server was not running."
 
+# Stop the settings API server
+echo "Stopping settings API server..."
+pkill -f "python3 settings_api.py 5052" || echo "Settings API server was not running."
+
 # Stop the Ollama container
 echo "Stopping Ollama container..."
 "${SCRIPT_DIR}/stop-ollama.sh"

@@ -8,7 +8,7 @@ WORKING_DIR=$(pwd)
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Set version
-FUSION_LOOM_VERSION="0.1"
+FUSION_LOOM_VERSION="0.4"
 echo "Setting up FusionLoom v${FUSION_LOOM_VERSION}..."
 
 # Check OS type
@@ -37,6 +37,17 @@ fi
 mkdir -p "${SCRIPT_DIR}/data"
 mkdir -p "${SCRIPT_DIR}/logs"
 mkdir -p "${SCRIPT_DIR}/cfg"
+
+# Check if config.ini exists, if not, copy from sample
+if [ ! -f "${SCRIPT_DIR}/cfg/config.ini" ]; then
+    if [ -f "${SCRIPT_DIR}/cfg/config.sample.ini" ]; then
+        echo "Creating config.ini from sample..."
+        cp "${SCRIPT_DIR}/cfg/config.sample.ini" "${SCRIPT_DIR}/cfg/config.ini"
+        echo "Please edit cfg/config.ini to add your API keys"
+    else
+        echo "Warning: config.sample.ini not found. You will need to create config.ini manually."
+    fi
+fi
 
 # Ensure UI directory structure exists
 if [ ! -d "${SCRIPT_DIR}/ui" ]; then
