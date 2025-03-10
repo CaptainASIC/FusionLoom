@@ -6,6 +6,16 @@ import { showNotification } from '../../modules/notifications.js';
 // Ollama API endpoint
 let ollamaEndpoint = 'http://localhost:11434/api';
 
+// Debug flag
+const DEBUG = true;
+
+// Helper function for debugging
+function debug(...args) {
+    if (DEBUG) {
+        console.log('[Ollama Debug]', ...args);
+    }
+}
+
 // Model loading status
 let modelLoadingStatus = {};
 
@@ -482,22 +492,37 @@ export async function initializeOllamaUI() {
  * Set up model search functionality
  */
 function setupModelSearch() {
+    debug('Setting up model search and download functionality');
+    
     const downloadInput = document.getElementById('ollama-download-input');
-    if (!downloadInput) return;
+    if (!downloadInput) {
+        debug('Download input field not found');
+        return;
+    }
+    
+    debug('Found download input field:', downloadInput);
+    
+    // Remove any existing event listeners
+    const newInput = downloadInput.cloneNode(true);
+    downloadInput.parentNode.replaceChild(newInput, downloadInput);
     
     // Add keydown event listener to handle Enter key
-    downloadInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && downloadInput.value.trim()) {
+    newInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && newInput.value.trim()) {
+            debug(`Enter key pressed with value: ${newInput.value.trim()}`);
             // Pull the model when Enter is pressed
-            pullOllamaModel(downloadInput.value.trim());
+            const modelName = newInput.value.trim();
+            pullOllamaModel(modelName);
             // Clear the input after pulling
-            downloadInput.value = '';
+            newInput.value = '';
+            e.preventDefault(); // Prevent form submission
         }
     });
     
     // For backward compatibility, still handle filtering of existing models
-    downloadInput.addEventListener('input', () => {
-        const query = downloadInput.value.toLowerCase();
+    newInput.addEventListener('input', () => {
+        const query = newInput.value.toLowerCase();
+        debug(`Input changed to: ${query}`);
         const modelItems = document.querySelectorAll('#ollama-model-container .llm-model-item');
         
         modelItems.forEach(item => {
@@ -516,9 +541,30 @@ function setupModelSearch() {
     const searchClear = document.querySelector('#ollama-model-container .llm-model-search-clear');
     if (searchClear) {
         searchClear.addEventListener('click', () => {
-            downloadInput.value = '';
-            downloadInput.dispatchEvent(new Event('input'));
-            downloadInput.focus();
+            debug('Clear button clicked');
+            newInput.value = '';
+            newInput.dispatchEvent(new Event('input'));
+            newInput.focus();
+        });
+    }
+    
+    // Set up pull button again to ensure it works with the new input field
+    const pullButton = document.getElementById('ollama-pull-button');
+    if (pullButton) {
+        // Remove existing event listeners
+        const newButton = pullButton.cloneNode(true);
+        pullButton.parentNode.replaceChild(newButton, pullButton);
+        
+        newButton.addEventListener('click', () => {
+            debug('Pull button clicked');
+            if (newInput.value.trim()) {
+                debug(`Pulling model from input field: ${newInput.value.trim()}`);
+                pullOllamaModel(newInput.value.trim());
+                // Clear the input after pulling
+                newInput.value = '';
+            } else {
+                promptPullModel();
+            }
         });
     }
 }
@@ -734,7 +780,8 @@ export async function pullOllamaModel(model) {
             return false;
         }
         
-        console.log(`Pulling Ollama model: ${model} from ${ollamaEndpoint}/pull`);
+        debug(`Pulling Ollama model: ${model}`);
+        debug(`API endpoint: ${ollamaEndpoint}/pull`);
         showNotification(`Pulling model: ${model}...`, 'info');
         
         // Update model status
@@ -755,10 +802,14 @@ export async function pullOllamaModel(model) {
         
         // Log the request details
         const requestBody = JSON.stringify({ name: model });
-        console.log('Pull request body:', requestBody);
+        debug('Pull request body:', requestBody);
+        
+        // Try direct fetch to Ollama API without using the endpoint variable
+        const fullUrl = 'http://localhost:11434/api/pull';
+        debug(`Trying direct URL: ${fullUrl}`);
         
         // Start the pull process
-        const response = await fetch(`${ollamaEndpoint}/pull`, {
+        const response = await fetch(fullUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
