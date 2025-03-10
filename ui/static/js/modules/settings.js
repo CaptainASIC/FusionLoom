@@ -155,6 +155,8 @@ export function getDefaultSettings() {
         gemini_key: '',
         grok_api: 'https://api.grok.x/v1',
         grok_key: '',
+        openrouter_api: 'https://openrouter.ai/api/v1',
+        openrouter_key: '',
         default_llm: 'llama3',
         
         // Image generation services

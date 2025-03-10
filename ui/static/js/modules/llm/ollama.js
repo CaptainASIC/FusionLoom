@@ -443,7 +443,14 @@ export async function initializeOllamaUI() {
         // Set up pull button
         const pullButton = document.getElementById('ollama-pull-button');
         if (pullButton) {
-            pullButton.addEventListener('click', promptPullModel);
+            pullButton.addEventListener('click', () => {
+                const downloadInput = document.getElementById('ollama-download-input');
+                if (downloadInput && downloadInput.value.trim()) {
+                    pullOllamaModel(downloadInput.value.trim());
+                } else {
+                    promptPullModel();
+                }
+            });
         }
         
         showNotification('Connected to Ollama successfully', 'success');
