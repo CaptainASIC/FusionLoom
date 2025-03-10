@@ -336,3 +336,182 @@
         max-height: 150px;
     }
 }
+
+/* Model Suggestions */
+.fusion-model-suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 10px 0;
+}
+
+.fusion-model-suggestion {
+    background-color: var(--fusion-bg-secondary);
+    border: 1px solid var(--fusion-border);
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.fusion-model-suggestion:hover {
+    background-color: var(--fusion-accent);
+    color: white;
+    border-color: var(--fusion-accent);
+}
+
+/* Downloads Panel */
+.ollama-downloads-panel {
+    position: fixed;
+    bottom: 30px;
+    right: 20px;
+    width: 350px;
+    background-color: var(--fusion-bg);
+    border: 1px solid var(--fusion-border);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    max-height: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+.ollama-downloads-panel.minimized {
+    height: 40px;
+    overflow: hidden;
+}
+
+.downloads-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: var(--fusion-bg-secondary);
+    border-bottom: 1px solid var(--fusion-border);
+}
+
+.downloads-panel-header h3 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.downloads-panel-minimize {
+    background: none;
+    border: none;
+    color: var(--fusion-text-secondary);
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.downloads-panel-minimize:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--fusion-text);
+}
+
+.downloads-panel-content {
+    padding: 10px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.downloads-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.download-item {
+    background-color: var(--fusion-bg-secondary);
+    border-radius: 6px;
+    padding: 10px;
+    border: 1px solid var(--fusion-border);
+}
+
+.download-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.download-item-name {
+    font-weight: 500;
+    font-size: 13px;
+}
+
+.download-item-cancel {
+    background: none;
+    border: none;
+    color: var(--fusion-text-secondary);
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.download-item-cancel:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--fusion-danger);
+}
+
+.download-progress {
+    height: 6px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 6px;
+}
+
+.download-progress-bar {
+    height: 100%;
+    background-color: var(--fusion-accent);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+.download-status {
+    font-size: 12px;
+    color: var(--fusion-text-secondary);
+}
+
+/* Model View in Chat Window */
+.llm-chat-model-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    background-color: var(--fusion-bg-secondary);
+    border-radius: 4px;
+    margin-bottom: 10px;
+    border: 1px solid var(--fusion-border);
+}
+
+.llm-chat-model-icon {
+    font-size: 16px;
+    color: var(--fusion-accent);
+}
+
+.llm-chat-model-name {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.llm-chat-model-params {
+    font-size: 12px;
+    color: var(--fusion-text-secondary);
+    margin-left: auto;
+}

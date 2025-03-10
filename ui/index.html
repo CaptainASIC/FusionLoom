@@ -138,6 +138,18 @@
                         <div class="llm-service-tab-status offline"></div>
                         <div class="llm-service-tab-tooltip">Google's Gemini models</div>
                     </div>
+                    <div class="llm-service-tab" data-provider="grok">
+                        <i class="fas fa-bolt"></i>
+                        <span>Grok</span>
+                        <div class="llm-service-tab-status offline"></div>
+                        <div class="llm-service-tab-tooltip">xAI's Grok models</div>
+                    </div>
+                    <div class="llm-service-tab" data-provider="openrouter">
+                        <i class="fas fa-network-wired"></i>
+                        <span>OpenRouter</span>
+                        <div class="llm-service-tab-status offline"></div>
+                        <div class="llm-service-tab-tooltip">Access to multiple LLM providers</div>
+                    </div>
                     <div class="llm-service-tab" data-provider="local-services">
                         <i class="fas fa-server"></i>
                         <span>Local Services</span>
@@ -974,7 +986,7 @@
                             </tr>
                             <tr>
                                 <td><input type="text" value="Grok API" class="name-input" readonly></td>
-                                <td><input type="text" id="grok_api" value="https://api.grok.x/v1" class="endpoint-input"></td>
+                                <td><input type="text" id="grok_api" value="https://api.grok.x/v1" class="endpoint-input" readonly></td>
                                 <td><input type="password" id="grok_key" value="" placeholder="API Key" class="key-input"></td>
                                 <td><span class="status-indicator disabled" onclick="toggleEndpointStatus(this)"></span></td>
                                 <td class="endpoint-actions">
@@ -988,6 +1000,26 @@
                                         <i class="fas fa-times"></i>
                                     </button>
                                     <button class="endpoint-action-btn delete" title="Delete" onclick="confirmDeleteEndpoint(this, 'Grok API')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" value="OpenRouter API" class="name-input" readonly></td>
+                                <td><input type="text" id="openrouter_api" value="https://openrouter.ai/api/v1" class="endpoint-input" readonly></td>
+                                <td><input type="password" id="openrouter_key" value="" placeholder="API Key" class="key-input"></td>
+                                <td><span class="status-indicator disabled" onclick="toggleEndpointStatus(this)"></span></td>
+                                <td class="endpoint-actions">
+                                    <button class="endpoint-action-btn edit" title="Edit" onclick="toggleEditMode(this)">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn save" title="Save" onclick="saveEndpointChanges(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn cancel" title="Cancel" onclick="cancelEndpointEdit(this)" style="display: none;">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn delete" title="Delete" onclick="confirmDeleteEndpoint(this, 'OpenRouter API')">
                                         <i class="fas fa-trash-alt"></i>
                                     </button>
                                 </td>

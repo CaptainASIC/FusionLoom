@@ -669,6 +669,60 @@ function updateChatDisplay() {
         return;
     }
 
+    // Add model info at the top of chat
+    if (currentModel) {
+        const modelInfoElement = document.createElement('div');
+        modelInfoElement.className = 'llm-chat-model-info';
+        
+        // Get model parameters based on provider
+        let modelParams = '';
+        if (currentProvider === 'ollama') {
+            // Try to extract parameter count from model name
+            const match = currentModel.match(/(\d+)[bB]/);
+            if (match) {
+                modelParams = `${match[1]}B parameters`;
+            }
+        } else if (currentProvider === 'claude') {
+            if (currentModel.includes('opus')) {
+                modelParams = 'Claude 3 Opus';
+            } else if (currentModel.includes('sonnet')) {
+                modelParams = 'Claude 3 Sonnet';
+            } else if (currentModel.includes('haiku')) {
+                modelParams = 'Claude 3 Haiku';
+            }
+        } else if (currentProvider === 'chatgpt') {
+            if (currentModel.includes('gpt-4')) {
+                modelParams = 'GPT-4';
+            } else if (currentModel.includes('gpt-3.5')) {
+                modelParams = 'GPT-3.5';
+            }
+        } else if (currentProvider === 'gemini') {
+            if (currentModel.includes('pro')) {
+                modelParams = 'Gemini 1.5 Pro';
+            } else if (currentModel.includes('flash')) {
+                modelParams = 'Gemini 1.5 Flash';
+            }
+        }
+        
+        // Provider-specific icon
+        let iconClass = 'fas fa-robot';
+        if (currentProvider === 'ollama') {
+            iconClass = 'fas fa-brain';
+        } else if (currentProvider === 'claude') {
+            iconClass = 'fas fa-comment-dots';
+        } else if (currentProvider === 'gemini') {
+            iconClass = 'fas fa-star';
+        }
+        
+        modelInfoElement.innerHTML = `
+            <i class="${iconClass} llm-chat-model-icon"></i>
+            <span class="llm-chat-model-name">${currentModel}</span>
+            ${modelParams ? `<span class="llm-chat-model-params">${modelParams}</span>` : ''}
+        `;
+        
+        chatDisplay.appendChild(modelInfoElement);
+    }
+
     // Add each message to the display
     currentChat.forEach((message, index) => {
         const messageElement = document.createElement('div');

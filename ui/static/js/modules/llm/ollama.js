@@ -498,6 +498,9 @@ function setupModelSearch() {
     }
 }
 
+// Track active downloads
+let activeDownloads = {};
+
 /**
  * Prompt user to pull a model from Ollama
  */
@@ -521,6 +524,11 @@ function promptPullModel() {
                     <div class="fusion-model-suggestion" data-model="mistral">mistral</div>
                     <div class="fusion-model-suggestion" data-model="phi3">phi3</div>
                     <div class="fusion-model-suggestion" data-model="gemma:7b">gemma:7b</div>
+                </div>
+                <div class="fusion-form-group">
+                    <a href="https://ollama.com/library" target="_blank" class="fusion-link">
+                        <i class="fas fa-external-link-alt"></i> Browse models on Ollama.com
+                    </a>
                 </div>
             </div>
             <div class="fusion-modal-footer">
@@ -602,35 +610,122 @@ function promptPullModel() {
 }
 
 /**
+ * Create or update the downloads panel
+ */
+function updateDownloadsPanel() {
+    // Check if downloads panel exists
+    let downloadsPanel = document.getElementById('ollama-downloads-panel');
+    
+    // If no active downloads, remove the panel if it exists
+    if (Object.keys(activeDownloads).length === 0) {
+        if (downloadsPanel) {
+            downloadsPanel.remove();
+        }
+        return;
+    }
+    
+    // Create panel if it doesn't exist
+    if (!downloadsPanel) {
+        downloadsPanel = document.createElement('div');
+        downloadsPanel.id = 'ollama-downloads-panel';
+        downloadsPanel.className = 'ollama-downloads-panel';
+        downloadsPanel.innerHTML = `
+            <div class="downloads-panel-header">
+                <h3>Model Downloads</h3>
+                <button class="downloads-panel-minimize" title="Minimize">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+            <div class="downloads-panel-content">
+                <div class="downloads-list"></div>
+            </div>
+        `;
+        
+        document.body.appendChild(downloadsPanel);
+        
+        // Add minimize button functionality
+        const minimizeButton = downloadsPanel.querySelector('.downloads-panel-minimize');
+        minimizeButton.addEventListener('click', () => {
+            downloadsPanel.classList.toggle('minimized');
+            minimizeButton.innerHTML = downloadsPanel.classList.contains('minimized') 
+                ? '<i class="fas fa-plus"></i>' 
+                : '<i class="fas fa-minus"></i>';
+        });
+    }
+    
+    // Update downloads list
+    const downloadsList = downloadsPanel.querySelector('.downloads-list');
+    downloadsList.innerHTML = '';
+    
+    for (const [model, download] of Object.entries(activeDownloads)) {
+        const downloadItem = document.createElement('div');
+        downloadItem.className = 'download-item';
+        downloadItem.innerHTML = `
+            <div class="download-item-header">
+                <span class="download-item-name">${model}</span>
+                <button class="download-item-cancel" data-model="${model}" title="Cancel Download">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="download-progress">
+                <div class="download-progress-bar" style="width: ${download.percent || 0}%"></div>
+            </div>
+            <div class="download-status">${download.status || 'Initializing...'}</div>
+        `;
+        
+        downloadsList.appendChild(downloadItem);
+        
+        // Add cancel button functionality
+        const cancelButton = downloadItem.querySelector('.download-item-cancel');
+        cancelButton.addEventListener('click', () => {
+            cancelDownload(model);
+        });
+    }
+}
+
+/**
+ * Cancel a model download
+ * @param {string} model - The model to cancel
+ */
+function cancelDownload(model) {
+    if (activeDownloads[model] && activeDownloads[model].controller) {
+        activeDownloads[model].controller.abort();
+        delete activeDownloads[model];
+        updateDownloadsPanel();
+        showNotification(`Cancelled download of model: ${model}`, 'info');
+    }
+}
+
+/**
  * Pull a model from Ollama
  * @param {string} model - The model to pull
  * @returns {Promise<boolean>} True if successful
  */
 export async function pullOllamaModel(model) {
     try {
+        // Check if already downloading
+        if (activeDownloads[model]) {
+            showNotification(`Already downloading model: ${model}`, 'info');
+            return false;
+        }
+        
         showNotification(`Pulling model: ${model}...`, 'info');
         
         // Update model status
         updateModelStatus(model, 'loading');
         
-        // Create a progress modal
-        const modal = document.createElement('div');
-        modal.className = 'fusion-modal';
-        modal.innerHTML = `
-            <div class="fusion-modal-content">
-                <div class="fusion-modal-header">
-                    <h3>Pulling Model: ${model}</h3>
-                </div>
-                <div class="fusion-modal-body">
-                    <div class="fusion-progress">
-                        <div class="fusion-progress-bar" style="width: 0%"></div>
-                    </div>
-                    <div class="fusion-progress-status">Initializing...</div>
-                </div>
-            </div>
-        `;
+        // Create abort controller for cancellation
+        const controller = new AbortController();
         
-        document.body.appendChild(modal);
+        // Add to active downloads
+        activeDownloads[model] = {
+            status: 'Initializing...',
+            percent: 0,
+            controller: controller
+        };
+        
+        // Update downloads panel
+        updateDownloadsPanel();
         
         // Start the pull process
         const response = await fetch(`${ollamaEndpoint}/pull`, {
@@ -638,19 +733,19 @@ export async function pullOllamaModel(model) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ name: model })
+            body: JSON.stringify({ name: model }),
+            signal: controller.signal
         });
         
         if (!response.ok) {
-            document.body.removeChild(modal);
+            delete activeDownloads[model];
+            updateDownloadsPanel();
             updateModelStatus(model, 'error');
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         
         // Process the stream to update progress
         const reader = response.body.getReader();
-        let receivedLength = 0;
-        let chunks = [];
         
         while (true) {
             const { done, value } = await reader.read();
@@ -658,9 +753,6 @@ export async function pullOllamaModel(model) {
             if (done) {
                 break;
             }
-            
-            chunks.push(value);
-            receivedLength += value.length;
             
             // Try to parse the chunk as JSON
             try {
@@ -671,27 +763,25 @@ export async function pullOllamaModel(model) {
                     const data = JSON.parse(line);
                     
                     if (data.status) {
-                        const progressStatus = document.querySelector('.fusion-progress-status');
-                        if (progressStatus) {
-                            progressStatus.textContent = data.status;
-                        }
+                        activeDownloads[model].status = data.status;
                     }
                     
                     if (data.completed !== undefined && data.total !== undefined) {
                         const percent = Math.round((data.completed / data.total) * 100);
-                        const progressBar = document.querySelector('.fusion-progress-bar');
-                        if (progressBar) {
-                            progressBar.style.width = `${percent}%`;
-                        }
+                        activeDownloads[model].percent = percent;
                     }
+                    
+                    // Update downloads panel
+                    updateDownloadsPanel();
                 }
             } catch (e) {
                 // Ignore parsing errors for partial chunks
             }
         }
         
-        // Remove the progress modal
-        document.body.removeChild(modal);
+        // Download complete
+        delete activeDownloads[model];
+        updateDownloadsPanel();
         
         showNotification(`Successfully pulled model: ${model}`, 'success');
         
@@ -700,15 +790,19 @@ export async function pullOllamaModel(model) {
         
         return true;
     } catch (error) {
+        if (error.name === 'AbortError') {
+            console.log('Download cancelled by user');
+            updateModelStatus(model, 'error');
+            return false;
+        }
+        
         console.error('Error pulling Ollama model:', error);
         showNotification(`Error pulling model: ${error.message}`, 'error');
         updateModelStatus(model, 'error');
         
-        // Remove any progress modal if it exists
-        const modal = document.querySelector('.fusion-modal');
-        if (modal) {
-            document.body.removeChild(modal);
-        }
+        // Remove from active downloads
+        delete activeDownloads[model];
+        updateDownloadsPanel();
         
         return false;
     }
