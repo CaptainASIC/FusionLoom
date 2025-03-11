@@ -51,7 +51,7 @@ ENV_FILE = REPO_ROOT / ".env"
 CONTAINER_ENGINES = ["auto", "docker", "podman"]
 PLATFORM_TYPES = ["auto", "dgx_digit", "jetson_orin", "jetson_agx", "apple_silicon", "nvidia", "amd_x86", "intel_x86", "arm"]
 GPU_VENDORS = ["auto", "nvidia", "amd", "apple", "cpu"]
-POWER_MODES = ["balanced", "performance", "efficiency"]
+POWER_MODES = ["performance", "balanced", "efficiency"]
 
 # Platform directory mapping
 PLATFORM_DIR_MAPPING = {
@@ -286,6 +286,8 @@ def create_config(settings):
             for service_id, service in services.items():
                 if settings['services'].get(service_id, False):
                     f.write(f"{service_id}_api = http://localhost:{service['port']}\n")
+                    # Only enabled services should be set to enabled in the config
+                    f.write(f"{service_id}_enabled = true\n")
         f.write("\n")
         
         f.write("[Containers]\n")
@@ -299,6 +301,11 @@ def create_config(settings):
         f.write(f"acceleration = {str(settings['acceleration']).lower()}\n")
         f.write(f"platform = {settings['platform']}\n")
         f.write(f"power_mode = {settings['power_mode']}\n")
+        
+        # Add hardware builds section
+        f.write("\n[Hardware_Builds]\n")
+        for build_type, enabled in settings.get('hardware_builds', {}).items():
+            f.write(f"{build_type} = {str(enabled).lower()}\n")
     
     # Create .env file
     with open(ENV_FILE, "w") as f:
@@ -369,19 +376,63 @@ def install_containers(settings, progress_bar):
                 # Create data directory for the service
                 os.makedirs(REPO_ROOT / "data" / service_id, exist_ok=True)
                 
-                # Copy the appropriate compose file
+                # Copy the appropriate compose files
                 if service_id == "ollama":
-                    # Map platform type to directory
-                    platform_dir = PLATFORM_DIR_MAPPING.get(platform_type, platform_type)
+                    # Create builds directory
+                    builds_dir = REPO_ROOT / "data" / service_id / "builds"
+                    os.makedirs(builds_dir, exist_ok=True)
                     
+                    # Always copy the default build
+                    default_src_file = REPO_ROOT / "compose" / "platforms" / "x86" / "ollama-compose.yaml"
+                    if default_src_file.exists():
+                        shutil.copy(default_src_file, builds_dir / "default-compose.yaml")
+                        print(f"Copied default build: {default_src_file} to {builds_dir / 'default-compose.yaml'}")
+                    
+                    # Copy selected hardware-specific builds
+                    hardware_builds = settings.get('hardware_builds', {})
+                    
+                    # Map of build types to their directories
+                    build_dirs = {
+                        "dgx_digit": "dgx_digit",
+                        "jetson_orin_nano_4gb": "jetson/orin_nano_4gb",
+                        "jetson_orin_nano_8gb": "jetson/orin_nano_8gb",
+                        "jetson_orin_nx_8gb": "jetson/orin_nx_8gb",
+                        "jetson_orin_nx_16gb": "jetson/orin_nx_16gb",
+                        "jetson_agx_32gb": "jetson/agx_32gb",
+                        "jetson_agx_64gb": "jetson/agx_64gb",
+                        "nvidia": "nvidia",
+                        "amd_x86": "amd",
+                        "apple_silicon": "apple"
+                    }
+                    
+                    # Copy each selected build
+                    for build_type, enabled in hardware_builds.items():
+                        if enabled and build_type != "default" and build_type in build_dirs:
+                            build_dir = build_dirs[build_type]
+                            src_file = REPO_ROOT / "compose" / "platforms" / build_dir / "ollama-compose.yaml"
+                            
+                            if src_file.exists():
+                                dst_file = builds_dir / f"{build_type}-compose.yaml"
+                                shutil.copy(src_file, dst_file)
+                                print(f"Copied {build_type} build: {src_file} to {dst_file}")
+                            else:
+                                print(f"Warning: Could not find compose file for {build_type} at {src_file}")
+                    
+                    # Copy the primary compose file based on detected platform
+                    platform_dir = PLATFORM_DIR_MAPPING.get(platform_type, platform_type)
                     src_file = REPO_ROOT / "compose" / "platforms" / platform_dir / "ollama-compose.yaml"
                     dst_dir = REPO_ROOT / "data" / service_id
                     
                     if src_file.exists():
                         shutil.copy(src_file, dst_dir / "docker-compose.yaml")
-                        print(f"Copied {src_file} to {dst_dir / 'docker-compose.yaml'}")
+                        print(f"Copied primary compose file: {src_file} to {dst_dir / 'docker-compose.yaml'}")
                     else:
-                        print(f"Warning: Could not find compose file for platform {platform_type} at {src_file}")
+                        # Fallback to default if platform-specific file doesn't exist
+                        if default_src_file.exists():
+                            shutil.copy(default_src_file, dst_dir / "docker-compose.yaml")
+                            print(f"Fallback to default: {default_src_file} to {dst_dir / 'docker-compose.yaml'}")
+                        else:
+                            print(f"Warning: Could not find compose file for platform {platform_type} at {src_file}")
                 
                 progress_value += progress_step
     
@@ -438,12 +489,25 @@ def main():
             "gpu_vendor": gpu_vendor,
             "gpu_memory": "8",
             "acceleration": True,
-            "power_mode": "balanced",
+            "power_mode": "performance",  # Default to Performance mode
             "container_engine": container_engine,
             "auto_start": True,
             "theme": "dark",
             "save_sessions": True,
-            "services": {service_id: service["default"] for service_type, services in AI_SERVICES.items() for service_id, service in services.items()}
+            "services": {service_id: service["default"] for service_type, services in AI_SERVICES.items() for service_id, service in services.items()},
+            "hardware_builds": {
+                "default": True,  # Default build is always enabled
+                "nvidia": False,
+                "dgx_digit": False,
+                "jetson_orin_nano_4gb": False,
+                "jetson_orin_nano_8gb": False,
+                "jetson_orin_nx_8gb": False,
+                "jetson_orin_nx_16gb": False,
+                "jetson_agx_32gb": False,
+                "jetson_agx_64gb": False,
+                "amd_x86": False,
+                "apple_silicon": False
+            }
         }
     
     # Sidebar
@@ -554,6 +618,116 @@ def main():
                 index=POWER_MODES.index(st.session_state.settings["power_mode"]),
                 help="Power mode affects performance and energy usage."
             )
+            
+            # Hardware-specific builds section
+            st.subheader("Hardware-Specific Builds")
+            st.markdown("Select the hardware-specific builds to install. You can select multiple builds if you have mixed hardware.")
+            
+            hardware_builds = st.session_state.settings["hardware_builds"]
+            
+            # Default build is always enabled and cannot be disabled
+            st.checkbox("Default Build", value=True, disabled=True, 
+                        help="Default build for generic hardware. Always installed.")
+            
+            # NVIDIA DGX/Digit
+            dgx_digit = st.checkbox(
+                "NVIDIA DGX/Digit Build",
+                value=hardware_builds.get("dgx_digit", False),
+                key="build_dgx_digit",
+                help="Optimized for NVIDIA DGX/Digit hardware with multi-GPU support."
+            )
+            
+            # NVIDIA Jetson Models
+            jetson_expander = st.expander("NVIDIA Jetson Models", expanded=False)
+            with jetson_expander:
+                st.markdown("### Select your Jetson model:")
+                
+                # Orin Nano models
+                st.subheader("Orin Nano Series")
+                jetson_orin_nano_4gb = st.checkbox(
+                    "Orin Nano 4GB",
+                    value=hardware_builds.get("jetson_orin_nano_4gb", False),
+                    key="build_jetson_orin_nano_4gb",
+                    help="Optimized for Jetson Orin Nano with 4GB memory."
+                )
+                
+                jetson_orin_nano_8gb = st.checkbox(
+                    "Orin Nano 8GB",
+                    value=hardware_builds.get("jetson_orin_nano_8gb", False),
+                    key="build_jetson_orin_nano_8gb",
+                    help="Optimized for Jetson Orin Nano with 8GB memory."
+                )
+                
+                # Orin NX models
+                st.subheader("Orin NX Series")
+                jetson_orin_nx_8gb = st.checkbox(
+                    "Orin NX 8GB",
+                    value=hardware_builds.get("jetson_orin_nx_8gb", False),
+                    key="build_jetson_orin_nx_8gb",
+                    help="Optimized for Jetson Orin NX with 8GB memory."
+                )
+                
+                jetson_orin_nx_16gb = st.checkbox(
+                    "Orin NX 16GB",
+                    value=hardware_builds.get("jetson_orin_nx_16gb", False),
+                    key="build_jetson_orin_nx_16gb",
+                    help="Optimized for Jetson Orin NX with 16GB memory."
+                )
+                
+                # AGX Orin models
+                st.subheader("AGX Orin Series")
+                jetson_agx_32gb = st.checkbox(
+                    "AGX Orin 32GB",
+                    value=hardware_builds.get("jetson_agx_32gb", False),
+                    key="build_jetson_agx_32gb",
+                    help="Optimized for Jetson AGX Orin with 32GB memory."
+                )
+                
+                jetson_agx_64gb = st.checkbox(
+                    "AGX Orin 64GB",
+                    value=hardware_builds.get("jetson_agx_64gb", False),
+                    key="build_jetson_agx_64gb",
+                    help="Optimized for Jetson AGX Orin with 64GB memory."
+                )
+            
+            # NVIDIA Consumer GPUs
+            nvidia = st.checkbox(
+                "NVIDIA Consumer GPU Build",
+                value=hardware_builds.get("nvidia", False),
+                key="build_nvidia",
+                help="Optimized for GeForce and other consumer NVIDIA cards."
+            )
+            
+            # AMD GPUs
+            amd_x86 = st.checkbox(
+                "AMD GPU (ROCm) Build",
+                value=hardware_builds.get("amd_x86", False),
+                key="build_amd_x86",
+                help="Dedicated build for AMD GPUs using the ROCm platform."
+            )
+            
+            # Apple Silicon
+            apple_silicon = st.checkbox(
+                "Apple Silicon Build",
+                value=hardware_builds.get("apple_silicon", False),
+                key="build_apple_silicon",
+                help="Optimized for Apple M1/M2/M3/M4 series processors."
+            )
+            
+            # Update hardware builds in settings
+            hardware_builds.update({
+                "default": True,  # Always true
+                "nvidia": nvidia,
+                "dgx_digit": dgx_digit,
+                "jetson_orin_nano_4gb": jetson_orin_nano_4gb,
+                "jetson_orin_nano_8gb": jetson_orin_nano_8gb,
+                "jetson_orin_nx_8gb": jetson_orin_nx_8gb,
+                "jetson_orin_nx_16gb": jetson_orin_nx_16gb,
+                "jetson_agx_32gb": jetson_agx_32gb,
+                "jetson_agx_64gb": jetson_agx_64gb,
+                "amd_x86": amd_x86,
+                "apple_silicon": apple_silicon
+            })
         
         # Update settings
         st.session_state.settings.update({
@@ -681,6 +855,42 @@ def main():
             st.markdown(f"GPU Memory: {st.session_state.settings['gpu_memory']} GB")
             st.markdown(f"Hardware Acceleration: {'Enabled' if st.session_state.settings['acceleration'] else 'Disabled'}")
             st.markdown(f"Power Mode: {st.session_state.settings['power_mode']}")
+            
+            # Show selected hardware builds
+            st.markdown("**Hardware Builds:**")
+            hardware_builds = st.session_state.settings.get('hardware_builds', {})
+            selected_builds = ["Default"]  # Default is always included
+            
+            # Add selected builds to the list
+            if hardware_builds.get("dgx_digit", False):
+                selected_builds.append("NVIDIA DGX/Digit")
+            
+            # Jetson models
+            jetson_models = []
+            if hardware_builds.get("jetson_orin_nano_4gb", False):
+                jetson_models.append("Orin Nano 4GB")
+            if hardware_builds.get("jetson_orin_nano_8gb", False):
+                jetson_models.append("Orin Nano 8GB")
+            if hardware_builds.get("jetson_orin_nx_8gb", False):
+                jetson_models.append("Orin NX 8GB")
+            if hardware_builds.get("jetson_orin_nx_16gb", False):
+                jetson_models.append("Orin NX 16GB")
+            if hardware_builds.get("jetson_agx_32gb", False):
+                jetson_models.append("AGX Orin 32GB")
+            if hardware_builds.get("jetson_agx_64gb", False):
+                jetson_models.append("AGX Orin 64GB")
+            
+            if jetson_models:
+                selected_builds.append(f"Jetson: {', '.join(jetson_models)}")
+            
+            if hardware_builds.get("nvidia", False):
+                selected_builds.append("NVIDIA Consumer GPU")
+            if hardware_builds.get("amd_x86", False):
+                selected_builds.append("AMD GPU (ROCm)")
+            if hardware_builds.get("apple_silicon", False):
+                selected_builds.append("Apple Silicon")
+                
+            st.markdown(f"- {', '.join(selected_builds)}")
         
         with col2:
             st.markdown("**Container Settings**")

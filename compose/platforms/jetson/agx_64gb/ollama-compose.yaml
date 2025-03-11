@@ -4,14 +4,13 @@ services:
   ollama:
     image: ollama/ollama:latest
     container_name: fusionloom-ollama
-    runtime: nvidia
     devices:
-      - /dev/nvidia0:/dev/nvidia0
-      - /dev/nvidia1:/dev/nvidia1
-      - /dev/nvidia2:/dev/nvidia2
-      - /dev/nvidia3:/dev/nvidia3
-      - /dev/nvidia-uvm:/dev/nvidia-uvm
-      - /dev/nvidiactl:/dev/nvidiactl
+      - /dev/nvhost-ctrl:/dev/nvhost-ctrl
+      - /dev/nvhost-ctrl-gpu:/dev/nvhost-ctrl-gpu
+      - /dev/nvhost-prof-gpu:/dev/nvhost-prof-gpu
+      - /dev/nvmap:/dev/nvmap
+      - /dev/nvhost-gpu:/dev/nvhost-gpu
+      - /dev/nvhost-as-gpu:/dev/nvhost-as-gpu
     volumes:
       - ./data/ollama:/root/.ollama
     ports:
@@ -19,25 +18,26 @@ services:
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
-      # DGX/Digit-specific optimizations
-      - OLLAMA_HOST=0.0.0.0
-      - CUDA_VISIBLE_DEVICES=0,1,2,3
-      # High-performance settings for DGX DIGITS (128GB memory)
-      - OLLAMA_MAX_MEMORY=96G
-      - OLLAMA_NUM_THREADS=64
-      - OLLAMA_MULTI_GPU=1
+      # Jetson-specific optimizations
+      - OLLAMA_JETSON=1
+      - CUDA_VISIBLE_DEVICES=0
+      # Memory and performance optimizations for AGX Orin 64GB
+      - OLLAMA_MAX_MEMORY=48G
+      - OLLAMA_NUM_THREADS=16
     restart: unless-stopped
     labels:
       - "io.containers.autoupdate=image"
     networks:
       - fusionloom_net
-    # Resource configuration for high-performance hardware
+    # Resource limits for AGX Orin 64GB
     deploy:
       resources:
+        limits:
+          memory: 56G
         reservations:
           devices:
             - driver: nvidia
-              count: all
+              count: 1
               capabilities: [gpu]
 
 networks:

@@ -21,19 +21,19 @@ services:
       # Jetson-specific optimizations
       - OLLAMA_JETSON=1
       - CUDA_VISIBLE_DEVICES=0
-      # Memory and performance optimizations for resource-constrained devices
-      - OLLAMA_MAX_MEMORY=4G
+      # Memory and performance optimizations for Orin Nano 4GB
+      - OLLAMA_MAX_MEMORY=3G
       - OLLAMA_NUM_THREADS=4
     restart: unless-stopped
     labels:
       - "io.containers.autoupdate=image"
     networks:
       - fusionloom_net
-    # Resource limits to prevent OOM on Jetson devices
+    # Resource limits for Jetson Orin Nano 4GB
     deploy:
       resources:
         limits:
-          memory: 6G
+          memory: 3.5G
         reservations:
           devices:
             - driver: nvidia

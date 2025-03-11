@@ -8,11 +8,26 @@ services:
       - ./data/ollama:/root/.ollama
     ports:
       - "11434:11434"
+    environment:
+      # Apple Silicon optimizations
+      - OLLAMA_HOST=0.0.0.0
+      - OLLAMA_METAL=1
+      - OLLAMA_METAL_MEMORY=8G
+      - OLLAMA_NUM_THREADS=8
+      # Enable Metal Performance Shaders
+      - MPS_ENABLE=1
+      # CoreML optimizations
+      - COREML_ENABLE=1
     restart: unless-stopped
     labels:
       - "io.containers.autoupdate=image"
     networks:
       - fusionloom_net
+    # Resource configuration for Apple Silicon
+    deploy:
+      resources:
+        limits:
+          memory: 12G
 
 networks:
   fusionloom_net:

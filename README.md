@@ -127,13 +127,19 @@ Fusion Loom supports multiple GPU acceleration frameworks to ensure compatibilit
 
 - **NVIDIA CUDA/cuDNN** - Optimized support for NVIDIA GPUs
 - **NVIDIA Tensor RT** - Accelerated inference for NVIDIA hardware
-- **NVIDIA DGX Platform (Project Digit)** - Optimized for NVIDIA's next-gen AI hardware
-- **NVIDIA Jetson** - Optimized for Jetson Orin and AGX platforms
+- **NVIDIA DGX Platform (Project Digit)** - Optimized for NVIDIA's next-gen AI hardware with 128GB memory
+- **NVIDIA Jetson** - Optimized for Jetson platforms with model-specific configurations:
+  - **Orin Nano 4GB**: Optimized with 3GB memory allocation and 4 threads
+  - **Orin Nano 8GB**: Optimized with 6GB memory allocation and 6 threads
+  - **Orin NX 8GB**: Optimized with 6GB memory allocation and 8 threads
+  - **Orin NX 16GB**: Optimized with 12GB memory allocation and 8 threads
+  - **AGX Orin 32GB**: Optimized with 24GB memory allocation and 12 threads
+  - **AGX Orin 64GB**: Optimized with 48GB memory allocation and 16 threads
 - **AMD ROCm** - Full support for AMD GPUs with optimized containers
 - **Apple Neural Engine** - Support for Apple Silicon's built-in ML acceleration
-- **Apple Metal** - GPU acceleration on Apple Silicon systems
+- **Apple Metal** - GPU acceleration on Apple Silicon systems with Metal and CoreML optimizations
 
-The application will automatically detect available GPU hardware and select the appropriate acceleration framework. Configuration options allow for manual override when needed.
+The application will automatically detect available GPU hardware and select the appropriate acceleration framework. You can also select multiple hardware-specific builds for systems with mixed hardware (e.g., systems with both AMD and NVIDIA GPUs). Configuration options allow for manual override when needed.
 
 ## Hardware-Specific Optimizations
 
