@@ -13,7 +13,6 @@ services:
       - /dev/nvhost-as-gpu:/dev/nvhost-as-gpu
     volumes:
       - ./data/ollama:/root/.ollama
-      - ../../../../data/ollama/models:/root/.ollama/models
     ports:
       - "11434:11434"
     environment:

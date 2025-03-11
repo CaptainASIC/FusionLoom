@@ -10,7 +10,6 @@ services:
       - /dev/nvidiactl:/dev/nvidiactl
     volumes:
       - ./data/ollama:/root/.ollama
-      - ../../../data/ollama/models:/root/.ollama/models
     ports:
       - "11434:11434"
     environment:

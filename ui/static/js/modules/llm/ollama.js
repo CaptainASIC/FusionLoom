@@ -804,12 +804,11 @@ export async function pullOllamaModel(model) {
         const requestBody = JSON.stringify({ name: model });
         debug('Pull request body:', requestBody);
         
-        // Try direct fetch to Ollama API without using the endpoint variable
-        const fullUrl = 'http://localhost:11434/api/pull';
-        debug(`Trying direct URL: ${fullUrl}`);
+        // Use the configured Ollama endpoint
+        debug(`Using configured endpoint: ${ollamaEndpoint}/pull`);
         
         // Start the pull process
-        const response = await fetch(fullUrl, {
+        const response = await fetch(`${ollamaEndpoint}/pull`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

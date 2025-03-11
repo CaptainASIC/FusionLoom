@@ -171,9 +171,7 @@ function setupEventListeners() {
     const clearButton = document.querySelector(`#${currentProvider}-container .llm-chat-action-button[title="Clear Chat"]`);
     if (clearButton) {
         clearButton.addEventListener('click', () => {
-            if (confirm('Are you sure you want to clear this chat?')) {
-                clearChat();
-            }
+            promptClearChat();
         });
     }
     
@@ -277,10 +275,78 @@ function addChatToHistory(chatId, name) {
  * Prompt user to create a new chat
  */
 function promptNewChat() {
-    const chatName = prompt('Enter a name for the new chat:', 'New Chat');
-    if (chatName) {
+    // Create a modal dialog instead of using prompt()
+    const modal = document.createElement('div');
+    modal.className = 'fusion-modal';
+    modal.innerHTML = `
+        <div class="fusion-modal-content">
+            <div class="fusion-modal-header">
+                <h3>New Chat</h3>
+                <button class="fusion-modal-close">&times;</button>
+            </div>
+            <div class="fusion-modal-body">
+                <div class="fusion-form-group">
+                    <label for="chat-name">Chat Name</label>
+                    <input type="text" id="chat-name" class="fusion-input" placeholder="Enter a name for the chat" value="New Chat">
+                </div>
+            </div>
+            <div class="fusion-modal-footer">
+                <button class="fusion-button fusion-button-secondary" id="cancel-chat">Cancel</button>
+                <button class="fusion-button fusion-button-primary" id="create-chat">Create</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Focus the input
+    setTimeout(() => {
+        document.getElementById('chat-name').focus();
+        document.getElementById('chat-name').select();
+    }, 100);
+    
+    // Close button
+    const closeButton = modal.querySelector('.fusion-modal-close');
+    closeButton.addEventListener('click', () => {
+        document.body.removeChild(modal);
+    });
+    
+    // Cancel button
+    const cancelButton = document.getElementById('cancel-chat');
+    cancelButton.addEventListener('click', () => {
+        document.body.removeChild(modal);
+    });
+    
+    // Create button
+    const createButton = document.getElementById('create-chat');
+    createButton.addEventListener('click', () => {
+        const chatName = document.getElementById('chat-name').value.trim() || 'New Chat';
         createChatSession(chatName);
-    }
+        document.body.removeChild(modal);
+    });
+    
+    // Enter key in input
+    const nameInput = document.getElementById('chat-name');
+    nameInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            createButton.click();
+        }
+    });
+    
+    // Close on escape key
+    document.addEventListener('keydown', function escHandler(e) {
+        if (e.key === 'Escape') {
+            document.body.removeChild(modal);
+            document.removeEventListener('keydown', escHandler);
+        }
+    });
+    
+    // Close on outside click
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            document.body.removeChild(modal);
+        }
+    });
 }
 
 /**
@@ -292,26 +358,96 @@ function promptRenameChat(chatId) {
     const chat = history[chatId];
     
     if (chat) {
-        const newName = prompt('Enter a new name for the chat:', chat.name);
-        if (newName && newName !== chat.name) {
-            renameChat(currentProvider, chatId, newName);
-            
-            // Update the chat name in the history list
-            const historyItem = document.querySelector(`.llm-history-item[data-chat-id="${chatId}"] span`);
-            if (historyItem) {
-                historyItem.textContent = newName;
-            }
-            
-            // Update the chat title if this is the current chat
-            if (chatId === currentChatId) {
-                const chatTitle = document.querySelector(`#${currentProvider}-container .llm-chat-title span`);
-                if (chatTitle) {
-                    chatTitle.textContent = `${currentProvider.charAt(0).toUpperCase() + currentProvider.slice(1)} - ${newName}`;
+        // Create a modal dialog instead of using prompt()
+        const modal = document.createElement('div');
+        modal.className = 'fusion-modal';
+        modal.innerHTML = `
+            <div class="fusion-modal-content">
+                <div class="fusion-modal-header">
+                    <h3>Rename Chat</h3>
+                    <button class="fusion-modal-close">&times;</button>
+                </div>
+                <div class="fusion-modal-body">
+                    <div class="fusion-form-group">
+                        <label for="new-chat-name">Chat Name</label>
+                        <input type="text" id="new-chat-name" class="fusion-input" placeholder="Enter a new name for the chat" value="${chat.name}">
+                    </div>
+                </div>
+                <div class="fusion-modal-footer">
+                    <button class="fusion-button fusion-button-secondary" id="cancel-rename">Cancel</button>
+                    <button class="fusion-button fusion-button-primary" id="confirm-rename">Rename</button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        // Focus the input
+        setTimeout(() => {
+            document.getElementById('new-chat-name').focus();
+            document.getElementById('new-chat-name').select();
+        }, 100);
+        
+        // Close button
+        const closeButton = modal.querySelector('.fusion-modal-close');
+        closeButton.addEventListener('click', () => {
+            document.body.removeChild(modal);
+        });
+        
+        // Cancel button
+        const cancelButton = document.getElementById('cancel-rename');
+        cancelButton.addEventListener('click', () => {
+            document.body.removeChild(modal);
+        });
+        
+        // Confirm button
+        const confirmButton = document.getElementById('confirm-rename');
+        confirmButton.addEventListener('click', () => {
+            const newName = document.getElementById('new-chat-name').value.trim();
+            if (newName && newName !== chat.name) {
+                renameChat(currentProvider, chatId, newName);
+                
+                // Update the chat name in the history list
+                const historyItem = document.querySelector(`.llm-history-item[data-chat-id="${chatId}"] span`);
+                if (historyItem) {
+                    historyItem.textContent = newName;
                 }
+                
+                // Update the chat title if this is the current chat
+                if (chatId === currentChatId) {
+                    const chatTitle = document.querySelector(`#${currentProvider}-container .llm-chat-title span`);
+                    if (chatTitle) {
+                        chatTitle.textContent = `${currentProvider.charAt(0).toUpperCase() + currentProvider.slice(1)} - ${newName}`;
+                    }
+                }
+                
+                showNotification(`Chat renamed to "${newName}"`, 'success');
             }
-            
-            showNotification(`Chat renamed to "${newName}"`, 'success');
-        }
+            document.body.removeChild(modal);
+        });
+        
+        // Enter key in input
+        const nameInput = document.getElementById('new-chat-name');
+        nameInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                confirmButton.click();
+            }
+        });
+        
+        // Close on escape key
+        document.addEventListener('keydown', function escHandler(e) {
+            if (e.key === 'Escape') {
+                document.body.removeChild(modal);
+                document.removeEventListener('keydown', escHandler);
+            }
+        });
+        
+        // Close on outside click
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                document.body.removeChild(modal);
+            }
+        });
     }
 }
 
@@ -323,21 +459,75 @@ function promptDeleteChat(chatId) {
     const history = getChatHistory(currentProvider);
     const chat = history[chatId];
     
-    if (chat && confirm(`Are you sure you want to delete the chat "${chat.name}"?`)) {
-        deleteChat(currentProvider, chatId);
+    if (chat) {
+        // Create a modal dialog instead of using confirm()
+        const modal = document.createElement('div');
+        modal.className = 'fusion-modal';
+        modal.innerHTML = `
+            <div class="fusion-modal-content">
+                <div class="fusion-modal-header">
+                    <h3>Delete Chat</h3>
+                    <button class="fusion-modal-close">&times;</button>
+                </div>
+                <div class="fusion-modal-body">
+                    <p>Are you sure you want to delete the chat "${chat.name}"?</p>
+                    <p class="fusion-warning">This action cannot be undone.</p>
+                </div>
+                <div class="fusion-modal-footer">
+                    <button class="fusion-button fusion-button-secondary" id="cancel-delete">Cancel</button>
+                    <button class="fusion-button fusion-button-danger" id="confirm-delete">Delete</button>
+                </div>
+            </div>
+        `;
         
-        // Remove the chat from the history list
-        const historyItem = document.querySelector(`.llm-history-item[data-chat-id="${chatId}"]`);
-        if (historyItem) {
-            historyItem.remove();
-        }
+        document.body.appendChild(modal);
         
-        // If this was the current chat, create a new one
-        if (chatId === currentChatId) {
-            createChatSession('New Chat');
-        }
+        // Close button
+        const closeButton = modal.querySelector('.fusion-modal-close');
+        closeButton.addEventListener('click', () => {
+            document.body.removeChild(modal);
+        });
         
-        showNotification(`Chat "${chat.name}" deleted`, 'success');
+        // Cancel button
+        const cancelButton = document.getElementById('cancel-delete');
+        cancelButton.addEventListener('click', () => {
+            document.body.removeChild(modal);
+        });
+        
+        // Confirm button
+        const confirmButton = document.getElementById('confirm-delete');
+        confirmButton.addEventListener('click', () => {
+            deleteChat(currentProvider, chatId);
+            
+            // Remove the chat from the history list
+            const historyItem = document.querySelector(`.llm-history-item[data-chat-id="${chatId}"]`);
+            if (historyItem) {
+                historyItem.remove();
+            }
+            
+            // If this was the current chat, create a new one
+            if (chatId === currentChatId) {
+                createChatSession('New Chat');
+            }
+            
+            showNotification(`Chat "${chat.name}" deleted`, 'success');
+            document.body.removeChild(modal);
+        });
+        
+        // Close on escape key
+        document.addEventListener('keydown', function escHandler(e) {
+            if (e.key === 'Escape') {
+                document.body.removeChild(modal);
+                document.removeEventListener('keydown', escHandler);
+            }
+        });
+        
+        // Close on outside click
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                document.body.removeChild(modal);
+            }
+        });
     }
 }
 
@@ -383,6 +573,67 @@ export function loadChatSession(chatId) {
             chatTitle.textContent = `${currentProvider.charAt(0).toUpperCase() + currentProvider.slice(1)} - ${chat.name}`;
         }
     }
+}
+
+/**
+ * Prompt user to clear the current chat
+ */
+function promptClearChat() {
+    // Create a modal dialog instead of using confirm()
+    const modal = document.createElement('div');
+    modal.className = 'fusion-modal';
+    modal.innerHTML = `
+        <div class="fusion-modal-content">
+            <div class="fusion-modal-header">
+                <h3>Clear Chat</h3>
+                <button class="fusion-modal-close">&times;</button>
+            </div>
+            <div class="fusion-modal-body">
+                <p>Are you sure you want to clear this chat?</p>
+                <p class="fusion-warning">This will remove all messages from the current chat.</p>
+            </div>
+            <div class="fusion-modal-footer">
+                <button class="fusion-button fusion-button-secondary" id="cancel-clear">Cancel</button>
+                <button class="fusion-button fusion-button-danger" id="confirm-clear">Clear</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Close button
+    const closeButton = modal.querySelector('.fusion-modal-close');
+    closeButton.addEventListener('click', () => {
+        document.body.removeChild(modal);
+    });
+    
+    // Cancel button
+    const cancelButton = document.getElementById('cancel-clear');
+    cancelButton.addEventListener('click', () => {
+        document.body.removeChild(modal);
+    });
+    
+    // Confirm button
+    const confirmButton = document.getElementById('confirm-clear');
+    confirmButton.addEventListener('click', () => {
+        clearChat();
+        document.body.removeChild(modal);
+    });
+    
+    // Close on escape key
+    document.addEventListener('keydown', function escHandler(e) {
+        if (e.key === 'Escape') {
+            document.body.removeChild(modal);
+            document.removeEventListener('keydown', escHandler);
+        }
+    });
+    
+    // Close on outside click
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            document.body.removeChild(modal);
+        }
+    });
 }
 
 /**
