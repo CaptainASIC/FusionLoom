@@ -346,6 +346,10 @@ This project is licensed under the GNU General Public License v3.0 (GPL-3.0). Se
 - **v0.9**: Content management systems (images, documents)
 - **v1.0**: Note integration and full ecosystem connectivity
 
+## Known Issues
+
+- **Ollama Model Downloads**: When using Ollama integration, you must first attempt a new chat and then answer "yes" to the automatic download prompt. After doing this, the model list will populate with all downloaded models, and new models can be downloaded as well.
+
 ## Acknowledgements
 
 - Streamlit for the graphical installer
