@@ -78,6 +78,20 @@ AI_SERVICES = {
             "default": False,
             "container": "fusionloom-sillytavern",
             "port": 8000
+        },
+        "tavernai": {
+            "name": "TavernAI",
+            "description": "Character-based chat UI for LLMs",
+            "default": False,
+            "container": "fusionloom-tavernai",
+            "port": 8001
+        },
+        "oobabooga": {
+            "name": "Oobabooga",
+            "description": "Text generation web UI (text-generation-webui)",
+            "default": False,
+            "container": "fusionloom-oobabooga",
+            "port": 7860
         }
     },
     "Image Generation": {
@@ -377,21 +391,19 @@ def install_containers(settings, progress_bar):
                 os.makedirs(REPO_ROOT / "data" / service_id, exist_ok=True)
                 
                 # Copy the appropriate compose files
-                if service_id == "ollama":
-                    # Create builds directory
-                    builds_dir = REPO_ROOT / "data" / service_id / "builds"
-                    os.makedirs(builds_dir, exist_ok=True)
+                if service_id in ["ollama", "sillytavern", "tavernai", "oobabooga"]:
+                    # Create builds directory for Ollama
+                    if service_id == "ollama":
+                        builds_dir = REPO_ROOT / "data" / service_id / "builds"
+                        os.makedirs(builds_dir, exist_ok=True)
+                        
+                        # Always copy the default build
+                        default_src_file = REPO_ROOT / "compose" / "platforms" / "x86" / "ollama-compose.yaml"
+                        if default_src_file.exists():
+                            shutil.copy(default_src_file, builds_dir / "default-compose.yaml")
+                            print(f"Copied default build: {default_src_file} to {builds_dir / 'default-compose.yaml'}")
                     
-                    # Always copy the default build
-                    default_src_file = REPO_ROOT / "compose" / "platforms" / "x86" / "ollama-compose.yaml"
-                    if default_src_file.exists():
-                        shutil.copy(default_src_file, builds_dir / "default-compose.yaml")
-                        print(f"Copied default build: {default_src_file} to {builds_dir / 'default-compose.yaml'}")
-                    
-                    # Copy selected hardware-specific builds
-                    hardware_builds = settings.get('hardware_builds', {})
-                    
-                    # Map of build types to their directories
+                    # Map of build types to their directories (used for all services)
                     build_dirs = {
                         "dgx_digit": "dgx_digit",
                         "jetson_orin_nano_4gb": "jetson/orin_nano_4gb",
@@ -405,22 +417,36 @@ def install_containers(settings, progress_bar):
                         "apple_silicon": "apple"
                     }
                     
-                    # Copy each selected build
-                    for build_type, enabled in hardware_builds.items():
-                        if enabled and build_type != "default" and build_type in build_dirs:
-                            build_dir = build_dirs[build_type]
-                            src_file = REPO_ROOT / "compose" / "platforms" / build_dir / "ollama-compose.yaml"
-                            
-                            if src_file.exists():
-                                dst_file = builds_dir / f"{build_type}-compose.yaml"
-                                shutil.copy(src_file, dst_file)
-                                print(f"Copied {build_type} build: {src_file} to {dst_file}")
-                            else:
-                                print(f"Warning: Could not find compose file for {build_type} at {src_file}")
+                    # For Ollama, copy selected hardware-specific builds
+                    if service_id == "ollama":
+                        hardware_builds = settings.get('hardware_builds', {})
+                        
+                        # Copy each selected build
+                        for build_type, enabled in hardware_builds.items():
+                            if enabled and build_type != "default" and build_type in build_dirs:
+                                build_dir = build_dirs[build_type]
+                                src_file = REPO_ROOT / "compose" / "platforms" / build_dir / "ollama-compose.yaml"
+                                
+                                if src_file.exists():
+                                    dst_file = builds_dir / f"{build_type}-compose.yaml"
+                                    shutil.copy(src_file, dst_file)
+                                    print(f"Copied {build_type} build: {src_file} to {dst_file}")
+                                else:
+                                    print(f"Warning: Could not find compose file for {build_type} at {src_file}")
                     
                     # Copy the primary compose file based on detected platform
                     platform_dir = PLATFORM_DIR_MAPPING.get(platform_type, platform_type)
-                    src_file = REPO_ROOT / "compose" / "platforms" / platform_dir / "ollama-compose.yaml"
+                    
+                    # Handle Jetson platforms for all services
+                    if platform_type.startswith("jetson_"):
+                        jetson_type = platform_type.replace("jetson_", "")
+                        if jetson_type in ["orin_nano_4gb", "orin_nano_8gb", "orin_nx_8gb", "orin_nx_16gb", "agx_32gb", "agx_64gb"]:
+                            platform_dir = f"jetson/{jetson_type}"
+                    
+                    # Get the appropriate compose file name for the service
+                    compose_file_name = f"{service_id}-compose.yaml"
+                    
+                    src_file = REPO_ROOT / "compose" / "platforms" / platform_dir / compose_file_name
                     dst_dir = REPO_ROOT / "data" / service_id
                     
                     if src_file.exists():
@@ -428,6 +454,7 @@ def install_containers(settings, progress_bar):
                         print(f"Copied primary compose file: {src_file} to {dst_dir / 'docker-compose.yaml'}")
                     else:
                         # Fallback to default if platform-specific file doesn't exist
+                        default_src_file = REPO_ROOT / "compose" / "platforms" / "x86" / compose_file_name
                         if default_src_file.exists():
                             shutil.copy(default_src_file, dst_dir / "docker-compose.yaml")
                             print(f"Fallback to default: {default_src_file} to {dst_dir / 'docker-compose.yaml'}")

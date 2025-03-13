@@ -150,6 +150,24 @@
                         <div class="llm-service-tab-status offline"></div>
                         <div class="llm-service-tab-tooltip">Access to multiple LLM providers</div>
                     </div>
+                    <div class="llm-service-tab" data-provider="sillytavern">
+                        <i class="fas fa-hat-wizard"></i>
+                        <span>SillyTavern</span>
+                        <div class="llm-service-tab-status offline"></div>
+                        <div class="llm-service-tab-tooltip">Advanced chat UI for LLMs</div>
+                    </div>
+                    <div class="llm-service-tab" data-provider="tavernai">
+                        <i class="fas fa-beer"></i>
+                        <span>TavernAI</span>
+                        <div class="llm-service-tab-status offline"></div>
+                        <div class="llm-service-tab-tooltip">Character-based chat UI for LLMs</div>
+                    </div>
+                    <div class="llm-service-tab" data-provider="oobabooga">
+                        <i class="fas fa-terminal"></i>
+                        <span>Oobabooga</span>
+                        <div class="llm-service-tab-status offline"></div>
+                        <div class="llm-service-tab-tooltip">Text generation web UI</div>
+                    </div>
                     <div class="llm-service-tab" data-provider="local-services">
                         <i class="fas fa-server"></i>
                         <span>Local Services</span>
@@ -189,6 +207,18 @@
                     <div class="llm-service-dropdown-item" data-provider="openrouter">
                         <i class="fas fa-network-wired"></i>
                         <span>OpenRouter</span>
+                    </div>
+                    <div class="llm-service-dropdown-item" data-provider="sillytavern">
+                        <i class="fas fa-hat-wizard"></i>
+                        <span>SillyTavern</span>
+                    </div>
+                    <div class="llm-service-dropdown-item" data-provider="tavernai">
+                        <i class="fas fa-beer"></i>
+                        <span>TavernAI</span>
+                    </div>
+                    <div class="llm-service-dropdown-item" data-provider="oobabooga">
+                        <i class="fas fa-terminal"></i>
+                        <span>Oobabooga</span>
                     </div>
                     <div class="llm-service-dropdown-divider"></div>
                     <div class="llm-service-dropdown-item" data-provider="local-services">
@@ -1020,6 +1050,54 @@
                 </div>
             </div>
             
+            <!-- SillyTavern Provider -->
+            <div id="sillytavern-container" class="llm-provider-container" style="display: none;">
+                <div class="llm-iframe-container">
+                    <iframe id="sillytavern-iframe" src="about:blank" frameborder="0" allowfullscreen></iframe>
+                    <div class="llm-iframe-loading">
+                        <div class="llm-iframe-loading-spinner"></div>
+                        <p>Loading SillyTavern...</p>
+                    </div>
+                    <div class="llm-iframe-error" style="display: none;">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Unable to connect to SillyTavern. Please make sure it's running and properly configured in Settings.</p>
+                        <button class="fusion-button small" onclick="navigateToPage('settings')">Go to Settings</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- TavernAI Provider -->
+            <div id="tavernai-container" class="llm-provider-container" style="display: none;">
+                <div class="llm-iframe-container">
+                    <iframe id="tavernai-iframe" src="about:blank" frameborder="0" allowfullscreen></iframe>
+                    <div class="llm-iframe-loading">
+                        <div class="llm-iframe-loading-spinner"></div>
+                        <p>Loading TavernAI...</p>
+                    </div>
+                    <div class="llm-iframe-error" style="display: none;">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Unable to connect to TavernAI. Please make sure it's running and properly configured in Settings.</p>
+                        <button class="fusion-button small" onclick="navigateToPage('settings')">Go to Settings</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Oobabooga Provider -->
+            <div id="oobabooga-container" class="llm-provider-container" style="display: none;">
+                <div class="llm-iframe-container">
+                    <iframe id="oobabooga-iframe" src="about:blank" frameborder="0" allowfullscreen></iframe>
+                    <div class="llm-iframe-loading">
+                        <div class="llm-iframe-loading-spinner"></div>
+                        <p>Loading Oobabooga...</p>
+                    </div>
+                    <div class="llm-iframe-error" style="display: none;">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Unable to connect to Oobabooga. Please make sure it's running and properly configured in Settings.</p>
+                        <button class="fusion-button small" onclick="navigateToPage('settings')">Go to Settings</button>
+                    </div>
+                </div>
+            </div>
+            
             <!-- Local Services Provider -->
             <div id="local-services-container" class="local-services-container" style="display: none;">
                 <!-- Tabs -->
@@ -1294,6 +1372,66 @@
                                         <i class="fas fa-times"></i>
                                     </button>
                                     <button class="endpoint-action-btn delete" title="Delete" onclick="confirmDeleteEndpoint(this, 'OpenRouter API')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" value="SillyTavern" class="name-input" readonly></td>
+                                <td><input type="text" id="sillytavern_api" value="http://localhost:8000" class="endpoint-input"></td>
+                                <td><input type="password" id="sillytavern_key" value="" placeholder="Optional" class="key-input"></td>
+                                <td><span class="status-indicator disabled" onclick="toggleEndpointStatus(this)"></span></td>
+                                <td class="endpoint-actions">
+                                    <button class="endpoint-action-btn edit" title="Edit" onclick="toggleEditMode(this)">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn save" title="Save" onclick="saveEndpointChanges(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn cancel" title="Cancel" onclick="cancelEndpointEdit(this)" style="display: none;">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn delete" title="Delete" onclick="confirmDeleteEndpoint(this, 'SillyTavern')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" value="TavernAI" class="name-input" readonly></td>
+                                <td><input type="text" id="tavernai_api" value="http://localhost:8001" class="endpoint-input"></td>
+                                <td><input type="password" id="tavernai_key" value="" placeholder="Optional" class="key-input"></td>
+                                <td><span class="status-indicator disabled" onclick="toggleEndpointStatus(this)"></span></td>
+                                <td class="endpoint-actions">
+                                    <button class="endpoint-action-btn edit" title="Edit" onclick="toggleEditMode(this)">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn save" title="Save" onclick="saveEndpointChanges(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn cancel" title="Cancel" onclick="cancelEndpointEdit(this)" style="display: none;">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn delete" title="Delete" onclick="confirmDeleteEndpoint(this, 'TavernAI')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" value="Oobabooga" class="name-input" readonly></td>
+                                <td><input type="text" id="oobabooga_api" value="http://localhost:5000" class="endpoint-input"></td>
+                                <td><input type="password" id="oobabooga_key" value="" placeholder="Optional" class="key-input"></td>
+                                <td><span class="status-indicator disabled" onclick="toggleEndpointStatus(this)"></span></td>
+                                <td class="endpoint-actions">
+                                    <button class="endpoint-action-btn edit" title="Edit" onclick="toggleEditMode(this)">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn save" title="Save" onclick="saveEndpointChanges(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn cancel" title="Cancel" onclick="cancelEndpointEdit(this)" style="display: none;">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <button class="endpoint-action-btn delete" title="Delete" onclick="confirmDeleteEndpoint(this, 'Oobabooga')">
                                         <i class="fas fa-trash-alt"></i>
                                     </button>
                                 </td>

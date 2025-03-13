@@ -1,0 +1,38 @@
+version: "3"
+
+services:
+  oobabooga:
+    image: ghcr.io/oobabooga/text-generation-webui:latest
+    container_name: fusionloom-oobabooga
+    volumes:
+      - ./data/oobabooga/cache:/home/app/text-generation-webui/cache
+      - ./data/oobabooga/characters:/home/app/text-generation-webui/characters
+      - ./data/oobabooga/extensions:/home/app/text-generation-webui/extensions
+      - ./data/oobabooga/loras:/home/app/text-generation-webui/loras
+      - ./data/oobabooga/logs:/home/app/text-generation-webui/logs
+      - ./data/oobabooga/models:/home/app/text-generation-webui/models
+      - ./data/oobabooga/presets:/home/app/text-generation-webui/presets
+      - ./data/oobabooga/prompts:/home/app/text-generation-webui/prompts
+      - ./data/oobabooga/softprompts:/home/app/text-generation-webui/softprompts
+      - ./data/oobabooga/training:/home/app/text-generation-webui/training
+    ports:
+      - "7860:7860"
+      - "5000:5000"
+    environment:
+      - CLI_ARGS=--listen --api --multi-gpu --gpu-memory 96 --n-gpu-layers -1 --threads 32
+    restart: unless-stopped
+    labels:
+      - "io.containers.autoupdate=image"
+    networks:
+      - fusionloom_net
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+networks:
+  fusionloom_net:
+    external: true

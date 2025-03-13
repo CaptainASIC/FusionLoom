@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  tavernai:
+    image: tavernai/tavernai:latest
+    container_name: fusionloom-tavernai
+    ports:
+      - "8001:8000"  # Using 8001 to avoid conflict with SillyTavern
+    volumes:
+      - ./data/tavernai/public:/home/node/app/public
+      - ./data/tavernai/config.conf:/home/node/app/config.conf
+    environment:
+      - HSA_OVERRIDE_GFX_VERSION=10.3.0
+    device_cgroup_rules:
+      - 'c 226:* rmw'
+    group_add:
+      - video
+    restart: unless-stopped
+    labels:
+      - "io.containers.autoupdate=image"
+    networks:
+      - fusionloom_net
+
+networks:
+  fusionloom_net:
+    external: true

@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+  sillytavern:
+    image: ghcr.io/sillytavern/sillytavern:latest
+    container_name: fusionloom-sillytavern
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data/sillytavern/config:/home/node/app/config
+      - ./data/sillytavern/data:/home/node/app/data
+      - ./data/sillytavern/plugins:/home/node/app/plugins
+      - ./data/sillytavern/extensions:/home/node/app/public/scripts/extensions/third-party
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    restart: unless-stopped
+    labels:
+      - "io.containers.autoupdate=image"
+    networks:
+      - fusionloom_net
+
+networks:
+  fusionloom_net:
+    external: true

@@ -296,6 +296,63 @@ function updateStatusIndicators(settings) {
     if (openrouterStatus) {
         openrouterStatus.className = settings.openrouter_key ? 'llm-service-tab-status online' : 'llm-service-tab-status offline';
     }
+    
+    // Check SillyTavern, TavernAI, and Oobabooga status
+    // These services don't require API keys, so we'll check their endpoints directly
+    
+    // SillyTavern
+    fetch(settings.sillytavern_api || 'http://localhost:8000', { 
+        method: 'HEAD',
+        mode: 'no-cors'
+    })
+    .then(() => {
+        const sillyTavernStatus = document.querySelector('.llm-service-tab[data-provider="sillytavern"] .llm-service-tab-status');
+        if (sillyTavernStatus) {
+            sillyTavernStatus.className = 'llm-service-tab-status online';
+        }
+    })
+    .catch(() => {
+        const sillyTavernStatus = document.querySelector('.llm-service-tab[data-provider="sillytavern"] .llm-service-tab-status');
+        if (sillyTavernStatus) {
+            sillyTavernStatus.className = 'llm-service-tab-status offline';
+        }
+    });
+    
+    // TavernAI
+    fetch(settings.tavernai_api || 'http://localhost:8001', { 
+        method: 'HEAD',
+        mode: 'no-cors'
+    })
+    .then(() => {
+        const tavernAIStatus = document.querySelector('.llm-service-tab[data-provider="tavernai"] .llm-service-tab-status');
+        if (tavernAIStatus) {
+            tavernAIStatus.className = 'llm-service-tab-status online';
+        }
+    })
+    .catch(() => {
+        const tavernAIStatus = document.querySelector('.llm-service-tab[data-provider="tavernai"] .llm-service-tab-status');
+        if (tavernAIStatus) {
+            tavernAIStatus.className = 'llm-service-tab-status offline';
+        }
+    });
+    
+    // Oobabooga
+    fetch(settings.oobabooga_api || 'http://localhost:5000', { 
+        method: 'HEAD',
+        mode: 'no-cors'
+    })
+    .then(() => {
+        const oobaboogaStatus = document.querySelector('.llm-service-tab[data-provider="oobabooga"] .llm-service-tab-status');
+        if (oobaboogaStatus) {
+            oobaboogaStatus.className = 'llm-service-tab-status online';
+        }
+    })
+    .catch(() => {
+        const oobaboogaStatus = document.querySelector('.llm-service-tab[data-provider="oobabooga"] .llm-service-tab-status');
+        if (oobaboogaStatus) {
+            oobaboogaStatus.className = 'llm-service-tab-status offline';
+        }
+    });
 }
 
 /**
@@ -568,6 +625,51 @@ function switchProvider(provider) {
             }).catch(error => {
                 console.error('Error initializing OpenRouter:', error);
             });
+        } else if (provider === 'sillytavern') {
+            console.log('Initializing SillyTavern with settings:', {
+                api_endpoint: settings.sillytavern_api || 'http://localhost:8000'
+            });
+            
+            import('./sillytavern.js').then(module => {
+                if (settings.sillytavern_api) {
+                    console.log('Setting SillyTavern endpoint to:', settings.sillytavern_api);
+                    module.setSillyTavernEndpoint(settings.sillytavern_api);
+                }
+                console.log('Initializing SillyTavern UI');
+                module.initializeSillyTavernUI();
+            }).catch(error => {
+                console.error('Error initializing SillyTavern:', error);
+            });
+        } else if (provider === 'tavernai') {
+            console.log('Initializing TavernAI with settings:', {
+                api_endpoint: settings.tavernai_api || 'http://localhost:8001'
+            });
+            
+            import('./tavernai.js').then(module => {
+                if (settings.tavernai_api) {
+                    console.log('Setting TavernAI endpoint to:', settings.tavernai_api);
+                    module.setTavernAIEndpoint(settings.tavernai_api);
+                }
+                console.log('Initializing TavernAI UI');
+                module.initializeTavernAIUI();
+            }).catch(error => {
+                console.error('Error initializing TavernAI:', error);
+            });
+        } else if (provider === 'oobabooga') {
+            console.log('Initializing Oobabooga with settings:', {
+                api_endpoint: settings.oobabooga_api || 'http://localhost:5000'
+            });
+            
+            import('./oobabooga.js').then(module => {
+                if (settings.oobabooga_api) {
+                    console.log('Setting Oobabooga endpoint to:', settings.oobabooga_api);
+                    module.setOobaboogaEndpoint(settings.oobabooga_api);
+                }
+                console.log('Initializing Oobabooga UI');
+                module.initializeOobaboogaUI();
+            }).catch(error => {
+                console.error('Error initializing Oobabooga:', error);
+            });
         }
     }
     
@@ -587,14 +689,20 @@ function updateChatTitle(provider) {
         'ollama': 'Ollama',
         'claude': 'Claude',
         'chatgpt': 'ChatGPT',
-        'gemini': 'Gemini'
+        'gemini': 'Gemini',
+        'sillytavern': 'SillyTavern',
+        'tavernai': 'TavernAI',
+        'oobabooga': 'Oobabooga'
     };
     
     const iconMap = {
         'ollama': 'fas fa-brain',
         'claude': 'fas fa-comment-dots',
         'chatgpt': 'fas fa-robot',
-        'gemini': 'fas fa-star'
+        'gemini': 'fas fa-star',
+        'sillytavern': 'fas fa-theater-masks',
+        'tavernai': 'fas fa-dungeon',
+        'oobabooga': 'fas fa-terminal'
     };
     
     const titleElement = document.querySelector(`#${provider}-container .llm-chat-title span`);

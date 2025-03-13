@@ -68,11 +68,140 @@ else
     exit 1
 fi
 
-# Start the Ollama container with platform detection
-echo "Starting Ollama container with platform-specific optimizations..."
-"${SCRIPT_DIR}/launch-ollama.sh"
+# Start the selected services with platform detection
+if [ -f "${SCRIPT_DIR}/cfg/config.ini" ]; then
+    # Check if Ollama is enabled
+    if grep -q "ollama_enabled = true" "${SCRIPT_DIR}/cfg/config.ini"; then
+        echo "Starting Ollama container with platform-specific optimizations..."
+        "${SCRIPT_DIR}/launch-ollama.sh"
+        echo "Ollama API available at: http://localhost:11434"
+    fi
+
+    # Check if SillyTavern is enabled
+    if grep -q "sillytavern_enabled = true" "${SCRIPT_DIR}/cfg/config.ini"; then
+        echo "Starting SillyTavern container with platform-specific optimizations..."
+        # Determine platform directory
+        PLATFORM_DIR="${SCRIPT_DIR}/compose/platforms/x86"  # Default to x86
+        
+        # Check for platform type in config.ini
+        PLATFORM_TYPE=$(grep "platform = " "${SCRIPT_DIR}/cfg/config.ini" | cut -d "=" -f2 | tr -d ' ')
+        
+        # Handle Jetson platforms
+        if [[ "${PLATFORM_TYPE}" == "jetson_orin_nano_4gb" ]]; then
+            PLATFORM_DIR="${SCRIPT_DIR}/compose/platforms/jetson/orin_nano_4gb"
+        elif [[ "${PLATFORM_TYPE}" == "jetson_orin_nano_8gb" ]]; then
+            PLATFORM_DIR="${SCRIPT_DIR}/compose/platforms/jetson/orin_nano_8gb"
+        elif [[ "${PLATFORM_TYPE}" == "jetson_orin_nx_8gb" ]]; then
+            PLATFORM_DIR="${SCRIPT_DIR}/compose/platforms/jetson/orin_nx_8gb"
+        elif [[ "${PLATFORM_TYPE}" == "jetson_orin_nx_16gb" ]]; then
+            PLATFORM_DIR="${SCRIPT_DIR}/compose/platforms/jetson/orin_nx_16gb"
+        elif [[ "${PLATFORM_TYPE}" == "jetson_agx_32gb" ]]; then
+            PLATFORM_DIR="${SCRIPT_DIR}/compose/platforms/jetson/agx_32gb"
+        elif [[ "${PLATFORM_TYPE}" == "jetson_agx_64gb" ]]; then
+            PLATFORM_DIR="${SCRIPT_DIR}/compose/platforms/jetson/agx_64gb"
+        # Handle other platforms
+        elif [ "${GPU_VENDOR}" = "nvidia" ]; then
+            PLATFORM_DIR="${SCRIPT_DIR}/compose/platforms/nvidia"
+        elif [ "${GPU_VENDOR}" = "amd" ]; then
+            PLATFORM_DIR="${SCRIPT_DIR}/compose/platforms/amd"
+        elif [ "${GPU_VENDOR}" = "apple" ]; then
+            PLATFORM_DIR="${SCRIPT_DIR}/compose/platforms/apple"
+        fi
+
+        # Launch SillyTavern
+        cd "${PLATFORM_DIR}"
+        if [ "${CONTAINER_ENGINE}" = "docker" ]; then
+            docker-compose -f sillytavern-compose.yaml up -d
+        elif [ "${CONTAINER_ENGINE}" = "podman" ]; then
+            podman-compose -f sillytavern-compose.yaml up -d
+        fi
+        echo "SillyTavern available at: http://localhost:8000"
+    fi
+
+    # Check if TavernAI is enabled
+    if grep -q "tavernai_enabled = true" "${SCRIPT_DIR}/cfg/config.ini"; then
+        echo "Starting TavernAI container with platform-specific optimizations..."
+        # Determine platform directory
+        PLATFORM_DIR="${SCRIPT_DIR}/compose/platforms/x86"  # Default to x86
+        
+        # Check for platform type in config.ini
+        PLATFORM_TYPE=$(grep "platform = " "${SCRIPT_DIR}/cfg/config.ini" | cut -d "=" -f2 | tr -d ' ')
+        
+        # Handle Jetson platforms
+        if [[ "${PLATFORM_TYPE}" == "jetson_orin_nano_4gb" ]]; then
+            PLATFORM_DIR="${SCRIPT_DIR}/compose/platforms/jetson/orin_nano_4gb"
+        elif [[ "${PLATFORM_TYPE}" == "jetson_orin_nano_8gb" ]]; then
+            PLATFORM_DIR="${SCRIPT_DIR}/compose/platforms/jetson/orin_nano_8gb"
+        elif [[ "${PLATFORM_TYPE}" == "jetson_orin_nx_8gb" ]]; then
+            PLATFORM_DIR="${SCRIPT_DIR}/compose/platforms/jetson/orin_nx_8gb"
+        elif [[ "${PLATFORM_TYPE}" == "jetson_orin_nx_16gb" ]]; then
+            PLATFORM_DIR="${SCRIPT_DIR}/compose/platforms/jetson/orin_nx_16gb"
+        elif [[ "${PLATFORM_TYPE}" == "jetson_agx_32gb" ]]; then
+            PLATFORM_DIR="${SCRIPT_DIR}/compose/platforms/jetson/agx_32gb"
+        elif [[ "${PLATFORM_TYPE}" == "jetson_agx_64gb" ]]; then
+            PLATFORM_DIR="${SCRIPT_DIR}/compose/platforms/jetson/agx_64gb"
+        # Handle other platforms
+        elif [ "${GPU_VENDOR}" = "nvidia" ]; then
+            PLATFORM_DIR="${SCRIPT_DIR}/compose/platforms/nvidia"
+        elif [ "${GPU_VENDOR}" = "amd" ]; then
+            PLATFORM_DIR="${SCRIPT_DIR}/compose/platforms/amd"
+        elif [ "${GPU_VENDOR}" = "apple" ]; then
+            PLATFORM_DIR="${SCRIPT_DIR}/compose/platforms/apple"
+        fi
+
+        # Launch TavernAI
+        cd "${PLATFORM_DIR}"
+        if [ "${CONTAINER_ENGINE}" = "docker" ]; then
+            docker-compose -f tavernai-compose.yaml up -d
+        elif [ "${CONTAINER_ENGINE}" = "podman" ]; then
+            podman-compose -f tavernai-compose.yaml up -d
+        fi
+        echo "TavernAI available at: http://localhost:8001"
+    fi
+
+    # Check if Oobabooga is enabled
+    if grep -q "oobabooga_enabled = true" "${SCRIPT_DIR}/cfg/config.ini"; then
+        echo "Starting Oobabooga container with platform-specific optimizations..."
+        # Determine platform directory
+        PLATFORM_DIR="${SCRIPT_DIR}/compose/platforms/x86"  # Default to x86
+        
+        # Check for platform type in config.ini
+        PLATFORM_TYPE=$(grep "platform = " "${SCRIPT_DIR}/cfg/config.ini" | cut -d "=" -f2 | tr -d ' ')
+        
+        # Handle Jetson platforms
+        if [[ "${PLATFORM_TYPE}" == "jetson_orin_nano_4gb" ]]; then
+            PLATFORM_DIR="${SCRIPT_DIR}/compose/platforms/jetson/orin_nano_4gb"
+        elif [[ "${PLATFORM_TYPE}" == "jetson_orin_nano_8gb" ]]; then
+            PLATFORM_DIR="${SCRIPT_DIR}/compose/platforms/jetson/orin_nano_8gb"
+        elif [[ "${PLATFORM_TYPE}" == "jetson_orin_nx_8gb" ]]; then
+            PLATFORM_DIR="${SCRIPT_DIR}/compose/platforms/jetson/orin_nx_8gb"
+        elif [[ "${PLATFORM_TYPE}" == "jetson_orin_nx_16gb" ]]; then
+            PLATFORM_DIR="${SCRIPT_DIR}/compose/platforms/jetson/orin_nx_16gb"
+        elif [[ "${PLATFORM_TYPE}" == "jetson_agx_32gb" ]]; then
+            PLATFORM_DIR="${SCRIPT_DIR}/compose/platforms/jetson/agx_32gb"
+        elif [[ "${PLATFORM_TYPE}" == "jetson_agx_64gb" ]]; then
+            PLATFORM_DIR="${SCRIPT_DIR}/compose/platforms/jetson/agx_64gb"
+        # Handle other platforms
+        elif [ "${GPU_VENDOR}" = "nvidia" ]; then
+            PLATFORM_DIR="${SCRIPT_DIR}/compose/platforms/nvidia"
+        elif [ "${GPU_VENDOR}" = "amd" ]; then
+            PLATFORM_DIR="${SCRIPT_DIR}/compose/platforms/amd"
+        elif [ "${GPU_VENDOR}" = "apple" ]; then
+            PLATFORM_DIR="${SCRIPT_DIR}/compose/platforms/apple"
+        fi
+
+        # Launch Oobabooga
+        cd "${PLATFORM_DIR}"
+        if [ "${CONTAINER_ENGINE}" = "docker" ]; then
+            docker-compose -f oobabooga-compose.yaml up -d
+        elif [ "${CONTAINER_ENGINE}" = "podman" ]; then
+            podman-compose -f oobabooga-compose.yaml up -d
+        fi
+        echo "Oobabooga available at: http://localhost:7860"
+        echo "Oobabooga API available at: http://localhost:5000"
+    fi
+fi
 
 echo "FusionLoom v${FUSION_LOOM_VERSION} started successfully!"
 echo "Access the web interface at: http://localhost:8080"
-echo "Ollama API available at: http://localhost:11434"
 echo "System info API available at: http://localhost:5050/api/system-info"
