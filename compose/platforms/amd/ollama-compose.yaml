@@ -2,25 +2,34 @@ version: "3"
 
 services:
   ollama:
-    image: docker.io/ollama/ollama:rocm
+    image: ollama/ollama:latest
     container_name: fusionloom-ollama
-    devices:
-      - /dev/kfd:/dev/kfd
-      - /dev/dri:/dev/dri
-    group_add:
-      - video
     volumes:
-      - ./data/ollama:/root/.ollama
+      - ${OLLAMA_VOLUME}:/root/.ollama
     ports:
       - "11434:11434"
     environment:
-      - HSA_OVERRIDE_GFX_VERSION=10.3.0
-      - ROCR_VISIBLE_DEVICES=all
+      - OLLAMA_HOST=0.0.0.0
+      # AMD ROCm optimizations
+      - OLLAMA_CPU_ONLY=0
+      # Adjust these based on the host system capabilities
+      - OLLAMA_NUM_THREADS=16
+      - OLLAMA_MAX_MEMORY=16G
     restart: unless-stopped
     labels:
       - "io.containers.autoupdate=image"
     networks:
       - fusionloom_net
+    # Add AMD GPU devices
+    devices:
+      - /dev/kfd:/dev/kfd
+      - /dev/dri:/dev/dri
+    # Resource limits for AMD GPU operation
+    deploy:
+      resources:
+        limits:
+          cpus: '0.8' # Use up to 80% of available CPU
+          memory: 20G
 
 networks:
   fusionloom_net:

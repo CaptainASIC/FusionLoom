@@ -2,25 +2,13 @@ version: "3"
 
 services:
   tavernai:
-    image: node:21.5.0-alpine3.19
+    image: tavernai/tavernai:latest
     container_name: fusionloom-tavernai
-    working_dir: /home/node/app
-    volumes:
-      - ./data/tavernai:/home/node/app
     ports:
-      - "8080:8000"
-    command: >
-      sh -c "
-        if [ ! -d '/home/node/app/node_modules' ]; then
-          echo 'First run - cloning TavernAI repository...' &&
-          apk add --no-cache git &&
-          git clone https://github.com/TavernAI/TavernAI.git /tmp/tavernai &&
-          cp -r /tmp/tavernai/. /home/node/app/ &&
-          rm -rf /tmp/tavernai &&
-          npm install
-        fi &&
-        node server.js
-      "
+      - "8001:8000"  # Using 8001 to avoid conflict with SillyTavern
+    volumes:
+      - ${TAVERNAI_PUBLIC_VOLUME}:/home/node/app/public
+      - ${TAVERNAI_CONFIG_VOLUME}:/home/node/app/config.conf
     restart: unless-stopped
     labels:
       - "io.containers.autoupdate=image"

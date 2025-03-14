@@ -4,34 +4,25 @@ services:
   ollama:
     image: ollama/ollama:latest
     container_name: fusionloom-ollama
-    runtime: nvidia
-    devices:
-      - /dev/nvidia0:/dev/nvidia0
-      - /dev/nvidia1:/dev/nvidia1
-      - /dev/nvidia2:/dev/nvidia2
-      - /dev/nvidia3:/dev/nvidia3
-      - /dev/nvidia-uvm:/dev/nvidia-uvm
-      - /dev/nvidiactl:/dev/nvidiactl
     volumes:
-      - ./data/ollama:/root/.ollama
+      - ${OLLAMA_VOLUME}:/root/.ollama
     ports:
       - "11434:11434"
     environment:
-      - NVIDIA_VISIBLE_DEVICES=all
-      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
-      # DGX/Digit-specific optimizations
       - OLLAMA_HOST=0.0.0.0
-      - CUDA_VISIBLE_DEVICES=0,1,2,3
-      # High-performance settings for DGX DIGITS (128GB memory)
-      - OLLAMA_MAX_MEMORY=96G
-      - OLLAMA_NUM_THREADS=64
+      # DGX/Digit optimizations
+      - OLLAMA_CPU_ONLY=0
+      # Multi-GPU support
       - OLLAMA_MULTI_GPU=1
+      # Adjust these based on the DGX/Digit capabilities
+      - OLLAMA_NUM_THREADS=64
+      - OLLAMA_MAX_MEMORY=96G
     restart: unless-stopped
     labels:
       - "io.containers.autoupdate=image"
     networks:
       - fusionloom_net
-    # Resource configuration for high-performance hardware
+    # Add NVIDIA GPU support with all GPUs
     deploy:
       resources:
         reservations:
@@ -39,6 +30,8 @@ services:
             - driver: nvidia
               count: all
               capabilities: [gpu]
+        limits:
+          memory: 100G
 
 networks:
   fusionloom_net:

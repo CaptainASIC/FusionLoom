@@ -4,41 +4,33 @@ services:
   ollama:
     image: ollama/ollama:latest
     container_name: fusionloom-ollama
-    devices:
-      - /dev/nvhost-ctrl:/dev/nvhost-ctrl
-      - /dev/nvhost-ctrl-gpu:/dev/nvhost-ctrl-gpu
-      - /dev/nvhost-prof-gpu:/dev/nvhost-prof-gpu
-      - /dev/nvmap:/dev/nvmap
-      - /dev/nvhost-gpu:/dev/nvhost-gpu
-      - /dev/nvhost-as-gpu:/dev/nvhost-as-gpu
     volumes:
-      - ./data/ollama:/root/.ollama
+      - ${OLLAMA_VOLUME}:/root/.ollama
     ports:
       - "11434:11434"
     environment:
-      - NVIDIA_VISIBLE_DEVICES=all
-      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
-      # Jetson-specific optimizations
-      - OLLAMA_JETSON=1
-      - CUDA_VISIBLE_DEVICES=0
-      # Memory and performance optimizations for Orin NX 16GB
-      - OLLAMA_MAX_MEMORY=12G
+      - OLLAMA_HOST=0.0.0.0
+      # Jetson Orin NX 16GB optimizations
+      - OLLAMA_CPU_ONLY=0
+      # Optimized resources for Orin NX 16GB
       - OLLAMA_NUM_THREADS=8
+      - OLLAMA_MAX_MEMORY=12G
     restart: unless-stopped
     labels:
       - "io.containers.autoupdate=image"
     networks:
       - fusionloom_net
-    # Resource limits for Jetson Orin NX 16GB
+    # Add NVIDIA GPU support
     deploy:
       resources:
-        limits:
-          memory: 14G
         reservations:
           devices:
             - driver: nvidia
               count: 1
               capabilities: [gpu]
+        limits:
+          memory: 14G
+    platform: linux/arm64  # Specify ARM64 platform for Jetson
 
 networks:
   fusionloom_net:

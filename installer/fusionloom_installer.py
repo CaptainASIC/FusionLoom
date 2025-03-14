@@ -323,16 +323,29 @@ def create_config(settings):
     
     # Create .env file
     with open(ENV_FILE, "w") as f:
-        f.write(f"FUSION_LOOM_VERSION=0.4\n")
+        f.write(f"FUSION_LOOM_VERSION=0.4.3\n")
         f.write(f"CONTAINER_ENGINE={settings['container_engine']}\n")
-        f.write(f"DATA_DIR={REPO_ROOT}/data\n")
+        
+        # Use the data directory from settings
+        data_dir = settings.get('data_directory', str(REPO_ROOT / "data"))
+        f.write(f"DATA_DIR={data_dir}\n")
         
         # Add service-specific environment variables
         for service_type, services in AI_SERVICES.items():
             for service_id, service in services.items():
                 if settings['services'].get(service_id, False):
                     volume_name = service_id.upper()
-                    f.write(f"{volume_name}_VOLUME={REPO_ROOT}/data/{service_id}\n")
+                    f.write(f"{volume_name}_VOLUME={data_dir}/{service_id}\n")
+                    
+                    # Add additional volume variables for services that need them
+                    if service_id == "sillytavern":
+                        f.write(f"SILLYTAVERN_CONFIG_VOLUME={data_dir}/{service_id}/config\n")
+                        f.write(f"SILLYTAVERN_DATA_VOLUME={data_dir}/{service_id}/data\n")
+                        f.write(f"SILLYTAVERN_PLUGINS_VOLUME={data_dir}/{service_id}/plugins\n")
+                        f.write(f"SILLYTAVERN_EXTENSIONS_VOLUME={data_dir}/{service_id}/extensions\n")
+                    elif service_id == "tavernai":
+                        f.write(f"TAVERNAI_PUBLIC_VOLUME={data_dir}/{service_id}/public\n")
+                        f.write(f"TAVERNAI_CONFIG_VOLUME={data_dir}/{service_id}/config.conf\n")
     
     # Create JSON settings file for the installer
     installer_settings = settings.copy()
@@ -345,8 +358,12 @@ def create_config(settings):
 
 def install_containers(settings, progress_bar):
     """Install the selected containers"""
+    # Get the data directory from settings
+    data_dir = settings.get('data_directory', str(REPO_ROOT / "data"))
+    data_path = Path(data_dir)
+    
     # Create data directories
-    os.makedirs(REPO_ROOT / "data", exist_ok=True)
+    os.makedirs(data_path, exist_ok=True)
     
     # Get the container engine
     container_engine = settings['container_engine']
@@ -388,13 +405,14 @@ def install_containers(settings, progress_bar):
                 progress_bar.progress(progress_value, text=f"Installing {service['name']}...")
                 
                 # Create data directory for the service
-                os.makedirs(REPO_ROOT / "data" / service_id, exist_ok=True)
+                service_dir = data_path / service_id
+                os.makedirs(service_dir, exist_ok=True)
                 
                 # Copy the appropriate compose files
                 if service_id in ["ollama", "sillytavern", "tavernai", "oobabooga"]:
                     # Create builds directory for Ollama
                     if service_id == "ollama":
-                        builds_dir = REPO_ROOT / "data" / service_id / "builds"
+                        builds_dir = service_dir / "builds"
                         os.makedirs(builds_dir, exist_ok=True)
                         
                         # Always copy the default build
@@ -447,17 +465,16 @@ def install_containers(settings, progress_bar):
                     compose_file_name = f"{service_id}-compose.yaml"
                     
                     src_file = REPO_ROOT / "compose" / "platforms" / platform_dir / compose_file_name
-                    dst_dir = REPO_ROOT / "data" / service_id
                     
                     if src_file.exists():
-                        shutil.copy(src_file, dst_dir / "docker-compose.yaml")
-                        print(f"Copied primary compose file: {src_file} to {dst_dir / 'docker-compose.yaml'}")
+                        shutil.copy(src_file, service_dir / "docker-compose.yaml")
+                        print(f"Copied primary compose file: {src_file} to {service_dir / 'docker-compose.yaml'}")
                     else:
                         # Fallback to default if platform-specific file doesn't exist
                         default_src_file = REPO_ROOT / "compose" / "platforms" / "x86" / compose_file_name
                         if default_src_file.exists():
-                            shutil.copy(default_src_file, dst_dir / "docker-compose.yaml")
-                            print(f"Fallback to default: {default_src_file} to {dst_dir / 'docker-compose.yaml'}")
+                            shutil.copy(default_src_file, service_dir / "docker-compose.yaml")
+                            print(f"Fallback to default: {default_src_file} to {service_dir / 'docker-compose.yaml'}")
                         else:
                             print(f"Warning: Could not find compose file for platform {platform_type} at {src_file}")
                 
@@ -510,6 +527,9 @@ def main():
             gpu_vendor = detect_gpu_vendor()
             container_engine = detect_container_engine()
         
+        # Get default data directory
+        default_data_dir = str(REPO_ROOT / "data")
+        
         # Initialize settings
         st.session_state.settings = {
             "platform": platform_type,
@@ -521,6 +541,7 @@ def main():
             "auto_start": True,
             "theme": "dark",
             "save_sessions": True,
+            "data_directory": default_data_dir,  # Default data directory
             "services": {service_id: service["default"] for service_type, services in AI_SERVICES.items() for service_id, service in services.items()},
             "hardware_builds": {
                 "default": True,  # Default build is always enabled
@@ -793,6 +814,21 @@ def main():
                 value=st.session_state.settings["auto_start"],
                 help="Automatically start containers when launching FusionLoom."
             )
+            
+            # Data Directory
+            st.subheader("Data Storage")
+            
+            data_directory = st.text_input(
+                "Data Directory",
+                value=st.session_state.settings.get("data_directory", str(REPO_ROOT / "data")),
+                help="Directory where container data will be stored."
+            )
+            
+            # Browse button for data directory
+            if st.button("Browse...", key="browse_data_dir"):
+                # This is a placeholder - in a real implementation, you would use a file dialog
+                # Since Streamlit doesn't have a built-in file dialog, we're just showing a message
+                st.info("In a desktop application, this would open a file browser. For now, please enter the path manually.")
         
         with col2:
             st.subheader("UI Settings")
@@ -815,7 +851,8 @@ def main():
             "container_engine": container_engine,
             "auto_start": auto_start,
             "theme": theme,
-            "save_sessions": save_sessions
+            "save_sessions": save_sessions,
+            "data_directory": data_directory
         })
         
         # Navigation buttons

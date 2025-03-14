@@ -2,32 +2,33 @@ version: "3"
 
 services:
   ollama:
-    image: docker.io/ollama/ollama:latest
+    image: ollama/ollama:latest
     container_name: fusionloom-ollama
     volumes:
-      - ./data/ollama:/root/.ollama
+      - ${OLLAMA_VOLUME}:/root/.ollama
     ports:
       - "11434:11434"
     environment:
-      # Apple Silicon optimizations
       - OLLAMA_HOST=0.0.0.0
-      - OLLAMA_METAL=1
-      - OLLAMA_METAL_MEMORY=8G
+      # Apple Silicon optimizations
+      - OLLAMA_CPU_ONLY=0
+      # Metal GPU acceleration
+      - OLLAMA_USE_METAL=1
+      # Adjust these based on the host system capabilities
       - OLLAMA_NUM_THREADS=8
-      # Enable Metal Performance Shaders
-      - MPS_ENABLE=1
-      # CoreML optimizations
-      - COREML_ENABLE=1
+      - OLLAMA_MAX_MEMORY=12G
     restart: unless-stopped
     labels:
       - "io.containers.autoupdate=image"
     networks:
       - fusionloom_net
-    # Resource configuration for Apple Silicon
+    platform: linux/arm64  # Specify ARM64 platform for Apple Silicon
+    # Resource limits for Apple Silicon
     deploy:
       resources:
         limits:
-          memory: 12G
+          cpus: '0.8' # Use up to 80% of available CPU
+          memory: 16G
 
 networks:
   fusionloom_net:

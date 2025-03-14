@@ -7,10 +7,10 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./data/sillytavern/config:/home/node/app/config
-      - ./data/sillytavern/data:/home/node/app/data
-      - ./data/sillytavern/plugins:/home/node/app/plugins
-      - ./data/sillytavern/extensions:/home/node/app/public/scripts/extensions/third-party
+      - ${SILLYTAVERN_CONFIG_VOLUME}:/home/node/app/config
+      - ${SILLYTAVERN_DATA_VOLUME}:/home/node/app/data
+      - ${SILLYTAVERN_PLUGINS_VOLUME}:/home/node/app/plugins
+      - ${SILLYTAVERN_EXTENSIONS_VOLUME}:/home/node/app/public/scripts/extensions/third-party
     restart: unless-stopped
     labels:
       - "io.containers.autoupdate=image"

@@ -4,29 +4,33 @@ services:
   ollama:
     image: ollama/ollama:latest
     container_name: fusionloom-ollama
-    devices:
-      - /dev/nvidia0:/dev/nvidia0
-      - /dev/nvidia-uvm:/dev/nvidia-uvm
-      - /dev/nvidiactl:/dev/nvidiactl
     volumes:
-      - ./data/ollama:/root/.ollama
+      - ${OLLAMA_VOLUME}:/root/.ollama
     ports:
       - "11434:11434"
     environment:
-      - NVIDIA_VISIBLE_DEVICES=all
-      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      - OLLAMA_HOST=0.0.0.0
+      # NVIDIA CUDA optimizations
+      - OLLAMA_CPU_ONLY=0
+      # Adjust these based on the host system capabilities
+      - OLLAMA_NUM_THREADS=16
+      - OLLAMA_MAX_MEMORY=16G
     restart: unless-stopped
     labels:
       - "io.containers.autoupdate=image"
     networks:
       - fusionloom_net
+    # Add NVIDIA GPU support
     deploy:
       resources:
         reservations:
           devices:
             - driver: nvidia
-              count: all
+              count: 1
               capabilities: [gpu]
+        limits:
+          cpus: '0.8' # Use up to 80% of available CPU
+          memory: 20G
 
 networks:
   fusionloom_net:

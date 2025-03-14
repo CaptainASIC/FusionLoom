@@ -8,24 +8,24 @@ services:
       - "7860:7860"  # Web UI port
       - "5000:5000"  # API port
     volumes:
-      - ./data/oobabooga/cache:/home/app/text-generation-webui/cache
-      - ./data/oobabooga/characters:/home/app/text-generation-webui/characters
-      - ./data/oobabooga/extensions:/home/app/text-generation-webui/extensions
-      - ./data/oobabooga/loras:/home/app/text-generation-webui/loras
-      - ./data/oobabooga/logs:/home/app/text-generation-webui/logs
-      - ./data/oobabooga/models:/home/app/text-generation-webui/models
-      - ./data/oobabooga/presets:/home/app/text-generation-webui/presets
-      - ./data/oobabooga/prompts:/home/app/text-generation-webui/prompts
-      - ./data/oobabooga/softprompts:/home/app/text-generation-webui/softprompts
-      - ./data/oobabooga/training:/home/app/text-generation-webui/training
+      - ${OOBABOOGA_VOLUME}/cache:/home/app/text-generation-webui/cache
+      - ${OOBABOOGA_VOLUME}/characters:/home/app/text-generation-webui/characters
+      - ${OOBABOOGA_VOLUME}/extensions:/home/app/text-generation-webui/extensions
+      - ${OOBABOOGA_VOLUME}/loras:/home/app/text-generation-webui/loras
+      - ${OOBABOOGA_VOLUME}/logs:/home/app/text-generation-webui/logs
+      - ${OOBABOOGA_VOLUME}/models:/home/app/text-generation-webui/models
+      - ${OOBABOOGA_VOLUME}/presets:/home/app/text-generation-webui/presets
+      - ${OOBABOOGA_VOLUME}/prompts:/home/app/text-generation-webui/prompts
+      - ${OOBABOOGA_VOLUME}/softprompts:/home/app/text-generation-webui/softprompts
+      - ${OOBABOOGA_VOLUME}/training:/home/app/text-generation-webui/training
     environment:
-      - CLI_ARGS=--listen --api --cpu --use-metal
+      - CLI_ARGS=--listen --api --use-metal
     restart: unless-stopped
     labels:
       - "io.containers.autoupdate=image"
     networks:
       - fusionloom_net
-    platform: linux/arm64
+    platform: linux/arm64  # Specify ARM64 platform for Apple Silicon
 
 networks:
   fusionloom_net:

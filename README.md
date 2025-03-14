@@ -8,6 +8,9 @@ Fusion Loom is a comprehensive platform that weaves together multiple AI technol
 
 - **Unified Dashboard**: Access all your AI tools from a single, intuitive interface.
 - **Language Model Integration**: Interact with various LLMs through a tabbed interface.
+  - **Multiple LLM Providers**: Support for Ollama, Claude, ChatGPT, Gemini, and more.
+  - **Character-Based Chat UIs**: Integrated SillyTavern and TavernAI for character-based interactions.
+  - **Advanced Text Generation**: Oobabooga (text-generation-webui) integration for fine-tuned control.
 - **Generative AI Support**: Manage and use Stable Diffusion models for image generation.
 - **Text-to-Speech (TTS)**: Convert text to speech using integrated TTS services.
 - **Speech-to-Text (STS)**: Transcribe audio to text with STS capabilities.
@@ -250,6 +253,14 @@ The LLM interface allows you to interact with various language models through a 
 - Save and load conversations
 - Adjust model parameters like temperature and top_p
 - Export conversations in various formats
+- Switch between different LLM providers:
+  - **Ollama**: Run large language models locally
+  - **Claude**: Access Anthropic's Claude models
+  - **ChatGPT**: Use OpenAI's GPT models
+  - **Gemini**: Interact with Google's Gemini models
+  - **SillyTavern**: Advanced character-based chat UI with extensive customization
+  - **TavernAI**: Character-based chat UI focused on storytelling
+  - **Oobabooga**: Text generation web UI with fine-grained control over generation parameters
 
 ### Stable Diffusion
 
@@ -286,8 +297,12 @@ FusionLoom/
 │   └── platforms/       # Platform-specific compose files
 │       ├── dgx_digit/   # NVIDIA DGX/Digit optimized containers
 │       ├── jetson/      # NVIDIA Jetson containers
-│       │   ├── orin/    # Orin Nano Super specific containers
-│       │   └── agx/     # AGX Nano specific containers
+│       │   ├── orin_nano_4gb/  # Orin Nano 4GB specific containers
+│       │   ├── orin_nano_8gb/  # Orin Nano 8GB specific containers
+│       │   ├── orin_nx_8gb/    # Orin NX 8GB specific containers
+│       │   ├── orin_nx_16gb/   # Orin NX 16GB specific containers
+│       │   ├── agx_32gb/       # AGX Orin 32GB specific containers
+│       │   └── agx_64gb/       # AGX Orin 64GB specific containers
 │       ├── apple/       # Apple Silicon optimized containers
 │       ├── nvidia/      # NVIDIA GPU optimized containers
 │       ├── amd/         # AMD GPU (ROCm) optimized containers
@@ -300,8 +315,14 @@ FusionLoom/
 │   ├── static/          # Static assets
 │   │   ├── css/         # CSS stylesheets
 │   │   ├── js/          # JavaScript files
+│   │   │   └── modules/ # JavaScript modules
+│   │   │       ├── llm/ # LLM-specific modules
+│   │   │       └── ...  # Other module categories
 │   │   └── img/         # Images and icons
 │   └── index.html       # Main HTML file
+├── server/              # Backend server components
+│   ├── system_info.py   # System information API
+│   └── settings_api.py  # Settings and proxy API
 └── scripts/             # Utility scripts
 ```
 
@@ -339,6 +360,9 @@ This project is licensed under the GNU General Public License v3.0 (GPL-3.0). Se
 ## Roadmap
 
 - **v0.4**: ✅ External LLM provider integration (Claude, ChatGPT, Gemini) with proxy server for CORS handling and improved settings management
+- **v0.4.1**: ✅ Ollama integration improvements and UI enhancements
+- **v0.4.2**: ✅ Hardware-specific optimizations for different platforms
+- **v0.4.3**: ✅ Integration of SillyTavern, TavernAI, and Oobabooga (text-generation-webui) with platform-specific optimizations
 - **v0.5**: UI improvements and bug fixes
 - **v0.6**: NVIDIA Digit optimization and specialized container builds
 - **v0.7**: RAG capabilities integration

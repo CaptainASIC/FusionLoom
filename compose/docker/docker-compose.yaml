@@ -5,7 +5,7 @@ services:
     image: ghcr.io/open-webui/open-webui:main
     container_name: fusionloom-webui
     volumes:
-      - ./data:/app/backend/data
+      - ${OPEN_WEBUI_VOLUME}:/app/backend/data
       - ../../ui:/app/build
       - /var/run/docker.sock:/var/run/docker.sock:ro  # Mount Docker socket for container management
     ports:
@@ -14,7 +14,7 @@ services:
       - WEBUI_VERSION=0.3
       - WEBUI_APP_NAME=FusionLoom
       - OLLAMA_BASE_URL=http://fusionloom-ollama:11434
-      - CONTAINER_ENGINE=docker
+      - CONTAINER_ENGINE=${CONTAINER_ENGINE}
       - CONTAINER_NETWORK=fusionloom_net
     restart: unless-stopped
     labels:
